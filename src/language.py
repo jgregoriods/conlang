@@ -12,7 +12,10 @@ class Language:
         self.vocabulary = None
         self.rng = np.random.default_rng(42)
 
-    def generate_word(self, pattern):
+    def generate_word(self, pattern=None):
+        if pattern is None:
+            idx = self.rng.integers(len(self.patterns))
+            pattern = self.patterns[idx]
         res = ""
         for k in pattern:
             phoneme_probs = get_prob_dist(len(self.phonemes[k]))
@@ -27,17 +30,19 @@ class Language:
         return ''.join(syllables)
 
     def generate_vocabulary(self, adjust_length=True):
-        vocabulary = Vocabulary(self)
+        vocabulary = Vocabulary()
         for i in SWADESH:
             if adjust_length and i[2] == 1:
                 sel_patterns = [pattern for pattern in self.patterns if len(pattern) <= 3]
             else:
                 sel_patterns = self.patterns
-            pattern = self.rng.choice(sel_patterns)
+            idx = self.rng.integers(len(sel_patterns))
+            pattern = sel_patterns[idx]
             new_word = self.generate_word(pattern)
             attempts = 0
             while vocabulary.has_word(new_word):
-                pattern = self.rng.choice(sel_patterns)
+                idx = self.rng.integers(len(sel_patterns))
+                pattern = sel_patterns[idx]
                 new_word = self.generate_word(pattern)
                 attempts += 1
                 if attempts > 10:

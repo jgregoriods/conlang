@@ -9,8 +9,7 @@ with open(os.path.join(dirname, 'data/Swadesh200.csv'), 'r', encoding='utf-8') a
 
 
 class Vocabulary:
-    def __init__(self, language):
-        self.language = language
+    def __init__(self):
         self.items = []
 
     def add_item(self, definition, word):
