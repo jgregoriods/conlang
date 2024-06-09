@@ -1,4 +1,4 @@
-OPENING1 = {
+OPENING1 = ({
     'p': 'ɸ',
     't': 'θ',
     'k': 'x',
@@ -6,9 +6,9 @@ OPENING1 = {
     'θ': 'h',
     'x': 'h',
     'h': ''
-}
+}, None)
 
-OPENING2 = {
+OPENING2 = ({
     'p': 'f',
     't': 's',
     'k': 'x',
@@ -16,7 +16,7 @@ OPENING2 = {
     's': 'h',
     'x': 'h',
     'h': ''
-}
+}, None)
 
 SONORIZATION = {
     'p': 'b',
@@ -28,25 +28,37 @@ SONORIZATION = {
     'j': ''
 }
 
-SONORIZATION1 = {
+SONORIZATION1 = ({
     'b': 'β',
     'd': 'ð',
     'g': 'ɣ',
     'β': 'w',
     'ð': 'ɹ'
-}
-SONORIZATION1.update(SONORIZATION)
+}, None)
+SONORIZATION1[0].update(SONORIZATION)
 
-SONORIZATION2 = {
+SONORIZATION2 = ({
     'b': 'v',
     'd': 'z',
     'g': 'ɣ',
     'v': 'w',
     'z': 'ɹ'
-}
-SONORIZATION2.update(SONORIZATION)
+}, None)
+SONORIZATION2[0].update(SONORIZATION)
 
-GREAT_VOWEL_SHIFT = {
+GRIMMS_LAW = ({
+    'p': 'f',
+    't': 'θ',
+    'k': 'x',
+    'b': 'p',
+    'd': 't',
+    'g': 'k',
+    'bʰ': 'b',
+    'dʰ': 'd',
+    'gʰ': 'g'
+}, None)
+
+GREAT_VOWEL_SHIFT = ({
     'i:': 'aɪ',
     'e:': 'i:',
     'ɛ:': 'eɪ',
@@ -54,4 +66,21 @@ GREAT_VOWEL_SHIFT = {
     'u:': 'aʊ',
     'o:': 'u:',
     'ɔ:': 'oʊ'
-}
+}, 'stressed')
+
+PALATALIZATION1 = ({
+    'k': 'tʃ',
+    'g': 'dʒ',
+    'x': 'ç',
+    'ɣ': 'ʝ',
+    'j': 'ʝ'
+}, {'next': ['i']})
+
+PALATALIZATION2 = ({
+    't': 'tʃ',
+    'd': 'dʒ',
+    's': 'ʃ',
+    'z': 'ʒ',
+    'n': 'ɲ',
+    'l': 'ʎ'
+}, {'next': ['i']})

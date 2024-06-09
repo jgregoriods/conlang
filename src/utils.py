@@ -1,6 +1,6 @@
 import numpy as np
 
-from .phonemes import VOWELS
+from .phonemes import VOWELS, PHONEMES, SUPRASEGMENTALS
 
 
 def split_syllables(word):
@@ -22,10 +22,20 @@ def split_syllables(word):
     return res
 
 
-# will be changed to account for phonemes
-# that have more than one character
 def split_phonemes(word):
-    return list(word)
+    res = []
+    i = 0
+    while i < len(word):
+        if word[i:i+3] in list(PHONEMES) + SUPRASEGMENTALS:
+            res.append(word[i:i+3])
+            i += 3
+        elif word[i:i+2] in list(PHONEMES) + SUPRASEGMENTALS:
+            res.append(word[i:i+2])
+            i += 2
+        else:
+            res.append(word[i])
+            i += 1
+    return res
 
 
 def get_prob_dist(length, decay=0.2):

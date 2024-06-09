@@ -5,12 +5,22 @@ from .utils import split_syllables, get_prob_dist
 
 
 class Language:
-    def __init__(self, phonemes, patterns, stress):
+    def __init__(self, phonemes, patterns, stress, morphology, word_order):
         self.phonemes = phonemes
         self.patterns = patterns
         self.stress = stress
         self.vocabulary = None
         self.rng = np.random.default_rng(42)
+
+        if morphology not in ['agglutinative', 'fusional', 'isolating', 'polysynthetic']:
+            raise ValueError('Invalid morphology type.')
+
+        self.morphology = morphology
+        
+        if len(word_order) != 3 or set(word_order) != set(['S', 'O', 'V']):
+            raise ValueError('Invalid word order.')
+        
+        self.word_order = word_order
 
     def generate_word(self, pattern=None):
         if pattern is None:
@@ -50,3 +60,15 @@ class Language:
                     break
             vocabulary.add_item(i[0], new_word)
         self.vocabulary = vocabulary
+
+    def generate_grammar(self):
+        if self.morphology == 'agglutinative':
+            pass
+        elif self.morphology == 'fusional':
+            pass
+        elif self.morphology == 'isolating':
+            pass
+        elif self.morphology == 'polysynthetic':
+            pass
+        else:
+            raise ValueError('Invalid morphology type.')

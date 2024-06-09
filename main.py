@@ -8,16 +8,18 @@ from src.utils import split_syllables
 def main():
     phonemes = {
         'V': ['a', 'i', 'u', 'a:'],
-        'C': ['p', 't', 'k', 'b', 'd', 'g', 'm', 'n', 's', 'z', 'l', 'r']
+        'C': ['p', 't', 'k', 'pʰ', 'tʰ', 'kʰ', 'b', 'd', 'g', 'm', 'n', 's', 'z', 'l', 'r']
     }
     patterns = [
         ['C', 'V', 'C', 'V'],
         ['V', 'C', 'V'],
-        ['V', 'C', 'V', 'C', 'V']
+        ['V', 'C', 'V', 'C', 'V'],
+        ['C', 'V', 'C'],
+        ['C', 'V', 'C', 'V', 'C']
     ]
     stress = [1, 2]
 
-    language = Language(phonemes, patterns, stress)
+    language = Language(phonemes, patterns, stress, 'agglutinative', 'SOV')
     language.generate_vocabulary()
 
     indices = random.choice(list(range(len(language.vocabulary.items))), 5, replace=False)
@@ -27,9 +29,7 @@ def main():
     print('\n')
 
     pipeline = [
-        'ELISION_POST',
-        OPENING2,
-        GREAT_VOWEL_SHIFT,
+        ('FINAL_VOWEL_DELETION', None),
     ]
 
     sound_change = SoundChange(pipeline, 0.1)

@@ -54,8 +54,22 @@ CONSONANTS = {
     'l': ['lateral', 'alveolar', 'voiced'],
     'ɭ': ['lateral', 'retroflex', 'voiced'],
     'ʎ': ['lateral', 'palatal', 'voiced'],
-    'ʟ': ['lateral', 'velar', 'voiced']
+    'ʟ': ['lateral', 'velar', 'voiced'],
+    'ts': ['affricate', 'alveolar', 'voiceless'],
+    'dz': ['affricate', 'alveolar', 'voiced'],
+    'tʃ': ['affricate', 'palato-alveolar', 'voiceless'],
+    'dʒ': ['affricate', 'palato-alveolar', 'voiced'],
+    'ʈʂ': ['affricate', 'retroflex', 'voiceless'],
+    'ɖʐ': ['affricate', 'retroflex', 'voiced'],
+    'tɬ': ['affricate', 'alveolar', 'lateral', 'voiceless'],
+    'dɮ': ['affricate', 'alveolar', 'lateral', 'voiced']
 }
+
+ASPIRATED = {f'{k}ʰ':v + ['aspirated'] for k,v in CONSONANTS.items() if 'plosive' in v or 'affricate' in v}
+EJECTIVE = {f'{k}ʼ':v + ['ejective'] for k,v in CONSONANTS.items() if ('plosive' in v or 'affricate' in v) and 'voiceless' in v}
+
+CONSONANTS.update(ASPIRATED)
+CONSONANTS.update(EJECTIVE)
 
 VOWELS = {
     'i': ['close', 'front', 'unrounded'],
@@ -85,4 +99,8 @@ VOWELS = {
     'ɒ': ['open', 'back', 'rounded']
 }
 
+LONG_VOWELS = {f'{k}:':v + ['long'] for k,v in VOWELS.items()}
+VOWELS.update(LONG_VOWELS)
+
 PHONEMES = {**CONSONANTS, **VOWELS}
+SUPRASEGMENTALS = ["'", ":"]
