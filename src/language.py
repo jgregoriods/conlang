@@ -5,7 +5,7 @@ from .utils import split_syllables, get_prob_dist
 
 
 class Language:
-    def __init__(self, phonemes, patterns, stress, morphology, word_order):
+    def __init__(self, phonemes, patterns, stress, morphology='fusional', word_order='SVO'):
         self.phonemes = phonemes
         self.patterns = patterns
         self.stress = stress

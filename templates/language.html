@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Language Dashboard</title>
+    </head>
+    <body>
+        <h1>Language Dashboard</h1>
+        {% if vocabulary %}
+        {% for i in range(5) %}
+        <p>{{ vocabulary[i].word }} {{ vocabulary[i].definition }}</p>
+        {% endfor %}
+        {% for i in range(-1, -6, -1) %}
+        <p>{{ vocabulary[i].word }} {{ vocabulary[i].definition }}</p>
+        {% endfor %}
+        {% else %}
+        {% endif %}
+    </body>
+</html>

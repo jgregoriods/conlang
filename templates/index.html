@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Language Dashboard</title>
+</head>
+
+<body>
+    <h1>Language Dashboard</h1>
+    <a href="/languages/create">Add a new language</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for language in languages %}
+            <tr>
+                <td><a href="{{ url_for('languages', language_id=language.id) }}"> {{ language.id }}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</html>
