@@ -4,50 +4,19 @@ from numpy import random
 from .vocabulary import Vocabulary
 from .utils import split_syllables, split_phonemes
 from .phonemes import VOWELS
+from .rules import RULES
 
 
-def multiple_replace(word, rules):
-    replace_dict, condition = rules
-    syllables = split_syllables(word)
-    syllable_phonemes = [split_phonemes(syllable) for syllable in syllables]
+def multiple_replace(word, repl_dict):
+    phonemes = split_phonemes(word)
 
     res = []
 
-    for i, syllable in enumerate(syllable_phonemes):
-        if condition == 'stressed':
-            if "'" in syllable:
-                for phoneme in syllable:
-                    if phoneme in replace_dict:
-                        res.append(replace_dict[phoneme])
-                    else:
-                        res.append(phoneme)
-            else:
-                res.extend(syllable)
-        elif condition == 'unstressed':
-            if "'" not in syllable:
-                for phoneme in syllable:
-                    if phoneme in replace_dict:
-                        res.append(replace_dict[phoneme])
-                    else:
-                        res.append(phoneme)
-            else:
-                res.extend(syllable)
-        elif 'next' in condition:
-            next_phonemes = condition['next']
-            for j in range(len(syllable)):
-                if j < len(syllable) - 1 and syllable[j+1] in next_phonemes:
-                    if syllable[j] in replace_dict:
-                        res.append(replace_dict[syllable[j]])
-                    else:
-                        res.append(syllable[j])
-                else:
-                    res.append(syllable[j])
+    for i, phoneme in enumerate(phonemes):
+        if phoneme in repl_dict:
+            res.append(repl_dict[phoneme])
         else:
-            for phoneme in syllable:
-                if phoneme in replace_dict:
-                    res.append(replace_dict[phoneme])
-                else:
-                    res.append(phoneme)
+            res.append(phoneme)
     return res
 
 
@@ -56,8 +25,11 @@ class SoundChange:
         self.pipeline = pipeline
         self.mutation_rate = mutation_rate
 
-    def apply(self, rules, word):
-        rule, condition = rules
+    def apply(self, rule, word):
+        if rule in RULES:
+            repl_dict = RULES[rule]['rules']
+            return ''.join(multiple_replace(word, repl_dict))
+
         if rule == 'ELISION_PRE':
             syllables = split_syllables(word)
             if len(syllables) > 1:
@@ -80,10 +52,11 @@ class SoundChange:
 
         if rule == 'FINAL_VOWEL_DELETION':
             syllables = split_syllables(word)
-            if len(syllables) > 1:
-                if "'" not in syllables[-1]:
-                    regex = re.compile('|'.join(list(VOWELS) + [':']))
-                    syllables[-1] = re.sub(regex, '', syllables[-1])
+            if len(syllables) > 1 and "'" not in syllables[-1]:
+                for i in range(len(syllables[-1]), -1, -1):
+                    if syllables[-1][i] not in list(VOWELS) + [':']:
+                        syllables[-1] = syllables[-1][:i+1]
+                        break
             return ''.join(syllables)
 
         if rule == 'FINAL_CONSONANT_DELETION':
@@ -91,7 +64,6 @@ class SoundChange:
                 if word[i] in list(VOWELS) + [':']:
                     return word[:i+1]
 
-        return ''.join(multiple_replace(word, rules))
 
     def evolve(self, language):
         new_vocabulary = Vocabulary()

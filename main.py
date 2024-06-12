@@ -7,7 +7,7 @@ from src.utils import split_syllables
 
 def main():
     phonemes = {
-        'V': ['a', 'i', 'u', 'a:'],
+        'V': ['a', 'i', 'u', 'a:', 'e'],
         'C': ['p', 't', 'k', 'pʰ', 'tʰ', 'kʰ', 'b', 'd', 'g', 'm', 'n', 's', 'z', 'l', 'r']
     }
     patterns = [
@@ -29,7 +29,8 @@ def main():
     print('\n')
 
     pipeline = [
-        ('FINAL_VOWEL_DELETION', None),
+        'palatalization_1',
+        'romance_breaking',
     ]
 
     sound_change = SoundChange(pipeline, 0.1)
