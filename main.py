@@ -7,7 +7,7 @@ from src.utils import split_syllables
 
 def main():
     phonemes = {
-        'V': ['a', 'i', 'u', 'a:', 'e'],
+        'V': ['a', 'i', 'u', 'a:', 'e', 'o'],
         'C': ['p', 't', 'k', 'pʰ', 'tʰ', 'kʰ', 'b', 'd', 'g', 'm', 'n', 's', 'z', 'l', 'r']
     }
     patterns = [

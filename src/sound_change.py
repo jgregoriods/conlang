@@ -8,16 +8,11 @@ from .rules import RULES
 
 
 def multiple_replace(word, repl_dict):
-    phonemes = split_phonemes(word)
-
-    res = []
-
-    for i, phoneme in enumerate(phonemes):
-        if phoneme in repl_dict:
-            res.append(repl_dict[phoneme])
-        else:
-            res.append(phoneme)
-    return res
+    phonemes = f" {' '.join(split_phonemes(word))} "
+    d = {f' {k} ': v for k, v in repl_dict.items()}
+    regex = re.compile('|'.join(map(re.escape, d.keys())))
+    new_phonemes = re.sub(regex, lambda match: d[match.group(0)], phonemes)
+    return new_phonemes.replace(' ', '')
 
 
 class SoundChange:
