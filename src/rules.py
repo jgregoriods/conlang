@@ -80,22 +80,28 @@ RULES = {
     },
     'palatalization_1': {
         'rules' : {
-            'k': 'tʃ',
-            'g': 'dʒ',
-            'x': 'ç',
-            'ɣ': 'ʝ',
-            'j': 'ʝ'
+            'k I': 'tʃ I',
+            'g I': 'dʒ I',
+            'x I': 'ç I',
+            'ɣ I': 'ʝ I',
+            'j I': 'ʝ I',
         },
+        'wildcards': {
+            'I': ['i', 'e', 'e:', 'i:', 'ɛ', 'ɪ', 'ɛ:', 'j', 'ɪ:']
+        }
     },
     'palatalization_2': {
         'rules' : {
-            't': 'tʃ',
-            'd': 'dʒ',
-            's': 'ʃ',
-            'z': 'ʒ',
-            'n': 'ɲ',
-            'l': 'ʎ'
+            't I': 'tʃ I',
+            'd I': 'dʒ I',
+            's I': 'ʃ I',
+            'z I': 'ʒ I',
+            'n I': 'ɲ I',
+            'l I': 'ʎ I'
         },
+        'wildcards': {
+            'I': ['i', 'e', 'e:', 'i:', 'ɛ', 'ɪ', 'ɛ:', 'j', 'ɪ:']
+        }
     },
     'canaanite_shift': {
         'rules' : {

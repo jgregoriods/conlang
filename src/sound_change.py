@@ -7,9 +7,20 @@ from .phonemes import VOWELS
 from .rules import RULES
 
 
-def multiple_replace(word, repl_dict):
+def multiple_replace(word, rule):
+    repl_dict = rule['rules']
+    if 'wildcards' in rule:
+        new_repl_dict = {}
+        for k, v in repl_dict.items():
+            for wildcard in rule['wildcards']:
+                if wildcard in k:
+                    for i in rule['wildcards'][wildcard]:
+                        new_key = k.replace(wildcard, i)
+                        new_value = v.replace(wildcard, i)
+                        new_repl_dict[new_key] = new_value
+        repl_dict.update(new_repl_dict)
     phonemes = f" {' '.join(split_phonemes(word))} "
-    d = {f' {k} ': v for k, v in repl_dict.items()}
+    d = {f' {k} ': f' {v} ' for k, v in repl_dict.items()}
     regex = re.compile('|'.join(map(re.escape, d.keys())))
     new_phonemes = re.sub(regex, lambda match: d[match.group(0)], phonemes)
     return new_phonemes.replace(' ', '')
@@ -21,9 +32,6 @@ class SoundChange:
         self.mutation_rate = mutation_rate
 
     def apply(self, rule, word):
-        if rule in RULES:
-            repl_dict = RULES[rule]['rules']
-            return ''.join(multiple_replace(word, repl_dict))
 
         if rule == 'ELISION_PRE':
             syllables = split_syllables(word)
@@ -58,6 +66,9 @@ class SoundChange:
             for i in range(len(word) - 1, -1, -1):
                 if word[i] in list(VOWELS) + [':']:
                     return word[:i+1]
+
+        return ''.join(multiple_replace(word, rule))
+
 
 
     def evolve(self, language):
