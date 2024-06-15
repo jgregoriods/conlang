@@ -4,13 +4,25 @@ from .vocabulary import Vocabulary, SWADESH
 from .utils import split_syllables, get_prob_dist
 
 
+def is_acceptable(word, ratio=0.67):
+    if len(word) < 3:
+        return True
+    if word.count(":") > 1 or word.count("ʰ") > 1:
+        return False
+    if word[-1] in ['ʰ']:
+        return False
+    if len(set(word)) / len(word) < ratio:
+        return False
+    return True
+
+
 class Language:
     def __init__(self, phonemes, patterns, stress, morphology='fusional', word_order='SVO'):
         self.phonemes = phonemes
         self.patterns = patterns
         self.stress = stress
         self.vocabulary = None
-        self.rng = np.random.default_rng(42)
+        self.rng = np.random.default_rng()
 
         if morphology not in ['agglutinative', 'fusional', 'isolating', 'polysynthetic']:
             raise ValueError('Invalid morphology type.')
@@ -50,13 +62,13 @@ class Language:
             pattern = sel_patterns[idx]
             new_word = self.generate_word(pattern)
             attempts = 0
-            while vocabulary.has_word(new_word):
+            while vocabulary.has_word(new_word) or not is_acceptable(new_word):
                 idx = self.rng.integers(len(sel_patterns))
                 pattern = sel_patterns[idx]
                 new_word = self.generate_word(pattern)
                 attempts += 1
                 if attempts > 10:
-                    print('Could not generate unique word, please check your parameters.')
+                    print('Could not generate unique acceptable word, please check your parameters.')
                     break
             vocabulary.add_item(i[0], new_word)
         self.vocabulary = vocabulary
@@ -72,3 +84,20 @@ class Language:
             pass
         else:
             raise ValueError('Invalid morphology type.')
+
+    def mutate(self, sound_change, mutation_rate=0.1):
+        new_vocabulary = Vocabulary()
+        for item in self.vocabulary.items:
+            definition, new_word = item['definition'], item['word']
+            if np.random.random() < mutation_rate:
+                new_word = self.generate_word()
+                attempts = 0
+                while not is_acceptable(new_word):
+                    new_word = self.generate_word()
+                    attempts += 1
+                    if attempts > 10:
+                        print('Could not generate acceptable word, please check your parameters.')
+                        break
+            new_word = sound_change.apply(new_word)
+            new_vocabulary.add_item(definition, new_word)
+        return new_vocabulary

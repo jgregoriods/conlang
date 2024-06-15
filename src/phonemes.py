@@ -104,3 +104,4 @@ VOWELS.update(LONG_VOWELS)
 
 PHONEMES = {**CONSONANTS, **VOWELS}
 SUPRASEGMENTALS = ["'", ":"]
+SEMIVOWELS = ['j', 'ɰ', 'w']
