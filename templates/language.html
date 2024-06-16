@@ -14,5 +14,12 @@
         {% endfor %}
         {% else %}
         {% endif %}
+        <form action="{{ url_for('sound_change', language_id=language.id) }}" method="post">
+            <select name="sound_change">
+                <option value="elision_pre">Elision before stress</option>
+                <option value="elision_post">Elision after stress</option>
+            </select>
+            <button type="submit">Apply sound change</button>
+        </form>
     </body>
 </html>

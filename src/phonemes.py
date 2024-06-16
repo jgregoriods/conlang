@@ -62,7 +62,8 @@ CONSONANTS = {
     'ʈʂ': ['affricate', 'retroflex', 'voiceless'],
     'ɖʐ': ['affricate', 'retroflex', 'voiced'],
     'tɬ': ['affricate', 'alveolar', 'lateral', 'voiceless'],
-    'dɮ': ['affricate', 'alveolar', 'lateral', 'voiced']
+    'dɮ': ['affricate', 'alveolar', 'lateral', 'voiced'],
+    'w': ['approximant', 'bilabial', 'voiced'],
 }
 
 ASPIRATED = {f'{k}ʰ':v + ['aspirated'] for k,v in CONSONANTS.items() if 'plosive' in v or 'affricate' in v}

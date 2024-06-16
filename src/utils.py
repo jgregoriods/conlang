@@ -1,61 +1,59 @@
 import numpy as np
 import re
-
-from .phonemes import VOWELS, SEMIVOWELS, PHONEMES, SUPRASEGMENTALS
-
-
-def split_syllables(word):
-    i, j = 0, 0
-    res = []
-    while j < len(word):
-        if word[j] in VOWELS:
-            if j < len(word) - 1 and word[j+1] == ':':
-                pass
-            else:
-                if j < len(word) - 1 and word[j+1] in SEMIVOWELS:
-                    if j + 2 < len(word) and word[j+2] in VOWELS:
-                        res.append(word[i:j+1])
-                        i = j + 1
-                    else:
-                        res.append(word[i:j+2])
-                        i = j + 2
-                else:
-                    res.append(word[i:j+1])
-                    i = j + 1
-        elif word[j] == ':':
-            res.append(word[i:j+1])
-            i = j + 1
-        j += 1
-    if i < len(word):
-        res[-1] += word[i:]
-
-    return res
+from .phonemes import CONSONANTS, VOWELS, SEMIVOWELS, PHONEMES, SUPRASEGMENTALS
 
 
-def split_phonemes(word):
-    res = []
+def split_phonemes(word: str) -> list:
+    phonemes = list(PHONEMES) + SUPRASEGMENTALS
+    result = []
     i = 0
     while i < len(word):
-        if word[i:i+3] in list(PHONEMES) + SUPRASEGMENTALS:
-            res.append(word[i:i+3])
-            i += 3
-        elif word[i:i+2] in list(PHONEMES) + SUPRASEGMENTALS:
-            res.append(word[i:i+2])
-            i += 2
+        for length in (3, 2, 1):
+            if word[i:i+length] in phonemes:
+                result.append(word[i:i+length])
+                i += length
+                break
+    return result
+
+
+def split_syllables(word: str) -> list:
+    phonemes = split_phonemes(word)
+    syllables = []
+    start = 0
+
+    for i, phoneme in enumerate(phonemes):
+        if phoneme in VOWELS:
+            end = i + 1
+            if i + 1 < len(phonemes) - 1 and phonemes[i + 1] in SEMIVOWELS:
+                end = i + 2
+            syllables.append(phonemes[start:end])
+            start = end
+
+    # Append the last syllable if there are any phonemes left
+    if start < len(phonemes):
+        remaining_phonemes = phonemes[start:]
+        if not set(remaining_phonemes).intersection(VOWELS):
+            syllables[-1] += remaining_phonemes
         else:
-            res.append(word[i])
-            i += 1
-    return res
+            syllables.append(phonemes[start:])
+
+    # This is a quick fix to split consonant clusters by moving the first consonant to the previous syllable
+    for i in range(1, len(syllables)):
+        if len(syllables[i]) > 1 and syllables[i][0] in CONSONANTS and syllables[i][1] in CONSONANTS:
+            syllables[i-1] += syllables[i][0]
+            syllables[i] = syllables[i][1:]
+
+    return [''.join(syllable) for syllable in syllables]
 
 
-def get_prob_dist(length, decay=0.2):
+def get_prob_dist(length: int, decay: float = 0.2) -> np.ndarray:
     ranks = np.arange(1, length + 1)
     probs = np.exp(-decay * (ranks - 1))
     probs /= np.sum(probs)
     return probs
 
 
-def mark_wildcards(word, wildcards):
+def mark_wildcards(word: str, wildcards: dict) -> str:
     phonemes = split_phonemes(word)
     for k, v in wildcards.items():
         for i, phoneme in enumerate(phonemes):
@@ -67,7 +65,7 @@ def mark_wildcards(word, wildcards):
     return new_word
 
 
-def multiple_replace(word, rule):
+def multiple_replace(word: str, rule: dict) -> str:
     repl_dict = {f" {k} ":f" {v} " for k,v in rule['rules'].items()}
     if 'wildcards' in rule:
         phonemes = mark_wildcards(word, rule['wildcards'])

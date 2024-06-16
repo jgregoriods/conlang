@@ -1,4 +1,5 @@
 import os
+import uuid
 
 
 dirname = os.path.dirname(__file__)
@@ -9,8 +10,9 @@ with open(os.path.join(dirname, 'data/Swadesh200.csv'), 'r', encoding='utf-8') a
 
 
 class Vocabulary:
-    def __init__(self):
+    def __init__(self, id: str = ''):
         self.items = []
+        self.id = id if id else str(uuid.uuid4())
 
     def add_item(self, definition, word):
         self.items.append({
@@ -19,13 +21,37 @@ class Vocabulary:
         })
 
     def has_word(self, word):
-        return word in [w['word'] for w in self.items]
+        return any([item['word'] == word for item in self.items])
+
+    def get_word(self, word):
+        return next((item for item in self.items if item['word'] == word), None)
+
+    def get_definition(self, definition):
+        return next((item for item in self.items if item['definition'] == definition), None)
 
     def __str__(self):
-        res = ""
-        for i in self.items:
-            res += f"{i['definition']}: {i['word']}\n"
-        return res
+        return '\n'.join([f"{item['word']} : {item['definition']}" for item in self.items])
 
     def __repr__(self):
         return self.__str__()
+
+    def __len__(self):
+        return len(self.items)
+
+    def __getitem__(self, item):
+        return self.items[item]
+
+    def __iter__(self):
+        return iter(self.items)
+
+    def to_json(self) -> dict:
+        return {
+            "items": self.items,
+            "id": self.id
+        }
+
+    @staticmethod
+    def from_json(data: dict) -> 'Vocabulary':
+        vocabulary = Vocabulary(data['id'])
+        vocabulary.items = data['items']
+        return vocabulary
