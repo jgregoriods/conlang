@@ -1,18 +1,5 @@
 RULES = {
-    'opening_1': {
-        'rules' : {
-            'p': 'ɸ',
-            't': 'θ',
-            'k': 'x',
-            'ts': 's',
-            'ɸ': 'h',
-            'θ': 'h',
-            'x': 'h',
-            's': 'h',
-            'h': ''
-            },
-        },
-    'opening_2': {
+    'opening': {
         'rules' : {
             'p': 'f',
             't': 's',
@@ -23,24 +10,7 @@ RULES = {
             'h': ''
             },
         },
-    'sonorization_1': {
-        'rules' : {
-            'p': 'b',
-            't': 'd',
-            'k': 'g',
-            'ts': 'dz',
-            'b': 'β',
-            'd': 'ð',
-            'g': 'ɣ',
-            'β': 'w',
-            'ð': 'ɹ',
-            'ɣ': 'j',
-            'w': '',
-            'ɹ': '',
-            'j': ''
-            },
-        },
-    'sonorization_2': {
+    'sonorization': {
         'rules' : {
             'p': 'b',
             't': 'd',
@@ -80,7 +50,7 @@ RULES = {
             'ɔ:': 'ow'
             },
         },
-    'palatalization_1': {
+    'palatalization_back': {
         'rules' : {
             'k I': 'tʃ I',
             'g I': 'dʒ I',
@@ -92,7 +62,7 @@ RULES = {
             'I': ['i', 'e', 'e:', 'i:', 'ɛ', 'ɪ', 'ɛ:', 'j', 'ɪ:']
             }
         },
-    'palatalization_2': {
+    'palatalization_front': {
         'rules' : {
             't I': 'tʃ I',
             'd I': 'dʒ I',

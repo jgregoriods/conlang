@@ -1,6 +1,7 @@
-from src.language import Language
+from src.language import Language, parse_word, parse_vocabulary
 from src.sound_change import SoundChange
 from numpy import random
+from src.vocabulary import Vocabulary
 
 from src.utils import split_syllables
 
@@ -29,9 +30,10 @@ LANGUAGE_TYPES = {
 
 def main():
 
-    language = Language(**LANGUAGE_TYPES['polynesian'])
+    vocab = Vocabulary.from_csv('sanskrit.csv')
+    parsed = parse_vocabulary(vocab)
+    language = Language(**parsed)
     language.generate_vocabulary()
-
     indices = random.choice(list(range(len(language.vocabulary.items))), 30, replace=False)
     words = [language.vocabulary.items[i] for i in indices]
 
@@ -56,4 +58,10 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    lang = Language(**LANGUAGE_TYPES['polynesian'])
+    lang.generate_vocabulary()
+    family = lang.generate_family(3)
+    for i in range(10):
+        print(family[0].vocabulary.items[i]['word'], family[1].vocabulary.items[i]['word'], family[2].vocabulary.items[i]['word'])
+    for i in range(-1, -10, -1):
+        print(family[0].vocabulary.items[i]['word'], family[1].vocabulary.items[i]['word'], family[2].vocabulary.items[i]['word'])

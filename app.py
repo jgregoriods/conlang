@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from src.language import Language
+from src.language import Language, parse_vocabulary
 from src.vocabulary import Vocabulary
 from src.sound_change import SoundChange
 import os
@@ -37,7 +37,7 @@ def index():
 def languages(language_id):
     with open(f'static/languages/{language_id}.json', 'r') as f:
         language = Language.from_json(json.load(f))
-    with open(f'static/vocabularies/{language_id}.json', 'r') as f:
+    with open(f'static/languages/{language_id}_vocabulary.json', 'r') as f:
         language.vocabulary = Vocabulary.from_json(json.load(f))
     return render_template('language.html', language=language, vocabulary=language.vocabulary)
 
@@ -59,7 +59,7 @@ def create_language():
         with open(path, 'w') as f:
             json.dump(language.to_json(), f)
 
-        path = f'vocabularies/{language.id}.json'
+        path = f'languages/{language.id}_vocabulary.json'
         path = os.path.join(app.static_folder, path)
         with open(path, 'w') as f:
             json.dump(language.vocabulary.to_json(), f)
@@ -72,17 +72,49 @@ def create_language():
     return render_template('create.html')
 
 
-@app.route('/sound_change/<language_id>', methods=['POST'])
-def sound_change(language_id):
-    rule = request.form['sound_change']
-    with open(f'static/languages/{language_id}.json', 'r') as f:
-        language = Language.from_json(json.load(f))
-    with open(f'static/vocabularies/{language_id}.json', 'r') as f:
-        language.vocabulary = Vocabulary.from_json(json.load(f))
-    sc = SoundChange([rule])
-    new_vocabulary = language.mutate(sc)
-    print(new_vocabulary)
-    return redirect(url_for('languages', language_id=language_id, mutated=new_vocabulary))
+@app.route('/mutate/<language_id>', methods=['GET', 'POST'])
+def mutate(language_id):
+    if request.method == 'GET':
+        return render_template('mutate.html', language_id=language_id)
+
+    elif request.method == 'POST':
+        pipeline = request.form.getlist('sound_changes')
+        with open(f'static/languages/{language_id}.json', 'r') as f:
+            language = Language.from_json(json.load(f))
+        with open(f'static/languages/{language_id}_vocabulary.json', 'r') as f:
+            language.vocabulary = Vocabulary.from_json(json.load(f))
+        sc = SoundChange(pipeline)
+        new_vocabulary = language.mutate(sc)
+        language_specs = parse_vocabulary(new_vocabulary)
+        new_language = Language(**language_specs)
+        new_vocabulary.id = language.id
+        
+        path = f'temp/{new_language.id}.json'
+        path = os.path.join(app.static_folder, path)
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(new_language.to_json(), f)
+
+        path = f'temp/{new_language.id}_vocabulary.json'
+        path = os.path.join(app.static_folder, path)
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(new_vocabulary.to_json(), f)
+
+        return render_template('mutate.html',
+                               language_id=language_id,
+                               new_vocabulary=new_vocabulary,
+                               new_language_id=new_language.id)
+
+
+@app.route('/save/<language_id>')
+def save(language_id):
+    os.rename(f'static/temp/{language_id}.json', f'static/languages/{language_id}.json')
+    os.rename(f'static/temp/{language_id}_vocabulary.json', f'static/languages/{language_id}_vocabulary.json')
+
+    conlang = Conlang(language_id=language_id)
+    db.session.add(conlang)
+    db.session.commit()
+
+    return redirect(url_for('index'))
 
 
 @app.route('/delete_language/<language_id>', methods=['POST'])
@@ -91,7 +123,7 @@ def delete_language(language_id):
     db.session.delete(language)
     db.session.commit()
     os.remove(f'static/languages/{language_id}.json')
-    os.remove(f'static/vocabularies/{language_id}.json')
+    os.remove(f'static/languages/{language_id}_vocabulary.json')
     return redirect(url_for('index'))
 
 

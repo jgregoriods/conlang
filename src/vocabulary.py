@@ -55,3 +55,12 @@ class Vocabulary:
         vocabulary = Vocabulary(data['id'])
         vocabulary.items = data['items']
         return vocabulary
+
+    @staticmethod
+    def from_csv(file_path: str) -> 'Vocabulary':
+        with open(file_path, 'r', encoding='utf-8') as file:
+            data = [i.replace('\n', '').split(',') for i in file.readlines()]
+            vocabulary = Vocabulary()
+            for item in data:
+                vocabulary.add_item(item[0], item[1])
+        return vocabulary

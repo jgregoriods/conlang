@@ -1,25 +1,27 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Language Dashboard</title>
-    </head>
-    <body>
-        <h1>Language Dashboard</h1>
-        {% if vocabulary %}
-        {% for i in range(5) %}
-        <p>{{ vocabulary[i].word }} {{ vocabulary[i].definition }}</p>
-        {% endfor %}
-        {% for i in range(-1, -6, -1) %}
-        <p>{{ vocabulary[i].word }} {{ vocabulary[i].definition }}</p>
-        {% endfor %}
-        {% else %}
-        {% endif %}
-        <form action="{{ url_for('sound_change', language_id=language.id) }}" method="post">
-            <select name="sound_change">
-                <option value="elision_pre">Elision before stress</option>
-                <option value="elision_post">Elision after stress</option>
-            </select>
-            <button type="submit">Apply sound change</button>
-        </form>
-    </body>
-</html>
+{% extends "index.html" %}
+{% block content %}
+<body>
+    <h1>Language Dashboard</h1>
+    {% if vocabulary %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Word</th>
+                <th>Definition</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in range(5) %}
+            <tr>
+                <td><span class="serif"><b>{{ vocabulary[i].word }}</b></span></td>
+                <td>{{ vocabulary[i].definition }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+    <form action="{{ url_for('mutate', language_id=language.id) }}" method="get">
+        <button class="btn btn-primary" type="submit">Mutate</button>
+    </form>
+</body>
+{% endblock %}

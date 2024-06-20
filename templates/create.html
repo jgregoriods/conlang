@@ -1,22 +1,17 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <title>Create Language</title>
-</head>
-
+{% extends "index.html" %}
+{% block content %}
 <body>
     <h1>Create Language</h1>
         <form action="/languages/create" method="post">
-            <label for="consonants">Consonants</label>
-            <input type="text" name="consonants" id="consonants">
-            <label for="vowels">Vowels</label>
-            <input type="text" name="vowels" id="vowels">
-            <label for="patterns">Patterns</label>
-            <input type="text" name="patterns" id="patterns">
-            <label for="stress">Stress</label>
-            <input type="text" name="stress" id="stress">
-            <button type="submit">Create</button>
+            <label for="consonants" class="form-label">Consonants</label>
+            <input type="text" name="consonants" id="consonants" class="form-control">
+            <label for="vowels" class="form-label">Vowels</label>
+            <input type="text" name="vowels" id="vowels" class="form-control">
+            <label for="patterns" class="form-label">Patterns</label>
+            <input type="text" name="patterns" id="patterns" class="form-control">
+            <label for="stress" class="form-label">Stress</label>
+            <input type="text" name="stress" id="stress" class="form-control">
+            <button type="submit" class="btn btn-primary">Create</button>
         </form>
-
 </html>
+{% endblock %}

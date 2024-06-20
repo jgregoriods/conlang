@@ -13,6 +13,8 @@ def split_phonemes(word: str) -> list:
                 result.append(word[i:i+length])
                 i += length
                 break
+        else:
+            raise ValueError(f"Invalid phoneme: {word[i]}")
     return result
 
 

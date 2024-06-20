@@ -5,12 +5,85 @@ import uuid
 
 from .sound_change import SoundChange
 from .vocabulary import Vocabulary, SWADESH
-from .utils import split_syllables, get_prob_dist
+from .utils import split_phonemes, split_syllables, get_prob_dist
+from .phonemes import VOWELS, CONSONANTS
 
 
 VALID_MORPHOLOGIES = {'agglutinative', 'fusional', 'isolating', 'polysynthetic'}
 VALID_POS = {'S', 'O', 'V'}
 MAX_ATTEMPTS = 100
+
+
+def parse_word(word: str):
+    phonemes = split_phonemes(word)
+    # split consonants and vowels
+    start = 0
+    res = []
+    current_type = None
+    for i, char in enumerate(phonemes):
+        if current_type is None:
+            if char in VOWELS:
+                current_type = 'V'
+            elif char in CONSONANTS:
+                current_type = 'C'
+        elif char in VOWELS and current_type == 'C':
+            res.append(phonemes[start:i])
+            start = i
+            current_type = 'V'
+        elif char in CONSONANTS and current_type == 'V':
+            res.append(phonemes[start:i])
+            start = i
+            current_type = 'C'
+    res.append(phonemes[start:])
+    return res
+
+
+def parse_vocabulary(vocabulary):
+    stress = set()
+    phonemes = {'C1': [], 'C2': [], 'C3': [],
+                'V1': [], 'V2': [], 'V3': []}
+    patterns = set()
+    for item in vocabulary:
+        word = item['word']
+        syllables = split_syllables(word)
+        for i, syllable in enumerate(syllables):
+            if syllable.startswith("'"):
+                stress.add(i - len(syllables))
+        no_stress = word.replace("'", "")
+        phoneme_groups = parse_word(no_stress)
+        pattern = ''
+        if len(phoneme_groups) > 1:
+            if phoneme_groups[0][0] in VOWELS:
+                phonemes['V1'].append(''.join(phoneme_groups[0]))
+                pattern += 'V1 '
+            elif phoneme_groups[0][0] in CONSONANTS:
+                phonemes['C1'].append(''.join(phoneme_groups[0]))
+                pattern += 'C1 '
+
+            for group in phoneme_groups[1:-1]:
+                if group[0] in VOWELS:
+                    phonemes['V2'].append(''.join(group))
+                    pattern += 'V2 '
+                elif group[0] in CONSONANTS:
+                    phonemes['C2'].append(''.join(group))
+                    pattern += 'C2 '
+    
+            if phoneme_groups[-1][0] in VOWELS:
+                phonemes['V3'].append(''.join(phoneme_groups[-1]))
+                pattern += 'V3'
+            elif phoneme_groups[-1][0] in CONSONANTS:
+                phonemes['C3'].append(''.join(phoneme_groups[-1]))
+                pattern += 'C3'
+
+            patterns.add(pattern)
+        else:
+            if phoneme_groups[0][0] in VOWELS:
+                phonemes['V1'].append(''.join(phoneme_groups[0]))
+                patterns.add('V1')
+
+    phonemes = {k: v for k, v in phonemes.items() if v}
+    phonemes = {k: sorted(list(set(v)), key=lambda x: v.count(x), reverse=True) for k, v in phonemes.items()}
+    return {'phonemes': phonemes, 'stress': list(stress), 'patterns': list(patterns)}
 
 
 def is_acceptable(word: str, ratio: float = 0.67) -> bool:
@@ -107,6 +180,19 @@ class Language:
             new_vocabulary.add_item(item['definition'], new_word)
         return new_vocabulary
 
+    def generate_family(self, num_children: int, sound_changes: list = list()) -> list:
+        if sound_changes and len(sound_changes) != num_children:
+            raise ValueError('Number of sound change pipelines must match number of children.')
+        if not sound_changes:
+            sound_changes = [SoundChange() for _ in range(num_children)]
+        family = []
+        for _ in range(num_children):
+            for change in sound_changes:
+                new_vocabulary = self.mutate(change)
+                new_language = Language.from_vocabulary(new_vocabulary)
+                family.append(new_language)
+        return family
+
     def to_json(self) -> dict:
         return {
             'id': self.id,
@@ -121,3 +207,10 @@ class Language:
     def from_json(data: dict) -> 'Language':
         return Language(data['phonemes'], data['patterns'], data['stress'],
                         data['morphology'], data['word_order'], data['id'])
+
+    @staticmethod
+    def from_vocabulary(vocabulary: Vocabulary) -> 'Language':
+        parsed_vocabulary = parse_vocabulary(vocabulary)
+        new_language = Language(parsed_vocabulary['phonemes'], parsed_vocabulary['patterns'], parsed_vocabulary['stress'])
+        new_language.vocabulary = vocabulary
+        return new_language

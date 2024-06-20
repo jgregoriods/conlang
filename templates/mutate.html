@@ -1,0 +1,38 @@
+{% extends "index.html" %}
+{% block content %}
+<body>
+    <form action="{{ url_for('mutate', language_id=language_id) }}" method="post">
+        <div id="sound_change_input">
+            {% include "sound_change_select.html" %}
+        </div>
+        <button type="button" onclick="add_sound_change()" class="btn btn-outline-primary">Add sound change</button>
+        <br>
+        <button type="submit" class="btn btn-primary">Apply sound change</button>
+    </form>
+    {% if new_vocabulary %}
+    <h2>New Vocabulary</h2>
+    {% for i in range(5) %}
+    <p>{{ new_vocabulary[i].word }} {{ new_vocabulary[i].definition }}</p>
+    {% endfor %}
+    {% for i in range(-1, -6, -1) %}
+    <p>{{ new_vocabulary[i].word }} {{ new_vocabulary[i].definition }}</p>
+    {% endfor %}
+    {% endif %}
+
+    {% if new_vocabulary %}
+    <form action="{{ url_for('save', language_id=new_language_id) }}" method="get">
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+    {% endif %}
+
+</body>
+<script>
+    function add_sound_change() {
+        var sound_change_select = document.createElement("div");
+        sound_change_select.innerHTML = `
+            {% include "sound_change_select.html" %}
+        `;
+        document.getElementById("sound_change_input").appendChild(sound_change_select);
+    }
+</script>
+{% endblock %}
