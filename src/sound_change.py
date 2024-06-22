@@ -146,7 +146,7 @@ class SoundChange:
         syllables = split_syllables(word)
         for i, syllable in enumerate(syllables):
             phonemes = split_phonemes(syllable)
-            if phonemes[-1] in CONSONANTS:
+            if phonemes[-1] in CONSONANTS and phonemes[-1] not in SEMIVOWELS:
                 vowel_idx = [phonemes.index(p) for p in phonemes if p in VOWELS][-1]
                 phonemes[vowel_idx] += ':'
                 syllables[i] = ''.join(phonemes[:-1])

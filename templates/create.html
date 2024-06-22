@@ -1,17 +1,106 @@
 {% extends "index.html" %}
 {% block content %}
 <body>
+    <a href="{{ url_for('index') }}">Back</a>
     <h1>Create Language</h1>
-        <form action="/languages/create" method="post">
-            <label for="consonants" class="form-label">Consonants</label>
-            <input type="text" name="consonants" id="consonants" class="form-control">
-            <label for="vowels" class="form-label">Vowels</label>
-            <input type="text" name="vowels" id="vowels" class="form-control">
-            <label for="patterns" class="form-label">Patterns</label>
-            <input type="text" name="patterns" id="patterns" class="form-control">
-            <label for="stress" class="form-label">Stress</label>
-            <input type="text" name="stress" id="stress" class="form-control">
-            <button type="submit" class="btn btn-primary">Create</button>
-        </form>
-</html>
+    <form action="/languages/create" method="post">
+        <div id="consonant-container">
+        <h3>Consonants</h3>
+        <div class="row">
+            <div class="col-2">
+                <label for="C1" class="form-label">C1</label>
+            </div>
+            <div class="col">
+                <input type="text" name="C1" id="C1" class="form-control">
+            </div>
+        </div>
+        </div>
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-outline-primary" onclick="addConsonant()">Add</button>
+        </div>
+        <div id="vowel-container">
+        <h3>Vowels</h3>
+        <div class="row">
+            <div class="col-2">
+                <label for="V1" class="form-label">V1</label>
+            </div>
+            <div class="col">
+                <input type="text" name="V1" id="V1" class="form-control">
+            </div>
+        </div>
+        </div>
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-outline-primary" onclick="addVowel()">Add</button>
+        </div>
+        <h3>Patterns</h3>
+        <input type="text" name="patterns" id="patterns" class="form-control">
+        <div id="pattern-buttons">
+            <button type="button" class="btn btn-outline-primary" onclick="appendToPattern(`C1`)">C1</button>
+            <button type="button" class="btn btn-outline-primary" onclick="appendToPattern(`V1`)">V1</button>
+        </div>
+        <h3>Stress</h3>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="stress" id="stress1" value="-1">
+            <label class="form-check-label" for="stress1">
+                Last
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="stress" id="stress2" value="-2">
+            <label class="form-check-label" for="stress1">
+                Penultimate
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="stress" id="stress3" value="-3">
+            <label class="form-check-label" for="stress1">
+                Antepenultimate
+            </label>
+        </div>
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+</body>
+<script>
+    let consonantCount = 1;
+    let vowelCount = 1;
+
+    function addConsonant() {
+        consonantCount++;
+        let consonantContainer = document.getElementById('consonant-container');
+        consonantContainer.innerHTML += `
+        <div class="row">
+            <div class="col-2">
+                <label for="C${consonantCount}" class="form-label">C${consonantCount}</label>
+            </div>
+            <div class="col">
+                <input type="text" name="C${consonantCount}" id="C${consonantCount}" class="form-control">
+            </div>
+        </div>`;
+        let patternButtons = document.getElementById('pattern-buttons');
+        patternButtons.innerHTML += `
+            <button type="button" class="btn btn-outline-primary" onclick="appendToPattern('C${consonantCount}')">C${consonantCount}</button>`;
+    }
+
+    function addVowel() {
+        vowelCount++;
+        let vowelContainer = document.getElementById('vowel-container');
+        vowelContainer.innerHTML += `
+        <div class="row">
+            <div class="col-2">
+                <label for="V${vowelCount}" class="form-label">V${vowelCount}</label>
+            </div>
+            <div class="col">
+                <input type="text" name="V${vowelCount}" id="V${vowelCount}" class="form-control">
+            </div>
+        </div>`;
+        let patternButtons = document.getElementById('pattern-buttons');
+        patternButtons.innerHTML += `
+            <button type="button" class="btn btn-outline-primary" onclick="appendToPattern('V${vowelCount}')">V${vowelCount}</button>`;        
+    }
+
+    function appendToPattern(letter) {
+        let patterns = document.getElementById('patterns');
+        patterns.value += letter;
+    }
+</script>
 {% endblock %}

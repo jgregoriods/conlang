@@ -148,7 +148,7 @@ class Language:
         self.vocabulary = Vocabulary(self.id)
         for item in SWADESH:
             # if adjust_length is True, the most frequent words will be shorter
-            sel_patterns = [pattern for pattern in self.patterns if len(pattern) <= 3] if adjust_length and item[2] == 1 else self.patterns
+            sel_patterns = [pattern for pattern in self.patterns if len(pattern.split()) <= 3] if adjust_length and item[2] == 1 else self.patterns
             new_word = self._generate_unique_word(sel_patterns)
             self.vocabulary.add_item(item[0], new_word)
     
@@ -170,7 +170,7 @@ class Language:
             raise ValueError(f'Invalid morphology type: {self.morphology}. Must be one of {VALID_MORPHOLOGIES}.')
         pass
 
-    def mutate(self, sound_change: SoundChange, mutation_rate: float = 0.2) -> Vocabulary:
+    def mutate(self, sound_change: SoundChange, mutation_rate: float = 0.1) -> Vocabulary:
         new_vocabulary = Vocabulary()
         for item in self.vocabulary:
             word = item['word']

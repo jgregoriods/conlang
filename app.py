@@ -5,6 +5,7 @@ from src.language import Language, parse_vocabulary
 from src.vocabulary import Vocabulary
 from src.sound_change import SoundChange
 import os
+import re
 import json
 
 
@@ -45,11 +46,16 @@ def languages(language_id):
 @app.route('/languages/create', methods=['GET', 'POST'])
 def create_language():
     if request.method == 'POST':
-        consonants = request.form['consonants']
-        vowels = request.form['vowels']
-        phonemes = {'C': consonants.split(), 'V': vowels.split()}
-        patterns = [pattern for pattern in request.form['patterns'].split(',')]
-        stress = [int(i) for i in request.form['stress'].split()]
+        phonemes = {}
+        for i in range(1, 6):
+            if f'C{i}' in request.form:
+                phonemes[f'C{i}'] = request.form[f'C{i}'].split()
+            if f'V{i}' in request.form:
+                phonemes[f'V{i}'] = request.form[f'V{i}'].split()
+        patterns = [pattern for pattern in request.form['patterns'].split()]
+        for i in range(len(patterns)):
+            patterns[i] = re.sub(r'(\d+)', r'\1 ', patterns[i]).strip()
+        stress = [int(i) for i in  request.form.getlist('stress')]
 
         language = Language(phonemes, patterns, stress)
         language.generate_vocabulary()
@@ -79,12 +85,13 @@ def mutate(language_id):
 
     elif request.method == 'POST':
         pipeline = request.form.getlist('sound_changes')
+        replacement_rate = float(request.form['replacement_rate']) / 100
         with open(f'static/languages/{language_id}.json', 'r') as f:
             language = Language.from_json(json.load(f))
         with open(f'static/languages/{language_id}_vocabulary.json', 'r') as f:
             language.vocabulary = Vocabulary.from_json(json.load(f))
         sc = SoundChange(pipeline)
-        new_vocabulary = language.mutate(sc)
+        new_vocabulary = language.mutate(sc, replacement_rate)
         language_specs = parse_vocabulary(new_vocabulary)
         new_language = Language(**language_specs)
         new_vocabulary.id = language.id
@@ -101,6 +108,8 @@ def mutate(language_id):
 
         return render_template('mutate.html',
                                language_id=language_id,
+                               old_language=language,
+                               old_vocabulary=language.vocabulary,
                                new_vocabulary=new_vocabulary,
                                new_language_id=new_language.id)
 
