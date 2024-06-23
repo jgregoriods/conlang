@@ -1,5 +1,6 @@
 import re
 from numpy import random
+
 from .utils import split_phonemes, split_syllables, multiple_replace
 from .phonemes import CONSONANTS, SEMIVOWELS, VOWELS
 from .rules import RULES
@@ -14,14 +15,18 @@ def common_fixes(word: str) -> str:
         if "'" in syllable and syllable[0] != "'":
             syllables[i] = "'" + syllable.replace("'", "")
     fixed_word = ''.join(syllables)
+    # remove double consonants
+    for consonant in CONSONANTS:
+        fixed_word = re.sub(f'{consonant}{consonant}', consonant, fixed_word)
     return fixed_word
 
 
 class SoundChange:
-    def __init__(self, pipeline: list = list(), random_rules=DEFAULT_RANDOM_RULES):
+    def __init__(self, pipeline: list = list(), tonogenesis: bool = False,
+                 random_rules=DEFAULT_RANDOM_RULES):
         self.sound_change_rules = RULES
         self.pipeline = pipeline or self._generate_random_pipeline(random_rules)
-        print(self.pipeline)
+        self.tonogenesis = tonogenesis
 
     def _generate_random_pipeline(self, random_rules: int) -> list:
         all_rules = list(self.sound_change_rules.keys()) + [
@@ -31,7 +36,8 @@ class SoundChange:
             'final_consonant_deletion',
             'umlaut',
             'shortening',
-            'lengthening'
+            'lengthening',
+            'nasalization'
         ]
         n_rules = min(random_rules, len(all_rules))
         return random.choice(all_rules, n_rules, replace=False).tolist()
@@ -42,13 +48,23 @@ class SoundChange:
         return self._apply_custom_rule(rule, word)
 
     def _apply_rule_from_dict(self, rule: str, word: str) -> str:
-            rule_data = self.sound_change_rules[rule]
-            if 'condition' in rule_data:
-                if rule_data['condition'] == 'stressed':
-                    return self._apply_stressed_rule(rule_data, word)
-                elif rule_data['condition'] == 'unstressed':
-                    return self._apply_unstressed_rule(rule_data, word)
-            return ''.join(multiple_replace(word, rule_data))
+        rule_data = self.sound_change_rules[rule]
+        if 'condition' in rule_data:
+            if rule_data['condition'] == 'stressed':
+                return self._apply_stressed_rule(rule_data, word)
+            elif rule_data['condition'] == 'unstressed':
+                return self._apply_unstressed_rule(rule_data, word)
+        
+        tone = ''.join([char for char in word if char in ["˩", "˧", "˥"]]).strip()
+        if rule == 'devoicing' and self.tonogenesis:
+            for phoneme in split_phonemes(word):
+                if phoneme in CONSONANTS and 'voiced' in CONSONANTS[phoneme]:
+                    tone = "˩" + tone
+                    break
+        if self.tonogenesis and not tone:
+            tone = "˧"
+
+        return ''.join(multiple_replace(word, rule_data)) + tone
 
     def _apply_stressed_rule(self, rule_data: dict, word: str) -> str:
         syllables = split_syllables(word)
@@ -81,6 +97,8 @@ class SoundChange:
             return self._apply_shortening(word)
         if rule == 'lengthening':
             return self._apply_lengthening(word)
+        if rule == 'nasalization':
+            return self._apply_nasalization(word)
         return word
 
     def _apply_elision_pre(self, word: str) -> str:
@@ -88,8 +106,7 @@ class SoundChange:
         if len(syllables) > 1:
             for i in range(1, len(syllables)):
                 if "'" in syllables[i]:
-                    regex = re.compile('|'.join(list(VOWELS) + SEMIVOWELS + [':']))
-                    syllables[i-1] = re.sub(regex, '', syllables[i-1])
+                    syllables[i-1] = ''.join([char for char in split_phonemes(syllables[i-1]) if char not in VOWELS])
                     break
         return ''.join(syllables)
 
@@ -113,10 +130,21 @@ class SoundChange:
         return ''.join(syllables)
 
     def _apply_final_consonant_deletion(self, word: str) -> str:
-        for i in range(len(word) - 1, -1, -1):
-            if word[i] in list(VOWELS) + SEMIVOWELS + [':']:
-                return word[:i+1]
-        return word
+        tone = ''.join([char for char in word if char in ["˩", "˧", "˥"]])
+        if self.tonogenesis and not tone:
+            tone = "˧"
+
+        word_without_tone = ''.join([char for char in word if char not in ["˩", "˧", "˥"]]).strip()
+        for i in range(len(word_without_tone) - 1, -1, -1):
+            if word_without_tone[i] in list(VOWELS) + SEMIVOWELS + [':'] + list([k for k in CONSONANTS if 'nasal' in CONSONANTS[k]]):
+                if i < len(word_without_tone) - 1 and self.tonogenesis:
+                    lost_consonant = word_without_tone[i+1]
+                    if 'plosive' in CONSONANTS[lost_consonant]:
+                        tone += "˥"
+                    elif 'fricative' in CONSONANTS[lost_consonant]:
+                        tone += "˩"
+                return word_without_tone[:i+1] + tone
+        return word_without_tone + tone
 
     def _apply_umlaut(self, word: str) -> str:
         umlaut = {
@@ -146,7 +174,7 @@ class SoundChange:
         syllables = split_syllables(word)
         for i, syllable in enumerate(syllables):
             phonemes = split_phonemes(syllable)
-            if phonemes[-1] in CONSONANTS and phonemes[-1] not in SEMIVOWELS:
+            if phonemes[-1] in CONSONANTS and phonemes[-1] not in SEMIVOWELS and 'nasal' not in CONSONANTS[phonemes[-1]]:
                 vowel_idx = [phonemes.index(p) for p in phonemes if p in VOWELS][-1]
                 phonemes[vowel_idx] += ':'
                 syllables[i] = ''.join(phonemes[:-1])
@@ -161,7 +189,15 @@ class SoundChange:
                     syllables[i-1] += ":"
                     syllables[i-1] = "'" + syllables[i-1]
         return ''.join(syllables)
-
+    
+    def _apply_nasalization(self, word: str) -> str:
+        syllables = split_syllables(word)
+        for i, syllable in enumerate(syllables):
+            if syllable[-1] in CONSONANTS and "nasal" in CONSONANTS[syllable[-1]]:
+                if syllable[-2] in VOWELS:
+                    syllables[i] = syllables[i][:-1] + '̃'
+        return ''.join(syllables)
+    
     def apply(self, word: str) -> str:
         for rule in self.pipeline:
             word = common_fixes(self.apply_sound_change(rule, word))

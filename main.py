@@ -3,7 +3,7 @@ from src.sound_change import SoundChange
 from numpy import random
 from src.vocabulary import Vocabulary
 
-from src.utils import split_syllables
+from src.utils import split_syllables, split_phonemes
 
 
 LANGUAGE_TYPES = {
@@ -17,9 +17,6 @@ LANGUAGE_TYPES = {
             'C V C V',
             'C V C V C V',
             'V C V',
-            'C V V',
-            'V C V V',
-            'C V V C V',
         ],
         'stress': [-2],
         'word_order': 'VSO',
@@ -58,10 +55,21 @@ def main():
 
 
 if __name__ == '__main__':
-    lang = Language(**LANGUAGE_TYPES['polynesian'])
-    lang.generate_vocabulary()
-    family = lang.generate_family(3)
-    for i in range(10):
-        print(family[0].vocabulary.items[i]['word'], family[1].vocabulary.items[i]['word'], family[2].vocabulary.items[i]['word'])
-    for i in range(-1, -10, -1):
-        print(family[0].vocabulary.items[i]['word'], family[1].vocabulary.items[i]['word'], family[2].vocabulary.items[i]['word'])
+    """
+    p = {
+        'C': ['p', 't', 'k', 'b', 'd', 'g', 'm', 'n', 'ŋ', 'l', 'r', 'w', 'j', 's', 'h'],
+        'C2': ['p', 's', 'k', 'h', 'n'],
+        'V': ['a', 'e', 'i', 'o', 'u']
+    }
+    l = Language(phonemes=p, patterns=['C V', 'C V C2', 'V C V C2'],
+                 stress=[-1], morphology='isolating',
+                 word_order='SVO')
+    l.generate_vocabulary()
+
+    nl = l.mutate(SoundChange(['devoicing','final_consonant_deletion']), 0.0)
+
+    random_indices = random.choice(list(range(len(l.vocabulary.items))), 10, replace=False)
+    for i in random_indices:
+        print(l.vocabulary.items[i]['word'], '->', nl.items[i]['word'])
+    """
+    print(split_phonemes("'tãdur"))

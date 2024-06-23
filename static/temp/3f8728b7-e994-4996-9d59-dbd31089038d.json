@@ -1,1 +1,0 @@
-{"id": "3f8728b7-e994-4996-9d59-dbd31089038d", "phonemes": {"C1": ["\u03b8", "f", "x", "m", "k", "l", "n", "w", "r"], "C3": ["\u03b8", "f", "m", "x", "k", "r", "n", "l", "w"], "V1": ["i", "e", "u", "a", "\u025b", "y"], "V2": ["i", "\u025b", "e", "u", "a", "y"]}, "patterns": ["V1 C3", "C1 V2 C3"], "stress": [-1], "morphology": "fusional", "word_order": "SVO"}

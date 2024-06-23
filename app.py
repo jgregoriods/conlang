@@ -84,17 +84,25 @@ def mutate(language_id):
         return render_template('mutate.html', language_id=language_id)
 
     elif request.method == 'POST':
-        pipeline = request.form.getlist('sound_changes')
+        if request.form.get('random_mutation'):
+            sc = SoundChange(tonogenesis=request.form.get('tonogenesis'))
+        else:
+            pipeline = request.form.getlist('sound_changes')
+            sc = SoundChange(pipeline, tonogenesis=request.form.get('tonogenesis'))
         replacement_rate = float(request.form['replacement_rate']) / 100
         with open(f'static/languages/{language_id}.json', 'r') as f:
             language = Language.from_json(json.load(f))
         with open(f'static/languages/{language_id}_vocabulary.json', 'r') as f:
             language.vocabulary = Vocabulary.from_json(json.load(f))
-        sc = SoundChange(pipeline)
         new_vocabulary = language.mutate(sc, replacement_rate)
         language_specs = parse_vocabulary(new_vocabulary)
         new_language = Language(**language_specs)
         new_vocabulary.id = language.id
+
+        # cleanup
+        files_to_remove = os.listdir(os.path.join(app.static_folder, 'temp'))
+        for file in files_to_remove:
+            os.remove(os.path.join(app.static_folder, 'temp', file))
         
         path = f'temp/{new_language.id}.json'
         path = os.path.join(app.static_folder, path)

@@ -101,8 +101,12 @@ VOWELS = {
 }
 
 LONG_VOWELS = {f'{k}:':v + ['long'] for k,v in VOWELS.items()}
+NASAL_VOWELS = {f'{k}̃':v + ['nasal'] for k,v in VOWELS.items()}
+NASAL_LONG_VOWELS = {f'{k}̃:':v + ['nasal', 'long'] for k,v in VOWELS.items()}
 VOWELS.update(LONG_VOWELS)
+VOWELS.update(NASAL_VOWELS)
+VOWELS.update(NASAL_LONG_VOWELS)
 
 PHONEMES = {**CONSONANTS, **VOWELS}
-SUPRASEGMENTALS = ["'", ":"]
+SUPRASEGMENTALS = ["'", ":", "˩", "˧", "˥", "̃"]
 SEMIVOWELS = ['j', 'ɰ', 'w']

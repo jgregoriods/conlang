@@ -26,8 +26,6 @@ def split_syllables(word: str) -> list:
     for i, phoneme in enumerate(phonemes):
         if phoneme in VOWELS:
             end = i + 1
-            if i + 1 < len(phonemes) - 1 and phonemes[i + 1] in SEMIVOWELS:
-                end = i + 2
             syllables.append(phonemes[start:end])
             start = end
 
@@ -41,7 +39,7 @@ def split_syllables(word: str) -> list:
 
     # This is a quick fix to split consonant clusters by moving the first consonant to the previous syllable
     for i in range(1, len(syllables)):
-        if len(syllables[i]) > 1 and syllables[i][0] in CONSONANTS and syllables[i][1] in CONSONANTS:
+        if len(syllables[i]) > 1 and syllables[i][0] in CONSONANTS and syllables[i][1] not in VOWELS:
             syllables[i-1] += syllables[i][0]
             syllables[i] = syllables[i][1:]
 

@@ -50,7 +50,7 @@ RULES = {
             'ɔ:': 'ow'
             },
         },
-    'palatalization_back': {
+    'palatalization_velar': {
         'rules' : {
             'k I': 'tʃ I',
             'g I': 'dʒ I',
@@ -62,7 +62,7 @@ RULES = {
             'I': ['i', 'e', 'e:', 'i:', 'ɛ', 'ɪ', 'ɛ:', 'j', 'ɪ:']
             }
         },
-    'palatalization_front': {
+    'palatalization_alveolar': {
         'rules' : {
             't I': 'tʃ I',
             'd I': 'dʒ I',
@@ -75,6 +75,14 @@ RULES = {
             'I': ['i', 'e', 'e:', 'i:', 'ɛ', 'ɪ', 'ɛ:', 'j', 'ɪ:']
             }
         },
+    'palatalization_back': {
+        'rules': {
+            'k A': 'tʃ A'
+        },
+        'wildcards': {
+            'A': ['a', 'ɑ', 'ɒ', 'ɔ', 'ɔ:', 'ɒ:', 'ɑ:', 'ɒ:', 'ɔ:', 'ɔ', 'ɒ', 'ɑ']
+        }
+    },
     'canaanite_shift': {
         'rules' : {
             'a:': 'o:',
@@ -130,6 +138,16 @@ RULES = {
             'ɵ': 'o',
             'ɐ': 'a',
             'ɑ': 'a',
+            },
+        },
+    'devoicing': {
+        'rules' : {
+            'b': 'p',
+            'd': 't',
+            'g': 'k',
+            'v': 'f',
+            'z': 's',
+            'ɣ': 'x',
             },
         },
 }

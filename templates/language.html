@@ -1,35 +1,47 @@
 {% extends "index.html" %}
 {% block content %}
 <body>
-    <a href="{{ url_for('index') }}">Back</a>
+    <a href="{{ url_for('index') }}"><i class="fa-solid fa-house"></i></a>
     <h1>Language Dashboard</h1>
     {% if vocabulary %}
-    <input type="text" id="search" class="form-control" placeholder="Search" onkeyup="search()">
+    <div class="card mt-4 mb-4">
+        <div class="card-body">
+            <input type="text" id="search" class="form-control" placeholder="Search" onkeyup="search()">
+        </div>
+    </div>
     {% set pages = (vocabulary.items|length / 10) | round(method='ceil') | int %}
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Word</th>
-                <th>Definition</th>
-            </tr>
-        </thead>
-        <tbody id="vocabulary-body">
-            {% for i in range(10) %}
-            <tr>
-                <td><span class="serif"><b>{{ vocabulary[i].word }}</b></span></td>
-                <td>{{ vocabulary[i].definition }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <nav>
-        <ul class="pagination" id="pagination">
-        </ul>
-    </nav>
+    <div class="card mb-4">
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Word</th>
+                        <th>Definition</th>
+                    </tr>
+                </thead>
+                <tbody id="vocabulary-body">
+                    {% for i in range(10) %}
+                    <tr>
+                        <td><span class="serif"><b>{{ vocabulary[i].word }}</b></span></td>
+                        <td>{{ vocabulary[i].definition }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <nav>
+                <ul class="pagination" id="pagination">
+                </ul>
+            </nav>
+        </div>
+    </div>
     {% endif %}
-    <form action="{{ url_for('mutate', language_id=language.id) }}" method="get">
-        <button class="btn btn-primary" type="submit">Mutate</button>
-    </form>
+    <div class="card">
+        <div class="card-body">
+            <form action="{{ url_for('mutate', language_id=language.id) }}" method="get">
+                <button class="btn btn-primary" type="submit">Mutate</button>
+            </form>
+        </div>
+    </div>
 </body>
 <script>
     const vocabulary = {{ vocabulary.items | tojson }};

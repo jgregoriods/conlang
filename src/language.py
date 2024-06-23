@@ -43,13 +43,16 @@ def parse_vocabulary(vocabulary):
     phonemes = {'C1': [], 'C2': [], 'C3': [],
                 'V1': [], 'V2': [], 'V3': []}
     patterns = set()
+    tones = set()
     for item in vocabulary:
         word = item['word']
+        tone = ''.join([char for char in word if char in ["˩", "˧", "˥"]])
+        tones.add(tone)
         syllables = split_syllables(word)
         for i, syllable in enumerate(syllables):
             if syllable.startswith("'"):
                 stress.add(i - len(syllables))
-        no_stress = word.replace("'", "")
+        no_stress = word.replace("'", "").replace("˩", "").replace("˧", "").replace("˥", "")
         phoneme_groups = parse_word(no_stress)
         pattern = ''
         if len(phoneme_groups) > 1:
@@ -83,10 +86,11 @@ def parse_vocabulary(vocabulary):
 
     phonemes = {k: v for k, v in phonemes.items() if v}
     phonemes = {k: sorted(list(set(v)), key=lambda x: v.count(x), reverse=True) for k, v in phonemes.items()}
-    return {'phonemes': phonemes, 'stress': list(stress), 'patterns': list(patterns)}
+    return {'phonemes': phonemes, 'stress': list(stress), 'patterns': list(patterns), 'tones': list(tones)}
 
 
 def is_acceptable(word: str, ratio: float = 0.67) -> bool:
+    word = [phoneme for phoneme in word if phoneme != "'"]
     # for short words we are more lenient
     if len(word) < 3:
         return True
@@ -104,16 +108,26 @@ def is_acceptable(word: str, ratio: float = 0.67) -> bool:
     if len(set(word)) / len(word) < ratio:
         return False
 
+    # avoid the same consonant in close proximity
+    for i in range(len(word) - 2):
+        if word[i] in CONSONANTS:
+            if word[i] == word[i + 1] or word[i] == word[i + 2]:
+                return False
+    if word[-2] in CONSONANTS and word[-2] == word[-1]:
+        return False
+
     return True
 
 
 class Language:
     def __init__(self, phonemes: dict, patterns: list, stress: list,
+                 tones: list = [],
                  morphology: str = 'fusional', word_order: str = 'SVO',
                  id: str = ''):
         self.phonemes = phonemes
         self.patterns = patterns
         self.stress = stress
+        self.tones = tones
         self.vocabulary = None
         self.rng = np.random.default_rng()
         self.id = id if id else str(uuid.uuid4())
@@ -142,16 +156,26 @@ class Language:
         stressed_syllable = max(self.rng.choice(self.stress), -len(syllables))
         syllables[stressed_syllable] = "'" + syllables[stressed_syllable]
 
-        return ''.join(syllables)
+        word = ''.join(syllables)
+
+        if self.tones:
+            tone = self.rng.choice(self.tones)
+            word += tone
+        
+        return word
 
     def generate_vocabulary(self, adjust_length: bool = True):
         self.vocabulary = Vocabulary(self.id)
         for item in SWADESH:
             # if adjust_length is True, the most frequent words will be shorter
-            sel_patterns = [pattern for pattern in self.patterns if len(pattern.split()) <= 3] if adjust_length and item[2] == 1 else self.patterns
+            short_patterns = sorted(self.patterns, key=lambda x: len(x.split()))[:2]
+            sel_patterns = short_patterns if adjust_length and item[2] == 1 else self.patterns
             new_word = self._generate_unique_word(sel_patterns)
             self.vocabulary.add_item(item[0], new_word)
-    
+        unique_words = set([item['word'] for item in self.vocabulary])
+        if len(unique_words) < len(self.vocabulary) * 0.67:
+            warnings.warn('There are too many homonyms. Consider adding tones.')
+
     def _generate_unique_word(self, patterns: list = list()) -> str:
         if not patterns:
             patterns = self.patterns
@@ -178,6 +202,9 @@ class Language:
                 word = self._generate_unique_word()
             new_word = sound_change.apply(word)
             new_vocabulary.add_item(item['definition'], new_word)
+        unique_words = set([item['word'] for item in new_vocabulary])
+        if len(unique_words) < len(new_vocabulary) * 0.67:
+            warnings.warn('There are too many homonyms. Consider adding tones.')
         return new_vocabulary
 
     def generate_family(self, num_children: int, sound_changes: list = list()) -> list:
@@ -205,8 +232,9 @@ class Language:
 
     @staticmethod
     def from_json(data: dict) -> 'Language':
-        return Language(data['phonemes'], data['patterns'], data['stress'],
-                        data['morphology'], data['word_order'], data['id'])
+        return Language(phonemes=data['phonemes'], patterns=data['patterns'],
+                        stress=data['stress'], morphology=data['morphology'],
+                        word_order=data['word_order'], id=data['id'])
 
     @staticmethod
     def from_vocabulary(vocabulary: Vocabulary) -> 'Language':
