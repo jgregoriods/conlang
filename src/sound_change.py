@@ -27,6 +27,7 @@ class SoundChange:
         self.sound_change_rules = RULES
         self.pipeline = pipeline or self._generate_random_pipeline(random_rules)
         self.tonogenesis = tonogenesis
+        print(self.pipeline)
 
     def _generate_random_pipeline(self, random_rules: int) -> list:
         all_rules = list(self.sound_change_rules.keys()) + [
@@ -37,7 +38,8 @@ class SoundChange:
             'umlaut',
             'shortening',
             'lengthening',
-            'nasalization'
+            'nasalization',
+            'vowel_harmony'
         ]
         n_rules = min(random_rules, len(all_rules))
         return random.choice(all_rules, n_rules, replace=False).tolist()
@@ -56,15 +58,19 @@ class SoundChange:
                 return self._apply_unstressed_rule(rule_data, word)
         
         tone = ''.join([char for char in word if char in ["˩", "˧", "˥"]]).strip()
+        word_without_tone = word.replace(tone, '').strip()
         if rule == 'devoicing' and self.tonogenesis:
-            for phoneme in split_phonemes(word):
+            for phoneme in split_phonemes(word_without_tone):
                 if phoneme in CONSONANTS and 'voiced' in CONSONANTS[phoneme]:
                     tone = "˩" + tone
                     break
-        if self.tonogenesis and not tone:
-            tone = "˧"
-
-        return ''.join(multiple_replace(word, rule_data)) + tone
+            if self.tonogenesis and not tone:
+                tone = "˧"
+        
+        if len(tone) > 2:
+            tone = tone[0] + tone[-1]
+        
+        return ''.join(multiple_replace(word_without_tone, rule_data)) + tone
 
     def _apply_stressed_rule(self, rule_data: dict, word: str) -> str:
         syllables = split_syllables(word)
@@ -99,6 +105,8 @@ class SoundChange:
             return self._apply_lengthening(word)
         if rule == 'nasalization':
             return self._apply_nasalization(word)
+        if rule == 'vowel_harmony':
+            return self._apply_vowel_harmony(word)
         return word
 
     def _apply_elision_pre(self, word: str) -> str:
@@ -135,15 +143,20 @@ class SoundChange:
             tone = "˧"
 
         word_without_tone = ''.join([char for char in word if char not in ["˩", "˧", "˥"]]).strip()
-        for i in range(len(word_without_tone) - 1, -1, -1):
-            if word_without_tone[i] in list(VOWELS) + SEMIVOWELS + [':'] + list([k for k in CONSONANTS if 'nasal' in CONSONANTS[k]]):
-                if i < len(word_without_tone) - 1 and self.tonogenesis:
-                    lost_consonant = word_without_tone[i+1]
+        phonemes = split_phonemes(word_without_tone)
+        for i in range(len(phonemes) - 1, -1, -1):
+            if phonemes[i] in VOWELS and i < len(phonemes) - 1 and phonemes[i+1] in CONSONANTS and 'nasal' not in CONSONANTS[phonemes[i+1]]:
+                if self.tonogenesis:
+                    lost_consonant = phonemes[i+1]
                     if 'plosive' in CONSONANTS[lost_consonant]:
                         tone += "˥"
                     elif 'fricative' in CONSONANTS[lost_consonant]:
                         tone += "˩"
-                return word_without_tone[:i+1] + tone
+                if len(tone) > 2:
+                    tone = tone[0] + tone[-1]
+                return ''.join(phonemes[:i+1]) + tone
+        if len(tone) > 2:
+            tone = tone[0] + tone[-1]
         return word_without_tone + tone
 
     def _apply_umlaut(self, word: str) -> str:
@@ -197,6 +210,45 @@ class SoundChange:
                 if syllable[-2] in VOWELS:
                     syllables[i] = syllables[i][:-1] + '̃'
         return ''.join(syllables)
+    
+    def _apply_vowel_harmony(self, word: str) -> str:
+        front = 'iyeɛøæ'
+        harmony = {
+            'front': {
+                'a': 'ɛ',
+                'o': 'ø',
+                'u': 'y',
+                'ɒ': 'œ',
+                'ɔ': 'ø',
+                'ɑ': 'æ',
+                'ʌ': 'œ',
+                'ɜ': 'ɛ',
+                'ə': 'ɛ',
+                'ɐ': 'ɛ'
+            },
+            'not_front': {
+                'i': 'ɯ',
+                'y': 'ʉ',
+                'e': 'ɤ',
+                'ɛ': 'œ',
+                'ø': 'ɤ',
+            }
+        }
+        phonemes = split_phonemes(word)
+        rule = None
+        for i, phoneme in enumerate(phonemes):
+            if phoneme in VOWELS:
+                if rule is None:
+                    first_vowel = phoneme[0]
+                    if first_vowel in front:
+                        rule = 'front'
+                    else:
+                        rule = 'not_front'
+                else:
+                    if phoneme[0] in harmony[rule]:
+                        phonemes[i] = phonemes[i].replace(phoneme[0], harmony[rule][phoneme[0]])
+
+        return ''.join(phonemes)
     
     def apply(self, word: str) -> str:
         for rule in self.pipeline:
