@@ -179,6 +179,12 @@ RULES = {
             'k': 'x'
             },
         },
+    'gaelic_breaking': {
+        'rules' : {
+            'e:': 'iə',
+            'o:': 'uə',
+            },
+        },
 }
 
 RULES['inventory_reduction']['rules'].update({

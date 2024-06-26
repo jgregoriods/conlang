@@ -55,17 +55,10 @@ def main():
 
 
 if __name__ == '__main__':
-    p = {
-        'C': ['p', 't', 'k', 'b', 'd', 'g', 'm', 'n', 'ŋ', 'l', 'r', 'w', 'j', 's', 'h'],
-        'C2': ['p', 's', 'k', 'h', 'n'],
-        'V': ['a', 'e', 'i', 'o', 'u']
-    }
-    l = Language(phonemes=p, patterns=['C V', 'C V C2', 'V C V C2', 'C V C V C2', 'C V C V'],
-                 stress=[-1, -2], morphology='isolating',
-                 word_order='SVO')
+    l = Language(**LANGUAGE_TYPES['polynesian'])
     l.generate_vocabulary()
 
-    nl = l.mutate(SoundChange(random_rules=100, tonogenesis=True), 0.0)
+    nl = l.mutate(SoundChange(random_rules=100), 0.0)
 
     random_indices = random.choice(list(range(len(l.vocabulary.items))), 20, replace=False)
     for i in random_indices:
