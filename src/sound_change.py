@@ -12,8 +12,8 @@ DEFAULT_RANDOM_RULES = 3
 def common_fixes(word: str) -> str:
     syllables = split_syllables(word)
     for i, syllable in enumerate(syllables):
-        if "'" in syllable and syllable[0] != "'":
-            syllables[i] = "'" + syllable.replace("'", "")
+        if "ˈ" in syllable and syllable[0] != "ˈ":
+            syllables[i] = "ˈ" + syllable.replace("ˈ", "")
     fixed_word = ''.join(syllables)
     # remove double consonants
     for consonant in CONSONANTS:
@@ -75,7 +75,7 @@ class SoundChange:
     def _apply_stressed_rule(self, rule_data: dict, word: str) -> str:
         syllables = split_syllables(word)
         for i, syllable in enumerate(syllables):
-            if "'" in syllable:
+            if "ˈ" in syllable:
                 syllables[i] = multiple_replace(syllable, rule_data)
                 break
         return ''.join(syllables)
@@ -83,7 +83,7 @@ class SoundChange:
     def _apply_unstressed_rule(self, rule_data: dict, word: str) -> str:
         syllables = split_syllables(word)
         for i, syllable in enumerate(syllables):
-            if "'" not in syllable:
+            if "ˈ" not in syllable:
                 syllables[i] = multiple_replace(syllable, rule_data)
                 break
         return ''.join(syllables)
@@ -113,7 +113,7 @@ class SoundChange:
         syllables = split_syllables(word)
         if len(syllables) > 1:
             for i in range(1, len(syllables)):
-                if "'" in syllables[i]:
+                if "ˈ" in syllables[i]:
                     syllables[i-1] = ''.join([char for char in split_phonemes(syllables[i-1]) if char not in VOWELS])
                     break
         return ''.join(syllables)
@@ -122,17 +122,17 @@ class SoundChange:
         syllables = split_syllables(word)
         if len(syllables) > 1:
             for i in range(len(syllables) - 1):
-                if "'" in syllables[i]:
-                    regex = re.compile('|'.join(list(VOWELS) + SEMIVOWELS + [':']))
+                if "ˈ" in syllables[i]:
+                    regex = re.compile('|'.join(list(VOWELS) + SEMIVOWELS + ['ː']))
                     syllables[i+1] = re.sub(regex, '', syllables[i+1])
                     break
         return ''.join(syllables)
 
     def _apply_final_vowel_deletion(self, word: str) -> str:
         syllables = split_syllables(word)
-        if len(syllables) > 1 and "'" not in syllables[-1]:
+        if len(syllables) > 1 and "ˈ" not in syllables[-1]:
             for i in range(len(syllables[-1]) - 1, -1, -1):
-                if syllables[-1][i] not in list(VOWELS) + SEMIVOWELS + [':']:
+                if syllables[-1][i] not in list(VOWELS) + SEMIVOWELS + ['ː']:
                     syllables[-1] = syllables[-1][:i+1]
                     break
         return ''.join(syllables)
@@ -165,9 +165,9 @@ class SoundChange:
                 'a': 'ɛ',
                 'u': 'y',
                 'o': 'ø',
-                'a:': 'ɛ:',
-                'u:': 'y:',
-                'o:': 'ø:'
+                'aː': 'ɛː',
+                'uː': 'yː',
+                'oː': 'øː'
             }
         }
         syllables = split_syllables(word)
@@ -179,8 +179,8 @@ class SoundChange:
     def _apply_shortening(self, word: str) -> str:
         syllables = split_syllables(word)
         for i, syllable in enumerate(syllables):
-            if "'" not in syllable:
-                syllables[i] = syllable.replace(":", '')
+            if "ˈ" not in syllable:
+                syllables[i] = syllable.replace("ː", '')
         return ''.join(syllables)
 
     def _apply_lengthening(self, word: str) -> str:
@@ -189,20 +189,20 @@ class SoundChange:
             phonemes = split_phonemes(syllable)
             if phonemes[-1] in CONSONANTS and phonemes[-1] not in SEMIVOWELS and 'nasal' not in CONSONANTS[phonemes[-1]]:
                 vowel_idx = [phonemes.index(p) for p in phonemes if p in VOWELS][-1]
-                phonemes[vowel_idx] += ':'
+                phonemes[vowel_idx] += 'ː'
                 syllables[i] = ''.join(phonemes[:-1])
         for i in range(1, len(syllables)):
             if syllables[i][0] in VOWELS:
                 if syllables[i-1] and syllables[i-1][-1] == syllables[i][0]:
                     syllables[i] = syllables[i][1:]
-                    syllables[i-1] += ":"
-            elif syllables[i][0] == "'" and syllables[i][1] in VOWELS:
+                    syllables[i-1] += "ː"
+            elif syllables[i][0] == "ˈ" and syllables[i][1] in VOWELS:
                 if syllables[i-1] and (syllables[i-1][-1] == syllables[i][1]):
                     syllables[i] = syllables[i][2:]
-                    syllables[i-1] += ":"
-                    syllables[i-1] = "'" + syllables[i-1]
+                    syllables[i-1] += "ː"
+                    syllables[i-1] = "ˈ" + syllables[i-1]
         return ''.join(syllables)
-    
+
     def _apply_nasalization(self, word: str) -> str:
         syllables = split_syllables(word)
         for i, syllable in enumerate(syllables):
@@ -210,7 +210,7 @@ class SoundChange:
                 if syllable[-2] in VOWELS:
                     syllables[i] = syllables[i][:-1] + '̃'
         return ''.join(syllables)
-    
+
     def _apply_vowel_harmony(self, word: str) -> str:
         front = 'iyeɛøæ'
         harmony = {

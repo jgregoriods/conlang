@@ -50,9 +50,9 @@ def parse_vocabulary(vocabulary):
         tones.add(tone)
         syllables = split_syllables(word)
         for i, syllable in enumerate(syllables):
-            if syllable.startswith("'"):
+            if syllable.startswith("ˈ"):
                 stress.add(i - len(syllables))
-        no_stress = word.replace("'", "").replace("˩", "").replace("˧", "").replace("˥", "")
+        no_stress = word.replace("ˈ", "").replace("˩", "").replace("˧", "").replace("˥", "")
         phoneme_groups = parse_word(no_stress)
         pattern = ''
         if len(phoneme_groups) > 1:
@@ -90,13 +90,13 @@ def parse_vocabulary(vocabulary):
 
 
 def is_acceptable(word: str, ratio: float = 0.67) -> bool:
-    word = [phoneme for phoneme in word if phoneme != "'"]
+    word = [phoneme for phoneme in word if phoneme != "ˈ"]
     # for short words we are more lenient
     if len(word) < 3:
         return True
 
     # avoid too many long vowels or aspirations
-    for char in [":", "ʰ"]:
+    for char in ["ː", "ʰ"]:
         if word.count(char) > 1:
             return False
 
@@ -154,7 +154,7 @@ class Language:
 
         syllables = split_syllables(res)
         stressed_syllable = max(self.rng.choice(self.stress), -len(syllables))
-        syllables[stressed_syllable] = "'" + syllables[stressed_syllable]
+        syllables[stressed_syllable] = "ˈ" + syllables[stressed_syllable]
 
         word = ''.join(syllables)
 

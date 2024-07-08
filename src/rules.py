@@ -44,13 +44,13 @@ RULES = {
         },
     'great_vowel_shift': {
         'rules' : {
-            'i:': 'aj',
-            'e:': 'i:',
-            'ɛ:': 'ej',
-            'a:': 'ej',
-            'u:': 'aw',
-            'o:': 'u:',
-            'ɔ:': 'ow'
+            'iː': 'aj',
+            'eː': 'iː',
+            'ɛː': 'ej',
+            'aː': 'ej',
+            'uː': 'aw',
+            'oː': 'uː',
+            'ɔː': 'ow'
             },
         },
     'palatalization_velar': {
@@ -58,11 +58,10 @@ RULES = {
             'k I': 'tʃ I',
             'g I': 'dʒ I',
             'x I': 'ç I',
-            'ɣ I': 'ʝ I',
-            'j I': 'ʝ I',
+            'ɣ I': 'ʝ I'
             },
         'wildcards': {
-            'I': ['i', 'e', 'e:', 'i:', 'ɛ', 'ɪ', 'ɛ:', 'j', 'ɪ:']
+            'I': ['i', 'e', 'eː', 'iː', 'ɛ', 'ɪ', 'ɛː', 'j', 'ɪː']
             }
         },
     'palatalization_alveolar': {
@@ -75,7 +74,7 @@ RULES = {
             'l I': 'ʎ I'
             },
         'wildcards': {
-            'I': ['i', 'e', 'e:', 'i:', 'ɛ', 'ɪ', 'ɛ:', 'j', 'ɪ:']
+            'I': ['i', 'e', 'eː', 'iː', 'ɛ', 'ɪ', 'ɛː', 'j', 'ɪː']
             }
         },
     'palatalization_back': {
@@ -83,22 +82,22 @@ RULES = {
             'k A': 'tʃ A'
         },
         'wildcards': {
-            'A': ['a', 'ɑ', 'ɒ', 'ɔ', 'ɔ:', 'ɒ:', 'ɑ:', 'ɒ:', 'ɔ:', 'ɔ', 'ɒ', 'ɑ']
+            'A': ['a', 'ɑ', 'ɒ', 'ɔ', 'ɔː', 'ɒː', 'ɑː', 'ɒː', 'ɔː', 'ɔ', 'ɒ', 'ɑ']
         }
     },
     'canaanite_shift': {
         'rules' : {
-            'a:': 'o:',
+            'aː': 'oː',
             },
         },
     'yiddish_breaking': {
         'rules' : {
-            'ɛ:': 'ɛj',
-            'o:': 'ɔj',
-            'ø:': 'ɛj',
-            'i:': 'aj',
-            'y:': 'aj',
-            'u:': 'ɔj'
+            'ɛː': 'ɛj',
+            'oː': 'ɔj',
+            'øː': 'ɛj',
+            'iː': 'aj',
+            'yː': 'aj',
+            'uː': 'ɔj'
             },
         'condition': 'stressed'
         },
@@ -181,13 +180,13 @@ RULES = {
         },
     'gaelic_breaking': {
         'rules' : {
-            'e:': 'iə',
-            'o:': 'uə',
+            'eː': 'iə',
+            'oː': 'uə',
             },
         },
 }
 
 RULES['inventory_reduction']['rules'].update({
-    k + ':': v for k, v in RULES['inventory_reduction']['rules'].items()
+    k + 'ː': v for k, v in RULES['inventory_reduction']['rules'].items()
 })
 

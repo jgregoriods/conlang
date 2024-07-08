@@ -26,7 +26,6 @@ LANGUAGE_TYPES = {
 
 
 def main():
-
     vocab = Vocabulary.from_csv('sanskrit.csv')
     parsed = parse_vocabulary(vocab)
     language = Language(**parsed)
@@ -58,7 +57,7 @@ if __name__ == '__main__':
     l = Language(**LANGUAGE_TYPES['polynesian'])
     l.generate_vocabulary()
 
-    nl = l.mutate(SoundChange(random_rules=100), 0.0)
+    nl = l.mutate(SoundChange(), 0.0)
 
     random_indices = random.choice(list(range(len(l.vocabulary.items))), 20, replace=False)
     for i in random_indices:
