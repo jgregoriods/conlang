@@ -1,0 +1,2 @@
+C: p t k m n q
+V: a i u
