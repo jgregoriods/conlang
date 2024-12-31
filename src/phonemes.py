@@ -31,3 +31,11 @@ LONG_VOWELS = [f'{v}ː' for v in BASE_VOWELS]
 VOWELS = BASE_VOWELS + LONG_VOWELS
 
 PHONEMES = CONSONANTS + VOWELS + ["ˈ"]
+
+COMMON_PHONEMES = [
+    'p', 't', 'k', 'm', 'n',
+    'b', 'd', 'g',
+    's', 'z',
+    'l', 'r',
+    'i', 'u', 'e', 'o', 'a'
+]

@@ -1,3 +1,5 @@
+import re
+
 from .utils import split_phonemes, map_stress
 
 
@@ -42,7 +44,6 @@ def mutate_word(word: str, rule_dict: dict) -> str:
 
     for i, phoneme in enumerate(phonemes):
         rules = rule_dict['rules']
-        wildcards = rule_dict['wildcards']
         if phoneme in rules:
             for rule in rules[phoneme]:
                 after, environment = rule
@@ -57,7 +58,7 @@ def mutate_word(word: str, rule_dict: dict) -> str:
         else:
             res.append(phoneme)
 
-    return ''.join(res)
+    return re.sub('[∅0]', '', ''.join(res))
 
 
 def mutate_vocabulary(vocabulary: dict, rule_dict: dict) -> dict:
