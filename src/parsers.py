@@ -1,7 +1,7 @@
 from typing import TextIO
 
 
-def parse_file(f: TextIO) -> list:
+def parse_config_file(f: TextIO) -> list:
     """
     Parses the file line by line.
     """
@@ -67,8 +67,13 @@ def parse_vocabulary(f: TextIO) -> dict:
     """
     vocabulary = {}
     for line in f:
-        line = line.split(':')
-        gloss = line[0].strip()
-        word = line[1].strip()
+        if ':' in line:
+            line = line.split(':')
+        elif '\t' in line:
+            line = line.split('\t')
+        else:
+            line = line.split(',')
+        word = line[0].strip()
+        gloss = line[1].strip()
         vocabulary[gloss] = word
     return vocabulary

@@ -5,7 +5,7 @@ from src.parsers import parse_vocabulary, parse_mutation_rules
 from src.mutation import mutate_vocabulary
 
 
-def mutate_vocabulary_file(vocabulary_path: Path, rules_path: Path, output_path: Path) -> None:
+def mutate_vocabulary_file(vocabulary_path: Path, rules_path: Path) -> None:
     """
     Apply mutation rules to an existing vocabulary and save the result.
     """
@@ -16,21 +16,30 @@ def mutate_vocabulary_file(vocabulary_path: Path, rules_path: Path, output_path:
 
     mutated_vocabulary = mutate_vocabulary(vocabulary, rules)
 
-    with output_path.open('w') as f:
+    output_txt_path = Path(f'mutated_{vocabulary_path.stem}.txt')
+    output_csv_path = Path(f'mutated_{vocabulary_path.stem}.csv')
+
+    with output_txt_path.open('w') as f:
         for gloss, word in mutated_vocabulary.items():
-            f.write(f'{gloss}: {word}\n')
-    print(f"Mutated vocabulary saved to {output_path}")
+            f.write(f'{word}: {gloss}\n')
+    
+    with output_csv_path.open('w') as f:
+        f.write('word,gloss\n')
+        for gloss, word in mutated_vocabulary.items():
+            f.write(f'{word},{gloss}\n')
+
+    print(f"Mutated vocabulary saved to {output_txt_path} and {output_csv_path}")
 
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: python mutate.py <vocabulary_path> <rules_path>")
+    if len(sys.argv) < 3:
+        print("Usage: python mutate.py <vocabulary_file> <rules_file>")
         sys.exit(1)
 
-    vocabulary_path = Path(sys.argv[2])
-    rules_path = Path(sys.argv[3])
-    output_path = Path(f'mutated_{vocabulary_path.stem}.txt')
-    mutate_vocabulary_file(vocabulary_path, rules_path, output_path)
+    vocabulary_path = Path(sys.argv[1])
+    rules_path = Path(sys.argv[2])
+
+    mutate_vocabulary_file(vocabulary_path, rules_path)
 
 
 if __name__ == '__main__':
