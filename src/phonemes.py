@@ -39,3 +39,62 @@ COMMON_PHONEMES = [
     'l', 'r',
     'i', 'u', 'e', 'o', 'a'
 ]
+
+# For generating random presets
+
+CONSONANT_SEED = [
+    ['p', 't', 'k'],
+    ['p', 't', 'tʃ', 'k'],
+    ['p', 't', 'ts', 'k'],
+    ['p', 't', 'k', 'q'],
+]
+
+VOWEL_SEED = [
+    ['a', 'i', 'u'],
+    ['a', 'e', 'i', 'o', 'u'],
+    ['a', 'e', 'i', 'o', 'u', 'ɛ', 'ɔ'],
+    ['a', 'e', 'i', 'o', 'u', 'y', 'ø']
+]
+
+CONSONANT_DICT = {
+    'p': {'voiced': 'b', 'aspirated': 'pʰ', 'nasal': 'm', 'fricative': 'f'},
+    't': {'voiced': 'd', 'aspirated': 'tʰ', 'nasal': 'n', 'fricative': 'θ'},
+    'k': {'voiced': 'g', 'aspirated': 'kʰ', 'nasal': 'ŋ', 'fricative': 'x'},
+    'q': {'voiced': 'ɢ', 'aspirated': 'qʰ', 'nasal': 'ɴ', 'fricative': 'χ'},
+    'tʃ': {'voiced': 'dʒ', 'aspirated': 'tʃʰ', 'nasal': 'ɲ', 'fricative': 'ʃ'},
+    'ts': {'voiced': 'dz', 'aspirated': 'tsʰ', 'nasal': 'n', 'fricative': 's'},
+}
+
+VOWEL_DICT = {
+    'i': {'long': 'iː'},
+    'u': {'long': 'uː'},
+    'e': {'long': 'eː'},
+    'o': {'long': 'oː'},
+    'a': {'long': 'aː'},
+    'ɛ': {'long': 'ɛː'},
+    'ɔ': {'long': 'ɔː'},
+    'y': {'long': 'yː'},
+    'ø': {'long': 'øː'}
+}
+
+PATTERNS = [
+    'CVCV', 'VCV', 'VCVCV', 'CV'
+]
+
+STRESS = [
+    [-1], [-2], [-3],
+    [-1, -2],
+    [-1, -2, -3]
+]
+
+LIQUIDS = [
+    ['l'], ['r'], ['l', 'r']
+]
+
+FINALS = [
+    ['m', 'n', 'ŋ'],
+    ['s', 'ʃ', 'z'],
+    ['t', 'k', 'p'],
+    ['l', 'r'],
+    ['j', 'w']
+]
