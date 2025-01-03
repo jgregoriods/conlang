@@ -1,58 +1,53 @@
 import numpy as np
-
-from .phonemes import (CONSONANT_SEED, VOWEL_SEED,
-                       CONSONANT_DICT, VOWEL_DICT, PATTERNS, STRESS, LIQUIDS, FINALS)
-
+from .phonemes import (
+    CONSONANT_SEED, VOWEL_SEED, 
+    CONSONANT_DICT, VOWEL_DICT, 
+    PATTERNS, STRESS, LIQUIDS, FINALS
+)
 
 def random_preset():
-    consonant_seed = CONSONANT_SEED[np.random.randint(0, len(CONSONANT_SEED))]
-    vowel_seed = VOWEL_SEED[np.random.randint(0, len(VOWEL_SEED))]
-    stress = STRESS[np.random.randint(0, len(STRESS))]
-
-    phonemes = {'C': consonant_seed.copy(),
-                'V': vowel_seed.copy()}
-
-    # voiced
-    if np.random.rand() < 0.5:
-        phonemes['C'].extend([CONSONANT_DICT[c]['voiced']
-                              for c in consonant_seed])
-
-    # aspirated
-    if np.random.rand() < 0.5:
-        phonemes['C'].extend([CONSONANT_DICT[c]['aspirated']
-                              for c in consonant_seed])
-
-    # nasal
-    if np.random.rand() < 0.5:
-        phonemes['C'].extend([CONSONANT_DICT[c]['nasal']
-                             for c in consonant_seed])
-
-    # fricative
-    if np.random.rand() < 0.5:
-        phonemes['C'].extend([CONSONANT_DICT[c]['fricative']
-                              for c in consonant_seed])
-
-    # liquids
-    if np.random.rand() < 0.5:
-        phonemes['C'].extend(LIQUIDS[np.random.randint(0, len(LIQUIDS))])
-
-    # long vowels
-    if np.random.rand() < 0.5:
-        phonemes['V'].extend([VOWEL_DICT[v]['long'] for v in vowel_seed])
-
-    # finals
-    if np.random.rand() < 0.5:
-        phonemes['F'] = [f for f in FINALS[np.random.randint(
-            0, len(FINALS))] if f in phonemes['C']]
+    consonant_seed = CONSONANT_SEED[np.random.randint(len(CONSONANT_SEED))]
+    vowel_seed = VOWEL_SEED[np.random.randint(len(VOWEL_SEED))]
+    stress = STRESS[np.random.randint(len(STRESS))]
     
+    # Initialize phoneme dictionary
+    phonemes = {
+        'C': consonant_seed.copy(),
+        'V': vowel_seed.copy()
+    }
+
+    # Extend consonants with additional features
+    features = ['voiced', 'aspirated', 'nasal', 'fricative']
+    for feature in features:
+        if np.random.rand() < 0.5:
+            phonemes['C'].extend(CONSONANT_DICT[c][feature] for c in consonant_seed)
+    
+    # Add liquids and sibilants conditionally
+    if np.random.rand() < 0.5:
+        phonemes['C'].extend(LIQUIDS[np.random.randint(len(LIQUIDS))])
+    if np.random.rand() < 0.5:
+        phonemes['C'].append('s')
+
+    # Extend vowels with long forms
+    if np.random.rand() < 0.5:
+        phonemes['V'].extend(VOWEL_DICT[v]['long'] for v in vowel_seed)
+
+    # Add finals conditionally
+    if np.random.rand() < 0.5:
+        phonemes['F'] = FINALS[np.random.randint(len(FINALS))]
+
+    # Ensure unique phonemes in each category
     phonemes = {k: list(set(v)) for k, v in phonemes.items()}
 
-    # patterns
+    # Randomly select patterns and extend with finals if applicable
     patterns = np.random.choice(
-        PATTERNS, np.random.randint(1, len(PATTERNS) + 1), replace=False).tolist()
-    if 'F' in phonemes and phonemes['F']:
-        patterns.extend([p + 'F' for p in patterns if p[-1] == 'V'])
-
-    print(phonemes, patterns, stress)
+        PATTERNS, size=np.random.randint(1, len(PATTERNS) + 1), replace=False
+    ).tolist()
+    
+    if 'F' in phonemes:
+        if np.random.rand() < 0.5:
+            patterns.extend(f"{p}F" for p in patterns if p.endswith('C'))
+        else:
+            patterns = [f"{p}F" for p in patterns if p.endswith('V')]
 
     return phonemes, patterns, stress

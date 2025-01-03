@@ -58,7 +58,16 @@ k > g / _a
 r > 0 / _#
 ```
 
-In this example, `p` becomes `b`and `t` becomes `d` unconditionally, while `k` becomes `tʃ` before `i` and `g` before `a`, and `r` is deleted at the end of a word (you can use both `0` and `∅` to represent deletion).
+In this example, `p` becomes `b` and `t` becomes `d` unconditionally, while `k` becomes `tʃ` before `i` and `g` before `a`, and `r` is deleted at the end of a word (you can use both `0` and `∅` to represent deletion).
+
+In addition to the phoneme environment, you can specify stress:
+```
+a > ɔ / [+stress]
+a > ə / [-stress]
+t > 0 / _# [-stress]
+```
+
+In this example, `a` becomes `ɔ` in stressed syllables and `ə` in unstressed syllables, while `t` disappears at the end of a word if in an unstressed syllable.
 
 You can also use wildcards, defining them in the same way as the phoneme sets in the configuration file:
 ```

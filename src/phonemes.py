@@ -78,7 +78,7 @@ VOWEL_DICT = {
 }
 
 PATTERNS = [
-    'CVCV', 'VCV', 'VCVCV', 'CV'
+    'CVCV', 'VCV', 'CV'
 ]
 
 STRESS = [
