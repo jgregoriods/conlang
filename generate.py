@@ -39,7 +39,10 @@ def generate_from_random_preset(glosses_path: Path) -> None:
     """
     Generate a random vocabulary from a random preset and save it to a file.
     """
-    phonemes, patterns, stress = random_preset()
+    preset = random_preset()
+    phonemes = preset['phonemes']
+    patterns = preset['patterns']
+    stress = preset['stress']
 
     if glosses_path is not None:
         with open(glosses_path, 'r') as f:
