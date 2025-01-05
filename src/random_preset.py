@@ -2,12 +2,12 @@ import numpy as np
 
 
 PRESETS = {
-    'minimalist': {
+    'polynesian': {
         'phonemes': {
-            'C': ['m', 'n', 'p', 't', 'k', 'h', 'r'],
+            'C': ['m', 'n', 'ŋ', 'p', 't', 'k', 'h', 'r'],
             'V': ['a', 'e', 'i', 'o', 'u']
         },
-        'patterns': ['CVCV', 'VCV'],
+        'patterns': ['CVCV', 'CVV', 'VCV'],
         'stress': [-2]
     },
     'semitic': {
@@ -78,9 +78,86 @@ PRESETS = {
         },
         'patterns': ['CVC', 'CGVC'],
         'stress': [-1]
+    },
+    'pacific_coast': {
+        'phonemes': {
+            'C': ['t', 'ts', 'tɬ', 'k', 'kʷ', 'q', 'qʷ', 'ʔ',
+                  'tʼ', 'tsʼ', 'tɬʼ', 'kʼ', 'kʷʼ', 'qʼ', 'qʷʼ',
+                  's', 'ɬ', 'x', 'xʷ', 'χ', 'χʷ', 'h',
+                  'm', 'n', 'l', 'j', 'w'],
+            'V': ['i', 'iː', 'e', 'eː', 'a', 'aː', 'u', 'uː', 'ə']
+        },
+        'patterns': ['CVC'],
+        'stress': [-1]
+    },
+    'uralic': {
+        'phonemes': {
+            'C': ['p', 't', 'tɕ', 'tʃ', 'k',
+                  'm', 'n', 'ɲ', 'ŋ',
+                  's', 'ɕ', 'ʃ',
+                  'l', 'ʎ', 'r', 'j', 'w'],
+            'Q': ['pt', 'ps', 'tk', 'tɕk', 'tʃk', 'kt', 'ktɕ', 'ktʃ', 'ks',
+                  'mp', 'mt', 'mk', 'nt', 'ŋk',
+                  'lk', 'lm', 'lw', 'rk', 'rm', 'rw'],
+            'V': ['i', 'y', 'u', 'e', 'o', 'ɛ', 'a'],
+            'F': ['a', 'i']
+        },
+        'patterns': ['CVCF', 'VCF'],
+        'stress': [-2]
+    },
+    'germanic': {
+        'phonemes': {
+            'C': ['m', 'n',
+                  'p', 'b', 't', 'd', 'k',
+                  'f', 'θ', 's', 'z', 'ɣ',
+                  'l', 'r', 'j', 'w'],
+            'Q': ['pl', 'kl', 'fl', 'sl', 'bl',
+                  'pr', 'tr', 'kr', 'fr', 'θr', 'br', 'dr',
+                  'tw', 'dw', 'kw', 'θw', 'xw', 'sw',
+                  'kn', 'sm', 'sn', 'sp', 'st', 'sk'],
+            'F': ['ft', 'xt', 'fs', 'xs', 'zd',
+                  'mp', 'ms', 'mb', 'nt', 'nk', 'ns', 'nd',
+                  'lp', 'lt', 'lk', 'lf', 'ls', 'lb', 'lm', 'rp', 'rt', 'rk', 'rf', 'rs', 'rb',
+                  'sp', 'st', 'sk'],
+            'V': ['i', 'e', 'a', 'u'],
+            'L': ['iː', 'eː', 'aː', 'uː', 'ɔː'],
+            'D': ['aw', 'aj', 'ew', 'iw', 'ɔːw', 'ɔːj']
+        },
+        'patterns': ['CVC', 'QVC', 'CVF',
+                     'CLC', 'QLC', 'CLF',
+                     'CDC', 'QDC',
+                     'VC', 'VF', 'DC',
+                     'LC', 'LF'],
+        'stress': [-2]
+    },
+    'caucasus': {
+        'phonemes': {
+            'C': ['m', 'n',
+                  'pʼ', 'tʼ', 'tsʼ', 'tʃʼ', 'kʼ', 'qʼ',
+                  'b', 'd', 'dz', 'dʒ', 'g', 'gʷ',
+                  's', 'ʃ', 'χ', 'χʷ', 'ħ', 'ħʷ',
+                  'z', 'ʒ', 'ʁ', 'ʁʷ',
+                  'l', 'r'],
+            'V': ['a', 'ə'],
+        },
+        'patterns': ['CVC', 'CV', 'VC', 'CVCV', 'VCV'],
+        'stress': [-2]
+    },
+    'bantu': {
+        'phonemes': {
+            'C': ['m', 'n', 'ɲ',
+                  'p', 't', 'tʃ', 'k',
+                  'b', 'd', 'dʒ', 'g'],
+            'Q': ['mp', 'mb', 'nt', 'nd', 'ŋk', 'ŋg', 'ntʃ', 'ndʒ'],
+            'V': ['i', 'e', 'a', 'o', 'u']
+        },
+        'patterns': ['CVCV', 'CVQV', 'QVCV',
+                     'CV', 'QV', 'VCV', 'VQV'],
+        'stress': [-1, -2]
     }
 }
 
 
 def random_preset():
-    return PRESETS[np.random.choice(list(PRESETS.keys()))]
+    # return PRESETS[np.random.choice(list(PRESETS.keys()))]
+    return PRESETS['bantu']

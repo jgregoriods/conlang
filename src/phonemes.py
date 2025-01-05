@@ -13,6 +13,7 @@ BASE_CONSONANTS = [
 AFFRICATES = ['ts', 'dz', 'tʃ', 'dʒ', 'ʈʂ', 'ɖʐ', 'tɕ', 'dʑ', 'tɬ', 'dɮ']
 ASPIRATED = [f'{c}ʰ' for c in BASE_CONSONANTS + AFFRICATES]
 EJECTIVES = [f'{c}ʼ' for c in BASE_CONSONANTS + AFFRICATES]
+LABIALIZED = [f'{c}ʷ' for c in BASE_CONSONANTS + AFFRICATES]
 
 CONSONANTS = BASE_CONSONANTS + AFFRICATES + ASPIRATED + EJECTIVES
 

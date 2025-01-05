@@ -25,6 +25,10 @@ def is_acceptable(word: str) -> bool:
     if word.count('ː') > 1:
         return False
 
+    # allow only one labialized consonant
+    if word.count('ʷ') > 1:
+        return False
+
     # prevent too many repeated characters
     if len(set(word)) < len(word) // 2:
         return False
