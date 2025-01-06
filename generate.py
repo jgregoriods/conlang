@@ -65,6 +65,7 @@ def generate_from_random_preset(glosses_path: Path) -> None:
 
     print(f"Vocabulary generated and saved to {output_txt_path} and {output_csv_path}")
 
+
 def main():
     if len(sys.argv) < 2:
         # second arg is config_file or the word "random"

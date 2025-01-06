@@ -7,7 +7,7 @@ This project provides tools to generate a random vocabulary from phonemes, word 
 ### Generating Vocabulary
 
 ```
-python generate.py <config_file> [<glosses_file>]
+python generate.py <config_file | random> [<glosses_file>]
 ```
 
 To generate a vocabulary, you need to provide a configuration file in txt format. The configuration file should contain the following information:
@@ -30,6 +30,8 @@ CVCV VCV CVN CVCVN QVCV
 -1 -2
 ```
 
+If you do not have a configuration file, you can use the keyword `random` to generate a random configuration. The vocabulary generated with a random configuration will resemble (with some freedom) a natural language from a number of families (see the `random_preset.py` file for details).
+
 Optionally, you can provide a glosses file in txt format. The glosses file should contain a list of glosses separated by newlines. If not provided, the vocabulary will be generated from the Swadesh 200-word list.
 
 The resulting vocabulary will be saved in both txt and csv files with the same name as the configuration file.
@@ -37,7 +39,7 @@ The resulting vocabulary will be saved in both txt and csv files with the same n
 ### Mutating Vocabulary
 
 ```
-python mutate.py <vocabulary_file> <rules_file>
+python mutate.py <vocabulary_file> <rules_file | random>
 ```
 
 To mutate a vocabulary, you need to provide a vocabulary file in txt or csv format. If in txt format, the vocabulary file should contain a list of items separated by newlines, with each item consisting of a word followed by its gloss, separated by a colon or a tab. For example:
@@ -74,3 +76,5 @@ You can also use wildcards, defining them in the same way as the phoneme sets in
 p > b / V_V
 V: a e i o u
 ```
+
+If you do not have a rules file, you can use the keyword `random` to generate a random set of mutation rules. These will be drawn from a number of (somewhat) realistic mutation patterns (see the `sample_rules.py` file for details).

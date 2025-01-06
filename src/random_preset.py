@@ -4,16 +4,24 @@ import numpy as np
 PRESETS = {
     'polynesian': {
         'phonemes': {
-            'C': ['m', 'n', 'ŋ', 'p', 't', 'k', 'h', 'r'],
+            'C': ['m', 'n', 'ŋ',
+                  'p', 't', 'k',
+                  'h',
+                  'r'],
             'V': ['a', 'e', 'i', 'o', 'u']
         },
-        'patterns': ['CVCV', 'CVV', 'VCV'],
+        'patterns': ['CVV', 'CVCV', 'VCV', 'VCVV'],
         'stress': [-2]
     },
     'semitic': {
         'phonemes': {
-            'C': ['m', 'n', 't', 'k', 'q', 'ʔ', 'b', 'd', 'g', 'f', 's', 'ʃ', 'χ',
-                  'h', 'ħ', 'z', 'ʕ', 'j', 'w', 'r', 'l'],
+            'C': ['m', 'n',
+                  't', 'k', 'q', 'ʔ',
+                  'b', 'd', 'g',
+                  'f', 's', 'ʃ', 'χ', 'h', 'ħ',
+                  'z', 'ʕ',
+                  'r', 'l',
+                  'j', 'w'],
             'V': ['a', 'i', 'u'],
             'L': ['aː', 'iː', 'uː']
         },
@@ -23,15 +31,17 @@ PRESETS = {
     'sinitic': {
         'phonemes': {
             'C': ['m', 'n', 'ɲ', 'ŋ',
-                  'p', 't', 'ts', 'tʃ', 'k',
+                  'p', 't', 'ts', 'tʃ', 'k', 'ʔ',
                   'pʰ', 'tʰ', 'tsʰ', 'tʃʰ', 'kʰ',
                   'b', 'd', 'dz', 'dʒ', 'g',
-                  's', 'z', 'ʃ', 'ʒ',
-                  'ʔ', 'x', 'ɣ', 'l'
-                  ],
-            'V': ['i', 'u', 'a', 'e', 'o'],
+                  's', 'ʃ', 'x',
+                  'z', 'ʒ', 'ɣ',
+                  'l'],
+            'V': ['a', 'e', 'i', 'o', 'u'],
             'G': ['j', 'w'],
-            'F': ['m', 'n', 'ŋ', 'p', 't', 'k', 'w', 'j']
+            'F': ['m', 'n', 'ŋ',
+                  'p', 't', 'k',
+                  'j', 'w']
         },
         'patterns': ['CV', 'CGV', 'CVF', 'CGVF'],
         'stress': [-1]
@@ -41,28 +51,30 @@ PRESETS = {
         'phonemes': {
             'C': ['m', 'n', 'ɲ',
                   'p', 't', 'k', 'ʔ',
-                  'w', 'j', 'r',
-                  'ʃ', 'h'],
-            'V': ['i', 'e', 'a', 'o', 'u',
+                  'ʃ', 'h',
+                  'r',
+                  'j', 'w'],
+            'V': ['a', 'e', 'i', 'o', 'u',
                   'ɛ', 'ɔ', 'ɯ']
         },
-        'patterns': ['CVCV', 'VCV'],
+        'patterns': ['CV', 'VCV', 'CVCV'],
         'stress': [-1]
     },
     'andean': {
         'phonemes': {
             'C': ['m', 'n', 'ɲ',
-                  'p', 't', 'tʃ', 'k', 'q', 's',
-                  'w', 'j', 'r', 'l', 'ʎ', 'h'],
+                  'p', 't', 'tʃ', 'k', 'q',
+                  's', 'h',
+                  'r', 'l', 'ʎ',
+                  'j', 'w'],
             'V': ['a', 'i', 'u'],
             'Q': ['rm', 'rp', 'rk', 'rq',
                   'sp', 'sk', 'sq', 'sm',
                   'kp', 'kt', 'ks',
                   'qp', 'qt', 'qs'],
-            'F': ['n', 's', 'k', 'r']
+            'F': ['n', 'k', 's', 'r']
         },
-        'patterns': ['CVCV', 'VCV', 'CVQV', 'VQV',
-                     'CVCVF', 'VCVF', 'CVQVF', 'VQVF'],
+        'patterns': ['VCV', 'CVCV', 'VQV', 'CVQV', 'VCVF', 'CVCVF', 'VQVF', 'CVQVF'],
         'stress': [-2]
     },
     'nilotic': {
@@ -71,63 +83,68 @@ PRESETS = {
                   'p', 't', 'c', 'k',
                   'b', 'd', 'ɟ', 'g',
                   's',
-                  'r', 'l', 'j', 'w'],
+                  'r', 'l',
+                  'j', 'w'],
             'G': ['j', 'w'],
-            'V': ['i', 'e', 'a', 'o', 'u',
-                  'ɛ', 'ɔ', 'ʌ'],
+            'V': ['a', 'e', 'i', 'o', 'u',
+                  'ɛ', 'ɔ', 'ʌ']
         },
         'patterns': ['CVC', 'CGVC'],
         'stress': [-1]
     },
     'pacific_coast': {
         'phonemes': {
-            'C': ['t', 'ts', 'tɬ', 'k', 'kʷ', 'q', 'qʷ', 'ʔ',
+            'C': ['m', 'n',
+                  't', 'ts', 'tɬ', 'k', 'kʷ', 'q', 'qʷ', 'ʔ',
                   'tʼ', 'tsʼ', 'tɬʼ', 'kʼ', 'kʷʼ', 'qʼ', 'qʷʼ',
                   's', 'ɬ', 'x', 'xʷ', 'χ', 'χʷ', 'h',
-                  'm', 'n', 'l', 'j', 'w'],
-            'V': ['i', 'iː', 'e', 'eː', 'a', 'aː', 'u', 'uː', 'ə']
+                  'l',
+                  'j', 'w'],
+            'V': ['a', 'e', 'i', 'u',
+                  'ə',
+                  'aː', 'eː', 'iː', 'uː']
         },
         'patterns': ['CVC'],
         'stress': [-1]
     },
     'uralic': {
         'phonemes': {
-            'C': ['p', 't', 'tɕ', 'tʃ', 'k',
-                  'm', 'n', 'ɲ', 'ŋ',
-                  's', 'ɕ', 'ʃ',
-                  'l', 'ʎ', 'r', 'j', 'w'],
+            'C': ['m', 'n', 'ɲ', 'ŋ', 'p', 't', 'tɕ', 'tʃ', 'k', 's', 'ɕ', 'ʃ',
+                  'r', 'l', 'ʎ', 'j', 'w'],
             'Q': ['pt', 'ps', 'tk', 'tɕk', 'tʃk', 'kt', 'ktɕ', 'ktʃ', 'ks',
-                  'mp', 'mt', 'mk', 'nt', 'ŋk',
-                  'lk', 'lm', 'lw', 'rk', 'rm', 'rw'],
-            'V': ['i', 'y', 'u', 'e', 'o', 'ɛ', 'a'],
+                  'mp', 'mt', 'mk', 'nt', 'ŋk', 'lk', 'lm', 'lw', 'rk', 'rm',
+                  'rw'],
+            'V': ['a', 'e', 'i', 'o', 'u', 'y', 'ɛ'],
             'F': ['a', 'i']
         },
-        'patterns': ['CVCF', 'VCF'],
+        'patterns': ['VCF', 'CVCF'],
         'stress': [-2]
     },
     'germanic': {
         'phonemes': {
             'C': ['m', 'n',
-                  'p', 'b', 't', 'd', 'k',
-                  'f', 'θ', 's', 'z', 'ɣ',
-                  'l', 'r', 'j', 'w'],
-            'Q': ['pl', 'kl', 'fl', 'sl', 'bl',
-                  'pr', 'tr', 'kr', 'fr', 'θr', 'br', 'dr',
-                  'tw', 'dw', 'kw', 'θw', 'xw', 'sw',
+                  'p', 't', 'k',
+                  'b', 'd',
+                  'f', 'θ', 's', 'h',
+                  'z',
+                  'r', 'l',
+                  'j', 'w'],
+            'Q': ['pl', 'kl', 'bl', 'fl', 'sl',
+                  'pr', 'tr', 'kr', 'br', 'dr', 'fr', 'θr',
+                  'tw', 'kw', 'dw', 'θw', 'sw', 'hw',
                   'kn', 'sm', 'sn', 'sp', 'st', 'sk'],
-            'F': ['ft', 'xt', 'fs', 'xs', 'zd',
-                  'mp', 'ms', 'mb', 'nt', 'nk', 'ns', 'nd',
-                  'lp', 'lt', 'lk', 'lf', 'ls', 'lb', 'lm', 'rp', 'rt', 'rk', 'rf', 'rs', 'rb',
-                  'sp', 'st', 'sk'],
-            'V': ['i', 'e', 'a', 'u'],
-            'L': ['iː', 'eː', 'aː', 'uː', 'ɔː'],
-            'D': ['aw', 'aj', 'ew', 'iw', 'ɔːw', 'ɔːj']
+            'F': ['mp', 'nt', 'nk', 'ns',
+                  'zd',
+                  'rt', 'rk', 'rs'],
+            'V': ['a', 'e', 'i', 'u'],
+            'L': ['aː', 'eː', 'iː', 'uː', 'ɔː'],
+            'D': ['aw', 'aj','ew', 'iw']
         },
         'patterns': ['CVC', 'QVC', 'CVF',
-                     'CLC', 'QLC', 'CLF',
+                     'CLC', 'QLC',
                      'CDC', 'QDC',
                      'VC', 'VF', 'DC',
-                     'LC', 'LF'],
+                     'LC'],
         'stress': [-2]
     },
     'caucasus': {
@@ -137,10 +154,10 @@ PRESETS = {
                   'b', 'd', 'dz', 'dʒ', 'g', 'gʷ',
                   's', 'ʃ', 'χ', 'χʷ', 'ħ', 'ħʷ',
                   'z', 'ʒ', 'ʁ', 'ʁʷ',
-                  'l', 'r'],
+                  'r', 'l'],
             'V': ['a', 'ə'],
         },
-        'patterns': ['CVC', 'CV', 'VC', 'CVCV', 'VCV'],
+        'patterns': ['CV', 'VC', 'CVC', 'VCV', 'CVCV'],
         'stress': [-2]
     },
     'bantu': {
@@ -149,15 +166,49 @@ PRESETS = {
                   'p', 't', 'tʃ', 'k',
                   'b', 'd', 'dʒ', 'g'],
             'Q': ['mp', 'mb', 'nt', 'nd', 'ŋk', 'ŋg', 'ntʃ', 'ndʒ'],
-            'V': ['i', 'e', 'a', 'o', 'u']
+            'V': ['a', 'e', 'i', 'o', 'u']
         },
-        'patterns': ['CVCV', 'CVQV', 'QVCV',
-                     'CV', 'QV', 'VCV', 'VQV'],
+        'patterns': ['CV', 'QV', 'VCV', 'VQV',
+                     'CVCV', 'CVQV', 'QVCV'],
+        'stress': [-1, -2]
+    },
+    'maya': {
+        'phonemes': {
+            'C': ['m', 'n',
+                  'p', 't', 'ts', 'tʃ', 'k', 'ʔ',
+                  'b',
+                  'pʼ', 'tʼ', 'tsʼ', 'tʃʼ', 'kʼ',
+                  's', 'ʃ', 'χ', 'h',
+                  'l',
+                  'j', 'w'],
+            'F': ['m', 'n',
+                  'ts', 'tʃ', 'k', 'ʔ',
+                  'b',
+                  'tsʼ', 'tʃʼ', 'kʼ',
+                  'ʃ', 'h',
+                  'l'],
+            'V': ['a', 'e', 'i', 'o', 'u',
+                  'aː', 'eː', 'iː', 'oː', 'uː']
+        },
+        'patterns': ['CVF'],
+        'stress': [-1]
+    },
+    'caddoan': {
+        'phonemes': {
+            'C': ['n',
+                  'p', 't', 'tʃ', 'k', 'ʔ',
+                  's', 'ʃ', 'x', 'h',
+                  'r',
+                  'w'],
+            'F': ['t', 'k', 'ʔ'],
+            'V': ['a', 'e', 'i', 'o', 'u',
+                  'aː', 'eː', 'iː', 'oː', 'uː']
+        },
+        'patterns': ['CVCV', 'CVCVF'],
         'stress': [-1, -2]
     }
 }
 
 
 def random_preset():
-    # return PRESETS[np.random.choice(list(PRESETS.keys()))]
-    return PRESETS['bantu']
+    return PRESETS[np.random.choice(list(PRESETS.keys()))]

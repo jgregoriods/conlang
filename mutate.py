@@ -12,10 +12,18 @@ def random_mutate_vocabulary(vocabulary_path: Path):
     """
     Mutate a vocabulary using a random set of mutation rules.
     """
-    rule = np.random.choice(list(SAMPLE_RULES), size=1, replace=False)[0]
+    rules = np.random.choice(list(SAMPLE_RULES), size=np.random.randint(1, 6), replace=False)
+
+    rule = {'rules': {}, 'wildcards': {}}
+    for r in rules:
+        for k, v in SAMPLE_RULES[r]['rules'].items():
+            if k not in rule['rules']:
+                rule['rules'][k] = v
+        rule['wildcards'].update(SAMPLE_RULES[r]['wildcards'])
+
     with open(vocabulary_path, 'r') as f:
         vocabulary = parse_vocabulary(f)
-    mutated_vocabulary = mutate_vocabulary(vocabulary, SAMPLE_RULES[rule])
+    mutated_vocabulary = mutate_vocabulary(vocabulary, rule)
 
     output_txt_path = Path(f'mutated_{vocabulary_path.stem}.txt')
     output_csv_path = Path(f'mutated_{vocabulary_path.stem}.csv')
