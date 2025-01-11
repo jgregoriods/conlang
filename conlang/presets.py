@@ -208,7 +208,3 @@ PRESETS = {
         'stress': [-1, -2]
     }
 }
-
-
-def random_preset():
-    return PRESETS[np.random.choice(list(PRESETS.keys()))]

@@ -1,6 +1,7 @@
 from .phonemes import VOWELS, CONSONANTS
 
-SAMPLE_RULES = {
+
+RULES = {
     'opening': {
         'rules': {
             'pʰ': [('p', '')],
@@ -185,7 +186,7 @@ SAMPLE_RULES = {
     }
 }
 
-SAMPLE_RULES['elision']['rules'] = {k: [('0', '[-stress]')] for k in VOWELS}
-SAMPLE_RULES['vowel_reduction']['rules'] = {k: [('ə', '[-stress]')] for k in VOWELS}
-SAMPLE_RULES['final_consonant_loss']['rules'] = {k: [('0', '_#')] for k in CONSONANTS}
-SAMPLE_RULES['final_vowel_loss']['rules'] = {k: [('0', '_# [-stress]')] for k in VOWELS}
+RULES['elision']['rules'] = {k: [('0', '[-stress]')] for k in VOWELS}
+RULES['vowel_reduction']['rules'] = {k: [('ə', '[-stress]')] for k in VOWELS}
+RULES['final_consonant_loss']['rules'] = {k: [('0', '_#')] for k in CONSONANTS}
+RULES['final_vowel_loss']['rules'] = {k: [('0', '_# [-stress]')] for k in VOWELS}
