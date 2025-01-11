@@ -17,11 +17,24 @@ class Vocabulary:
             f.write('word,gloss\n')
             for item in self.items:
                 f.write(f"{item['word']},{item['gloss']}\n")
+    
+    def to_str(self) -> str:
+        return '\n'.join(f"{item['word']}: {item['gloss']}" for item in self.items)
 
     def to_txt(self, filename: str) -> None:
         with open(filename, 'w') as f:
-            for item in self.items:
-                f.write(f"{item['word']}: {item['gloss']}\n")
+            f.write(self.to_str())
+
+    @staticmethod
+    def from_str(string: str) -> 'Vocabulary':
+        vocabulary = Vocabulary()
+        for line in string.split('\n'):
+            try:
+                word, gloss = line.strip().split(': ')
+                vocabulary.add_item(word, gloss)
+            except ValueError:
+                continue
+        return vocabulary
 
     @staticmethod
     def from_csv(filename: str) -> 'Vocabulary':
@@ -38,12 +51,5 @@ class Vocabulary:
 
     @staticmethod
     def from_txt(filename: str) -> 'Vocabulary':
-        vocabulary = Vocabulary()
         with open(filename, 'r') as f:
-            for line in f:
-                try:
-                    word, gloss = line.strip().split(': ')
-                    vocabulary.add_item(word, gloss)
-                except ValueError:
-                    continue
-        return vocabulary
+            return Vocabulary.from_str(f.read())

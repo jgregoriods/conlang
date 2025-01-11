@@ -78,31 +78,34 @@ class SoundChange:
         return mutated_vocabulary
 
     @staticmethod
-    def from_txt(filename: str) -> 'SoundChange':
+    def from_str(string: str) -> 'SoundChange':
         rules = {}
         wildcards = {}
 
-        with open(filename, 'r') as f:
-            for line in f:
-                if '>' in line:
-                    line = line.split('>')
-                    before = line[0].strip()
-                    after = line[1].strip()
-                    if before not in rules:
-                        rules[before] = []
-                    if '/' in after:
-                        after, environment = after.split('/')
-                        rules[before].append(
-                            (after.strip(), environment.strip()))
-                    else:
-                        rules[before].append((after, ''))
-                elif ':' in line:
-                    line = line.split(':')
-                    wildcard = line[0].strip()
-                    phonemes = line[1].strip().split()
-                    wildcards[wildcard] = phonemes
+        for line in string.split('\n'):
+            if '>' in line:
+                line = line.split('>')
+                before = line[0].strip()
+                after = line[1].strip()
+                if before not in rules:
+                    rules[before] = []
+                if '/' in after:
+                    after, environment = after.split('/')
+                    rules[before].append((after.strip(), environment.strip()))
+                else:
+                    rules[before].append((after, ''))
+            elif ':' in line:
+                line = line.split(':')
+                wildcard = line[0].strip()
+                phonemes = line[1].strip().split()
+                wildcards[wildcard] = phonemes
 
         return SoundChange(rules, wildcards)
+
+    @staticmethod
+    def from_txt(filename: str) -> 'SoundChange':
+        with open(filename, 'r') as f:
+            return SoundChange.from_str(f.read())
 
     @staticmethod
     def random() -> 'SoundChange':

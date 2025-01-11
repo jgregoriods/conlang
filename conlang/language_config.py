@@ -10,24 +10,28 @@ class LanguageConfig:
         self.stress = stress
 
     @staticmethod
-    def from_txt(file_path: str) -> 'LanguageConfig':
+    def from_str(string: str) -> 'LanguageConfig':
         phonemes = {}
         patterns = []
         stress = []
 
-        with open(file_path, 'r') as f:
-            for line in f:
-                if ':' in line:
-                    line = line.split(':')
-                    phonemes[line[0]] = line[1].strip().split()
-                elif '-' in line:
-                    stress.extend(line.strip().split())
-                elif line.isupper():
-                    patterns.extend(line.strip().split())
+        for line in string.split('\n'):
+            if ':' in line:
+                line = line.split(':')
+                phonemes[line[0]] = line[1].strip().split()
+            elif '-' in line:
+                stress.extend(line.strip().split())
+            elif line.isupper():
+                patterns.extend(line.strip().split())
 
         stress = [int(s) for s in stress]
 
         return LanguageConfig(phonemes, patterns, stress)
+
+    @staticmethod
+    def from_txt(file_path: str) -> 'LanguageConfig':
+        with open(file_path, 'r') as f:
+            return LanguageConfig.from_str(f.read())
 
     @staticmethod
     def random() -> 'LanguageConfig':
