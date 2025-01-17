@@ -1,3 +1,4 @@
+import json
 import numpy as np
 
 from pathlib import Path
@@ -67,6 +68,40 @@ class LanguageConfig:
             raise FileNotFoundError(f'File not found: {file_path}')
         with path.open('r', encoding='utf-8') as f:
             return LanguageConfig.from_str(f.read())
+
+    @staticmethod
+    def from_dict(config_dict: Dict) -> 'LanguageConfig':
+        """
+        Creates a LanguageConfig instance from a dictionary.
+
+        Args:
+            config_dict (Dict): A dictionary containing the configuration.
+
+        Returns:
+            LanguageConfig: The parsed language configuration.
+        """
+        return LanguageConfig(
+            phonemes=config_dict['phonemes'],
+            patterns=config_dict['patterns'],
+            stress=config_dict['stress']
+        )
+
+    @staticmethod
+    def from_json(file_path: str) -> 'LanguageConfig':
+        """
+        Reads a configuration from a JSON file to create a LanguageConfig instance.
+
+        Args:
+            file_path (str): The path to the configuration file.
+
+        Returns:
+            LanguageConfig: The parsed language configuration.
+        """
+        path = Path(file_path)
+        if not path.is_file():
+            raise FileNotFoundError(f'File not found: {file_path}')
+        with path.open('r', encoding='utf-8') as f:
+            return LanguageConfig.from_dict(json.load(f))
 
     @staticmethod
     def random() -> 'LanguageConfig':

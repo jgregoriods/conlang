@@ -47,7 +47,6 @@ def split_syllables(word: str) -> List[str]:
             syllables.append(current_syllable)
             current_syllable = ''
 
-    # Append any remaining phonemes
     if current_syllable:
         if syllables:
             syllables[-1] += current_syllable
@@ -93,13 +92,14 @@ def process_phonemes(phonemes: Dict[str, List[str]]) -> Dict[str, List[str]]:
     Returns:
         Dict[str, List[str]]: A modified dictionary where common phonemes are more likely.
     """
-    processed = {}
-    for category, phoneme_list in phonemes.items():
-        weighted_phonemes = []
-        for phoneme in phoneme_list:
-            weight = 2 if phoneme in COMMON_PHONEMES else 1
-            weighted_phonemes.extend([phoneme] * weight)
-        processed[category] = weighted_phonemes
+    common_set = set(COMMON_PHONEMES)  # Convert to set for faster lookup
+    processed = {
+        category: [
+            phoneme for phoneme in phoneme_list
+            for _ in range(2 if all(item in common_set for item in split_phonemes(phoneme)) else 1)
+        ]
+        for category, phoneme_list in phonemes.items()
+    }
     return processed
 
 

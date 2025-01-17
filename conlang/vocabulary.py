@@ -46,6 +46,24 @@ class Vocabulary:
         """
         for item in self.items:
             yield (item['word'], item['gloss'])
+    
+    def __str__(self) -> str:
+        """
+        Convert the vocabulary to a string representation.
+
+        Returns:
+            str: A string with each word-gloss pair on a new line in "word: gloss" format.
+        """
+        return "\n".join(f"{item['word']}: {item['gloss']}" for item in self.items)
+    
+    def __repr__(self):
+        """
+        Return the string representation of the vocabulary.
+
+        Returns:
+            str: A string representation of the vocabulary.
+        """
+        return self.__str__()
 
     def to_csv(self, filename: str) -> None:
         """
@@ -148,3 +166,35 @@ class Vocabulary:
             raise FileNotFoundError(f'File not found: {file_path}')
         with path.open('r', encoding='utf-8') as f:
             return Vocabulary.from_str(f.read())
+
+    @staticmethod
+    def from_list(items: List[Dict[str, str]]) -> 'Vocabulary':
+        """
+        Create a Vocabulary object from a list of word-gloss dictionaries.
+
+        Args:
+            items (List[Dict[str, str]]): A list of word-gloss dictionaries.
+
+        Returns:
+            Vocabulary: A new Vocabulary object.
+        """
+        vocabulary = Vocabulary()
+        vocabulary.items = items
+        return vocabulary
+    
+    @staticmethod
+    def from_json(file_path: str) -> 'Vocabulary':
+        """
+        Create a Vocabulary object from a JSON file.
+
+        Args:
+            file_path (str): Path to the input JSON file.
+
+        Returns:
+            Vocabulary: A new Vocabulary object.
+        """
+        import json
+
+        with open(file_path, 'r', encoding='utf-8') as f:
+            items = json.load(f)
+        return Vocabulary.from_list(items)
