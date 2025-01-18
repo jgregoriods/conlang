@@ -73,3 +73,15 @@ class Language:
 
             if attempts == MAX_ATTEMPTS:
                 warnings.warn(f"Failed to generate unique acceptable word for '{gloss}'. Please, check your configuration.")
+
+    def __str__(self) -> str:
+        """
+        Returns a string representation of the language.
+        """
+        return f"{self.name}\n\n{self.config}\n\n{self.vocabulary}"
+
+    def __repr__(self):
+        """
+        Returns a string representation of the language.
+        """
+        return self.__str__()

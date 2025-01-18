@@ -118,3 +118,18 @@ class LanguageConfig:
             patterns=preset['patterns'],
             stress=preset['stress']
         )
+
+    def __str__(self) -> str:
+        """
+        Returns a string representation of the configuration.
+        """
+        phonemes = '\n'.join(f'{k}: {" ".join(v)}' for k, v in self.phonemes.items())
+        patterns = ' '.join(self.patterns)
+        stress = ' '.join(map(str, self.stress))
+        return f'{phonemes}\n{patterns}\n{stress}'
+
+    def __repr__(self) -> str:
+        """
+        Returns a string representation of the configuration.
+        """
+        return self.__str__()

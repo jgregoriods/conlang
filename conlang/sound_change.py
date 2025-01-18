@@ -157,18 +157,8 @@ class SoundChange:
         Returns:
             SoundChange: A new instance with random rules and wildcards.
         """
-        rule_names = np.random.choice(
-            list(RULES), size=np.random.randint(1, 6), replace=False
-        )
-
-        rules = {}
-        wildcards = {}
-
-        for rule_name in rule_names:
-            rules.update(RULES[rule_name]['rules'])
-            wildcards.update(RULES[rule_name]['wildcards'])
-
-        return SoundChange(rules, wildcards)
+        selected_rules = np.random.choice(list(RULES.keys()))
+        return SoundChange(RULES[selected_rules]['rules'], RULES[selected_rules]['wildcards'])
 
     def _matches_phoneme(self, phoneme: str, condition: str) -> bool:
         """
@@ -186,3 +176,86 @@ class SoundChange:
             if condition.islower()
             else phoneme in self.wildcards.get(condition, [])
         )
+
+    def __str__(self) -> str:
+        """
+        Return the string representation of the SoundChange instance.
+        """
+        rules = '\n'.join(
+            f'{k} > {", ".join(f"{a}" if not e else f"{a} / {e}" for a, e in v)}'
+            for k, v in self.rules.items()
+        )
+        wildcards = '\n'.join(
+            f'{k}: {" ".join(v)}'
+            for k, v in self.wildcards.items()
+        )
+        return f'{rules}\n\n{wildcards}'
+
+    def __repr__(self) -> str:
+        """
+        Return the string representation of the SoundChange instance.
+        """
+        return self.__str__()
+
+
+class SoundChangePipeline:
+    """
+    A class to chain multiple sound changes together.
+
+    Attributes:
+        changes (List[SoundChange]): A list of SoundChange instances.
+    """
+
+    def __init__(self, changes: List[SoundChange]):
+        self.changes = changes
+
+    def apply_to_word(self, word: str) -> str:
+        """
+        Apply all sound changes in the pipeline to a single word.
+
+        Args:
+            word (str): The input word.
+
+        Returns:
+            str: The transformed word.
+        """
+        for change in self.changes:
+            word = change.apply_to_word(word)
+        return word
+
+    def apply_to_vocabulary(self, vocabulary: Vocabulary) -> Vocabulary:
+        """
+        Apply all sound changes in the pipeline to an entire vocabulary.
+
+        Args:
+            vocabulary (Vocabulary): The input vocabulary.
+
+        Returns:
+            Vocabulary: A new vocabulary with transformed words.
+        """
+        for change in self.changes:
+            vocabulary = change.apply_to_vocabulary(vocabulary)
+        return vocabulary
+
+    def __str__(self) -> str:
+        """
+        Return the string representation of the SoundChangePipeline instance.
+        """
+        return '\n\n'.join(str(change) for change in self.changes)
+
+    def __repr__(self) -> str:
+        """
+        Return the string representation of the SoundChangePipeline instance.
+        """
+        return self.__str__()
+    
+    @staticmethod
+    def random(num_changes: Optional[int] = None) -> 'SoundChangePipeline':
+        """
+        Generate a random SoundChangePipeline instance with random sound changes.
+
+        Returns:
+            SoundChangePipeline: A new instance with random sound changes.
+        """
+        num_changes = num_changes or np.random.randint(1, 5)
+        return SoundChangePipeline([SoundChange.random() for _ in range(num_changes)])

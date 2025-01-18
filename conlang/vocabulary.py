@@ -46,7 +46,7 @@ class Vocabulary:
         """
         for item in self.items:
             yield (item['word'], item['gloss'])
-    
+
     def __str__(self) -> str:
         """
         Convert the vocabulary to a string representation.
@@ -55,8 +55,8 @@ class Vocabulary:
             str: A string with each word-gloss pair on a new line in "word: gloss" format.
         """
         return "\n".join(f"{item['word']}: {item['gloss']}" for item in self.items)
-    
-    def __repr__(self):
+
+    def __repr__(self) -> str:
         """
         Return the string representation of the vocabulary.
 
