@@ -69,7 +69,8 @@
            <div itemprop="articleBody">
              
   <h1>Source code for conlang.language_config</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
@@ -147,6 +148,46 @@
             <span class="k">return</span> <span class="n">LanguageConfig</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span></div>
 
 
+<div class="viewcode-block" id="LanguageConfig.from_dict">
+<a class="viewcode-back" href="../../conlang.html#conlang.language_config.LanguageConfig.from_dict">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="n">config_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;LanguageConfig&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a LanguageConfig instance from a dictionary.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config_dict (Dict): A dictionary containing the configuration.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            LanguageConfig: The parsed language configuration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">LanguageConfig</span><span class="p">(</span>
+            <span class="n">phonemes</span><span class="o">=</span><span class="n">config_dict</span><span class="p">[</span><span class="s1">&#39;phonemes&#39;</span><span class="p">],</span>
+            <span class="n">patterns</span><span class="o">=</span><span class="n">config_dict</span><span class="p">[</span><span class="s1">&#39;patterns&#39;</span><span class="p">],</span>
+            <span class="n">stress</span><span class="o">=</span><span class="n">config_dict</span><span class="p">[</span><span class="s1">&#39;stress&#39;</span><span class="p">]</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LanguageConfig.from_json">
+<a class="viewcode-back" href="../../conlang.html#conlang.language_config.LanguageConfig.from_json">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;LanguageConfig&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reads a configuration from a JSON file to create a LanguageConfig instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            file_path (str): The path to the configuration file.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            LanguageConfig: The parsed language configuration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;File not found: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">LanguageConfig</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">))</span></div>
+
+
 <div class="viewcode-block" id="LanguageConfig.random">
 <a class="viewcode-back" href="../../conlang.html#conlang.language_config.LanguageConfig.random">[docs]</a>
     <span class="nd">@staticmethod</span>
@@ -164,7 +205,22 @@
             <span class="n">patterns</span><span class="o">=</span><span class="n">preset</span><span class="p">[</span><span class="s1">&#39;patterns&#39;</span><span class="p">],</span>
             <span class="n">stress</span><span class="o">=</span><span class="n">preset</span><span class="p">[</span><span class="s1">&#39;stress&#39;</span><span class="p">]</span>
         <span class="p">)</span></div>
-</div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a string representation of the configuration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">phonemes</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">phonemes</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+        <span class="n">patterns</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">patterns</span><span class="p">)</span>
+        <span class="n">stress</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stress</span><span class="p">))</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">phonemes</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">patterns</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">stress</span><span class="si">}</span><span class="s1">&#39;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a string representation of the configuration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span></div>
 
 </pre></div>
 

@@ -244,18 +244,8 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            SoundChange: A new instance with random rules and wildcards.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">rule_names</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span>
-            <span class="nb">list</span><span class="p">(</span><span class="n">RULES</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span>
-        <span class="p">)</span>
-
-        <span class="n">rules</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">wildcards</span> <span class="o">=</span> <span class="p">{}</span>
-
-        <span class="k">for</span> <span class="n">rule_name</span> <span class="ow">in</span> <span class="n">rule_names</span><span class="p">:</span>
-            <span class="n">rules</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">RULES</span><span class="p">[</span><span class="n">rule_name</span><span class="p">][</span><span class="s1">&#39;rules&#39;</span><span class="p">])</span>
-            <span class="n">wildcards</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">RULES</span><span class="p">[</span><span class="n">rule_name</span><span class="p">][</span><span class="s1">&#39;wildcards&#39;</span><span class="p">])</span>
-
-        <span class="k">return</span> <span class="n">SoundChange</span><span class="p">(</span><span class="n">rules</span><span class="p">,</span> <span class="n">wildcards</span><span class="p">)</span></div>
+        <span class="n">selected_rules</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">RULES</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="k">return</span> <span class="n">SoundChange</span><span class="p">(</span><span class="n">RULES</span><span class="p">[</span><span class="n">selected_rules</span><span class="p">][</span><span class="s1">&#39;rules&#39;</span><span class="p">],</span> <span class="n">RULES</span><span class="p">[</span><span class="n">selected_rules</span><span class="p">][</span><span class="s1">&#39;wildcards&#39;</span><span class="p">])</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_matches_phoneme</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phoneme</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -273,7 +263,102 @@
             <span class="n">phoneme</span> <span class="o">==</span> <span class="n">condition</span>
             <span class="k">if</span> <span class="n">condition</span><span class="o">.</span><span class="n">islower</span><span class="p">()</span>
             <span class="k">else</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wildcards</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="p">[])</span>
-        <span class="p">)</span></div>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the string representation of the SoundChange instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rules</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1"> &gt; </span><span class="si">{</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">wildcards</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wildcards</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">rules</span><span class="si">}</span><span class="se">\n\n</span><span class="si">{</span><span class="n">wildcards</span><span class="si">}</span><span class="s1">&#39;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the string representation of the SoundChange instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="SoundChangePipeline">
+<a class="viewcode-back" href="../../conlang.html#conlang.sound_change.SoundChangePipeline">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SoundChangePipeline</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class to chain multiple sound changes together.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        changes (List[SoundChange]): A list of SoundChange instances.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">changes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SoundChange</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">changes</span> <span class="o">=</span> <span class="n">changes</span>
+
+<div class="viewcode-block" id="SoundChangePipeline.apply_to_word">
+<a class="viewcode-back" href="../../conlang.html#conlang.sound_change.SoundChangePipeline.apply_to_word">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply_to_word</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply all sound changes in the pipeline to a single word.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            word (str): The input word.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The transformed word.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">change</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">changes</span><span class="p">:</span>
+            <span class="n">word</span> <span class="o">=</span> <span class="n">change</span><span class="o">.</span><span class="n">apply_to_word</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">word</span></div>
+
+
+<div class="viewcode-block" id="SoundChangePipeline.apply_to_vocabulary">
+<a class="viewcode-back" href="../../conlang.html#conlang.sound_change.SoundChangePipeline.apply_to_vocabulary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply_to_vocabulary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocabulary</span><span class="p">:</span> <span class="n">Vocabulary</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vocabulary</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply all sound changes in the pipeline to an entire vocabulary.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            vocabulary (Vocabulary): The input vocabulary.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Vocabulary: A new vocabulary with transformed words.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">change</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">changes</span><span class="p">:</span>
+            <span class="n">vocabulary</span> <span class="o">=</span> <span class="n">change</span><span class="o">.</span><span class="n">apply_to_vocabulary</span><span class="p">(</span><span class="n">vocabulary</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">vocabulary</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the string representation of the SoundChangePipeline instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">change</span><span class="p">)</span> <span class="k">for</span> <span class="n">change</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">changes</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the string representation of the SoundChangePipeline instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+    
+<div class="viewcode-block" id="SoundChangePipeline.random">
+<a class="viewcode-back" href="../../conlang.html#conlang.sound_change.SoundChangePipeline.random">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">random</span><span class="p">(</span><span class="n">num_changes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;SoundChangePipeline&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a random SoundChangePipeline instance with random sound changes.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            SoundChangePipeline: A new instance with random sound changes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">num_changes</span> <span class="o">=</span> <span class="n">num_changes</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">SoundChangePipeline</span><span class="p">([</span><span class="n">SoundChange</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_changes</span><span class="p">)])</span></div>
+</div>
 
 </pre></div>
 

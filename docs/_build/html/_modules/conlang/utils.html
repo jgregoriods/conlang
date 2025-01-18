@@ -123,7 +123,6 @@
             <span class="n">syllables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_syllable</span><span class="p">)</span>
             <span class="n">current_syllable</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 
-    <span class="c1"># Append any remaining phonemes</span>
     <span class="k">if</span> <span class="n">current_syllable</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">syllables</span><span class="p">:</span>
             <span class="n">syllables</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">current_syllable</span>
@@ -175,13 +174,14 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        Dict[str, List[str]]: A modified dictionary where common phonemes are more likely.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">processed</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">category</span><span class="p">,</span> <span class="n">phoneme_list</span> <span class="ow">in</span> <span class="n">phonemes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">weighted_phonemes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="n">phoneme_list</span><span class="p">:</span>
-            <span class="n">weight</span> <span class="o">=</span> <span class="mi">2</span> <span class="k">if</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="n">COMMON_PHONEMES</span> <span class="k">else</span> <span class="mi">1</span>
-            <span class="n">weighted_phonemes</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">phoneme</span><span class="p">]</span> <span class="o">*</span> <span class="n">weight</span><span class="p">)</span>
-        <span class="n">processed</span><span class="p">[</span><span class="n">category</span><span class="p">]</span> <span class="o">=</span> <span class="n">weighted_phonemes</span>
+    <span class="n">common_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">COMMON_PHONEMES</span><span class="p">)</span>  <span class="c1"># Convert to set for faster lookup</span>
+    <span class="n">processed</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">category</span><span class="p">:</span> <span class="p">[</span>
+            <span class="n">phoneme</span> <span class="k">for</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="n">phoneme_list</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span> <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">item</span> <span class="ow">in</span> <span class="n">common_set</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">split_phonemes</span><span class="p">(</span><span class="n">phoneme</span><span class="p">))</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">category</span><span class="p">,</span> <span class="n">phoneme_list</span> <span class="ow">in</span> <span class="n">phonemes</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">}</span>
     <span class="k">return</span> <span class="n">processed</span></div>
 
 
