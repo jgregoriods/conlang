@@ -123,15 +123,11 @@ RULES = {
     },
     'elision': {
         'rules': {},
-        'wildcards': {
-            'V': VOWELS
-        }
+        'wildcards': {}
     },
     'vowel_reduction': {
         'rules': {},
-        'wildcards': {
-            'V': VOWELS
-        }
+        'wildcards': {}
     },
     'final_consonant_loss': {
         'rules': {},

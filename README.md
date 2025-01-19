@@ -1,5 +1,8 @@
 # Conlang
 
+![PyPI](https://img.shields.io/pypi/v/conlang)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/conlang)
+
 Conlang is a Python library for creating and manipulating constructed languages.
 
 ## Installation

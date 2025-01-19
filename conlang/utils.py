@@ -56,7 +56,7 @@ def split_syllables(word: str) -> List[str]:
     return syllables
 
 
-def map_stress(phonemes: List[str]) -> List[bool]:
+def map_stress(word: str) -> List[bool]:
     """
     Maps which phonemes are in a stressed syllable.
 
@@ -66,20 +66,14 @@ def map_stress(phonemes: List[str]) -> List[bool]:
     Returns:
         List[bool]: A list indicating stressed (True) and unstressed (False) phonemes.
     """
-    # If there's only one vowel, all phonemes are stressed
-    if len(set(VOWELS) & set(phonemes)) == 1:
-        return [True] * len(phonemes)
-
-    stress = [False] * len(phonemes)
-    for i, phoneme in enumerate(phonemes):
-        if phoneme == "ˈ":
-            stress[i + 1] = True
-            j = i + 2
-            while j < len(phonemes) and phonemes[j] not in CONSONANTS:
-                stress[j] = True
-                j += 1
-
-    return stress
+    syllables = split_syllables(word)
+    stressed = []
+    for syllable in syllables:
+        if 'ˈ' in syllable:
+            stressed.extend([True] * len(syllable))
+        else:
+            stressed.extend([False] * len(syllable))
+    return stressed
 
 
 def process_phonemes(phonemes: Dict[str, List[str]]) -> Dict[str, List[str]]:

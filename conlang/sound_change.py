@@ -6,6 +6,7 @@ from typing import List, Dict, Tuple, Optional
 from .utils import split_phonemes, map_stress
 from .vocabulary import Vocabulary
 from .rules import RULES
+from .phonemes import VOWELS
 
 
 class SoundChange:
@@ -31,8 +32,8 @@ class SoundChange:
         Returns:
             str: The transformed word.
         """
+        stressed = map_stress(word)
         phonemes = split_phonemes(word)
-        stressed = map_stress(phonemes)
         result = []
 
         def matches_environment(index: int, environment: str) -> bool:
@@ -54,15 +55,20 @@ class SoundChange:
             if environment == "_#":
                 return index == len(phonemes) - 1
 
-            prv, nxt = environment.split('_') if '_' in environment else (None, None)
+            prv, nxt = environment.split(
+                '_') if '_' in environment else (None, None)
 
             if prv:
-                prev_idx = index - 1 if index > 0 and phonemes[index - 1] != "ˈ" else index - 2
+                prev_idx = index - \
+                    1 if index > 0 and phonemes[index -
+                                                1] != "ˈ" else index - 2
                 if prev_idx < 0 or not self._matches_phoneme(phonemes[prev_idx], prv):
                     return False
 
             if nxt:
-                next_idx = index + 1 if index < len(phonemes) - 1 and phonemes[index + 1] != "ˈ" else index + 2
+                next_idx = index + \
+                    1 if index < len(
+                        phonemes) - 1 and phonemes[index + 1] != "ˈ" else index + 2
                 if next_idx >= len(phonemes) or not self._matches_phoneme(phonemes[next_idx], nxt):
                     return False
 
@@ -75,7 +81,8 @@ class SoundChange:
                     if ('[+stress]' in environment and not stressed[i]) or ('[-stress]' in environment and stressed[i]):
                         continue
 
-                    environment = environment.replace('[+stress]', '').replace('[-stress]', '').strip()
+                    environment = environment.replace(
+                        '[+stress]', '').replace('[-stress]', '').strip()
 
                     if matches_environment(i, environment):
                         result.append(after)
@@ -171,11 +178,16 @@ class SoundChange:
         Returns:
             bool: True if the condition matches, False otherwise.
         """
-        return (
-            phoneme == condition
-            if condition.islower()
-            else phoneme in self.wildcards.get(condition, [])
-        )
+        if condition.islower():
+            return phoneme == condition
+
+        if condition in self.wildcards:
+            return phoneme in self.wildcards[condition]
+
+        if condition == 'V':
+            return phoneme in VOWELS
+
+        return False
 
     def __str__(self) -> str:
         """
@@ -248,7 +260,7 @@ class SoundChangePipeline:
         Return the string representation of the SoundChangePipeline instance.
         """
         return self.__str__()
-    
+
     @staticmethod
     def random(num_changes: Optional[int] = None) -> 'SoundChangePipeline':
         """
