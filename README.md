@@ -30,7 +30,7 @@ mutated_vocabulary = sound_change.apply(language.vocabulary)
 
 ## Documentation
 
-For more information on how to use Conlang, please refer to the [documentation](https://hlan0.github.io/conlang/).
+For more information on how to use Conlang, please refer to the [documentation](https://jgregoriods.github.io/conlang/).
 
 ## Contributing
 

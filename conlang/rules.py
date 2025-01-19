@@ -76,9 +76,7 @@ RULES = {
             'w': [('0', 'V_V')],
             'j': [('0', 'V_V')],
         },
-        'wildcards': {
-            'V': VOWELS
-        }
+        'wildcards': {}
     },
     'palatalization_velar': {
         'rules': {

@@ -65,6 +65,27 @@ class Vocabulary:
         """
         return self.__str__()
 
+    def __getitem__(self, key) -> str:
+        """
+        Get a word-gloss pair from the vocabulary.
+
+        Args:
+            key (int or slice): The index or slice to retrieve.
+        
+        Returns:
+            str: The word-gloss pair at the specified index or indices.
+        """
+        if isinstance(key, int):
+            return f"{self.items[key]['word']}: {self.items[key]['gloss']}"
+        if isinstance(key, slice):
+            return "\n".join(f"{item['word']}: {item['gloss']}" for item in self.items[key])
+
+    def __len__(self) -> int:
+        """
+        Get the number of word-gloss pairs in the vocabulary.
+        """
+        return len(self.items)
+
     def to_csv(self, filename: str) -> None:
         """
         Save the vocabulary to a CSV file.
