@@ -52,7 +52,9 @@ PRESETS = {
                   'r',
                   'j', 'w'],
             'V': ['a', 'e', 'i', 'o', 'u',
-                  'ɛ', 'ɔ', 'ɯ']
+                  'ɛ', 'ɔ', 'ɯ',
+                  'ã', 'ẽ', 'ĩ', 'õ', 'ũ',
+                  'ɛ̃', 'ɔ̃', 'ɯ̃']
         },
         'patterns': ['CV', 'VCV', 'CVCV'],
         'stress': [-1]
@@ -203,5 +205,34 @@ PRESETS = {
         },
         'patterns': ['CVCV', 'CVCVF'],
         'stress': [-1, -2]
+    },
+    'iroquoian': {
+        'phonemes': {
+            'C': ['n',
+                  't', 'ts', 'k', 'kʷ', 'ʔ',
+                  's', 'h',
+                  'r',
+                  'j', 'w'],
+            'V': ['a', 'e', 'i', 'o', 'u',
+                  'aː', 'eː', 'iː', 'oː', 'uː',
+                  'ã', 'ẽ', 'ĩ', 'õ', 'ũ',
+                  'ãː', 'ẽː', 'ĩː', 'õː', 'ũː']
+        },
+        'patterns': ['CV', 'VC', 'VCVC', 'CVCV', 'CVCVC'],
+        'stress': [-2]
+    },
+    'australian': {
+        'phonemes': {
+            'C': ['m', 'n', 'ɳ', 'ɲ', 'ŋ',
+                  'p', 't', 'ʈ', 'c', 'k',
+                  'r', 'l', 'ɭ', 'ʎ',
+                  'j', 'w'],
+            'Q': ['mp', 'nt', 'ɳʈ', 'ɲc', 'ŋk',
+                  'lp', 'lt', 'lʈ', 'lc', 'lk'],
+            'V': ['a', 'i', 'u',
+                  'aː', 'iː', 'uː']
+        },
+        'patterns': ['CVCV', 'CVQV'],
+        'stress': [-2]
     }
 }

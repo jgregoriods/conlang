@@ -39,21 +39,29 @@ def split_syllables(word: str) -> List[str]:
     """
     phonemes = split_phonemes(word)
     syllables = []
-    current_syllable = ''
+    current_syllable = []
 
     for phoneme in phonemes:
-        current_syllable += phoneme
+        current_syllable.append(phoneme)
         if phoneme in VOWELS:
             syllables.append(current_syllable)
-            current_syllable = ''
+            current_syllable = []
 
     if current_syllable:
         if syllables:
-            syllables[-1] += current_syllable
+            syllables[-1].extend(current_syllable)
         else:
             syllables.append(current_syllable)
 
-    return syllables
+    # Adjust consonant clusters across syllable boundaries
+    adjusted_syllables = []
+    for i, syllable in enumerate(syllables):
+        if i > 0 and len(syllable) > 1 and syllable[0] in CONSONANTS and syllable[1] in CONSONANTS:
+            # Move the leading consonant to the previous syllable
+            adjusted_syllables[-1].append(syllable.pop(0))
+        adjusted_syllables.append(syllable)
+
+    return [''.join(syllable) for syllable in adjusted_syllables]
 
 
 def map_stress(word: str) -> List[bool]:
@@ -113,6 +121,7 @@ def is_acceptable(word: str) -> bool:
         'ʼ': 1,  # Ejective consonants
         'ː': 1,  # Long vowels
         'ʷ': 1,  # Labialized consonants
+        '̃': 1,  # Nasalized vowels
     }
     for char, max_count in constraints.items():
         if word.count(char) > max_count:

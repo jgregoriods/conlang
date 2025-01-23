@@ -202,7 +202,7 @@ class Vocabulary:
         vocabulary = Vocabulary()
         vocabulary.items = items
         return vocabulary
-    
+
     @staticmethod
     def from_json(file_path: str) -> 'Vocabulary':
         """

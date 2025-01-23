@@ -2,8 +2,10 @@ import json
 import numpy as np
 
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional
 from .presets import PRESETS
+from .utils import split_phonemes, split_syllables
+from .phonemes import CONSONANTS
 
 
 class LanguageConfig:
@@ -104,14 +106,14 @@ class LanguageConfig:
             return LanguageConfig.from_dict(json.load(f))
 
     @staticmethod
-    def random() -> 'LanguageConfig':
+    def random(preset_key: Optional[str] = None) -> 'LanguageConfig':
         """
         Generates a random LanguageConfig instance using predefined presets.
 
         Returns:
             LanguageConfig: A randomly selected language configuration.
         """
-        preset_key = np.random.choice(list(PRESETS))
+        preset_key = preset_key or np.random.choice(list(PRESETS.keys()))
         preset = PRESETS[preset_key]
         return LanguageConfig(
             phonemes=preset['phonemes'],
@@ -133,3 +135,79 @@ class LanguageConfig:
         Returns a string representation of the configuration.
         """
         return self.__str__()
+
+    @staticmethod
+    def from_vocabulary(vocabulary: 'Vocabulary') -> 'LanguageConfig':
+        """
+        Generates a language configuration from a vocabulary.
+
+        Args:
+            vocabulary (Vocabulary): The vocabulary to generate the configuration from.
+
+        Returns:
+            LanguageConfig: The generated language configuration.
+        """
+        phonemes = {}
+        patterns = []
+        stress = []
+
+        for item in vocabulary.items:
+            word = item['word']
+            word_pattern = ''
+
+            phoneme_list = split_phonemes(word.replace("ˈ", ''))
+
+            consonants_and_vowels = []
+            current_chunk = [phoneme_list[0]]
+            is_consonant = phoneme_list[0] in CONSONANTS
+
+            for phoneme in phoneme_list[1:]:
+                if (phoneme in CONSONANTS) == is_consonant:
+                    current_chunk.append(phoneme)
+                else:
+                    consonants_and_vowels.append(current_chunk)
+                    current_chunk = [phoneme]
+                    is_consonant = not is_consonant
+            consonants_and_vowels.append(current_chunk)
+
+            for i, chunk in enumerate(consonants_and_vowels):
+                first_is_consonant = chunk[0] in CONSONANTS
+
+                # Assign key based on position and type
+                # We are using Q for initial clusters, X for medial clusters,
+                # Z for final clusters and N for final consonants
+                if first_is_consonant:
+                    if len(chunk) > 1:
+                        phoneme_key = 'Q' if i == 0 else 'X' if i < len(consonants_and_vowels) - 1 else 'Z'
+                    elif i == len(consonants_and_vowels) - 1:
+                        phoneme_key = 'N'
+                    else:
+                        phoneme_key = 'C'
+                else:
+                    phoneme_key = 'V'
+
+                word_pattern += phoneme_key
+
+                phoneme_str = ''.join(chunk)
+                if phoneme_key not in phonemes:
+                    phonemes[phoneme_key] = []
+                if phoneme_str not in phonemes[phoneme_key]:
+                    phonemes[phoneme_key].append(phoneme_str)
+
+            if word_pattern not in patterns:
+                patterns.append(word_pattern)
+
+            syllables = split_syllables(word)
+            for i, syllable in enumerate(syllables):
+                if 'ˈ' in syllable:
+                    stress_index = i - len(syllables)
+                    if stress_index not in stress:
+                        stress.append(stress_index)
+                    break
+
+        if 'N' in phonemes and set(phonemes['N']) == set(phonemes['C']):
+            del phonemes['N']
+            for i, pattern in enumerate(patterns):
+                patterns[i] = pattern.replace('N', 'C')
+
+        return LanguageConfig(phonemes, patterns, stress)

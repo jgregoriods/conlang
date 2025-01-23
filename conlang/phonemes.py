@@ -35,10 +35,11 @@ BASE_VOWELS = [
 ]
 
 # Long vowels
-LONG_VOWELS = [f'{v}ː' for v in BASE_VOWELS]
+NASAL_VOWELS = [f'{v}̃' for v in BASE_VOWELS]
+LONG_VOWELS = [f'{v}ː' for v in BASE_VOWELS + NASAL_VOWELS]
 
 # Combined vowels
-VOWELS = BASE_VOWELS + LONG_VOWELS
+VOWELS = BASE_VOWELS + LONG_VOWELS + NASAL_VOWELS
 
 # All phonemes
 PHONEMES = CONSONANTS + VOWELS + ["ˈ"]
