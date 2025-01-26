@@ -100,6 +100,15 @@ RULES = {
             'I': ['i', 'e', 'ɛ', 'ɨ', 'iː', 'eː', 'ɛː', 'ɨː', 'j']
         }
     },
+    'affrication': {
+        'rules': {
+            't': [('ts', '_I')],
+            'd': [('dz', '_I')]
+        },
+        'wildcards': {
+            'I': ['i', 'e', 'ɛ', 'ɨ', 'iː', 'eː', 'ɛː', 'ɨː', 'j']
+        }
+    },
     'romance_breaking': {
         'rules': {
             'e': [('je', '[+stress]')],
@@ -120,19 +129,27 @@ RULES = {
         'wildcards': {}
     },
     'elision': {
-        'rules': {},
+        'rules': {
+            'V': [('0', '[-stress]')]
+        },
         'wildcards': {}
     },
     'vowel_reduction': {
-        'rules': {},
+        'rules': {
+            'V': [('ə', '[-stress]')]
+        },
         'wildcards': {}
     },
     'final_consonant_loss': {
-        'rules': {},
+        'rules': {
+            'C': [('0', '_#')]
+        },
         'wildcards': {}
     },
     'final_vowel_loss': {
-        'rules': {},
+        'rules': {
+            'V': [('0', '_# [-stress]')]
+        },
         'wildcards': {}
     },
     'yiddish_breaking': {
@@ -177,10 +194,31 @@ RULES = {
             'l': [('d', '')],
         },
         'wildcards': {}
-    }
+    },
+    'nasalization': {
+        'rules': {
+            'V': [('Ṽ', '_N')],
+        },
+        'wildcards': {
+            'N': ['n', 'm', 'ŋ', 'ɲ', 'ɴ']
+        }
+    },
+    'diphthongization': {
+        'rules': {
+            'e': [('ej', '[+stress]')],
+            'o': [('ow', '[+stress]')],
+            'ɛ': [('ɛj', '[+stress]')],
+            'ɔ': [('ɔw', '[+stress]')]
+        },
+        'wildcards': {}
+    },
+    'monophthongization': {
+        'rules': {
+            'aj': [('eː', '')],
+            'aw': [('oː', '')],
+            'ej': [('eː', '')],
+            'ow': [('oː', '')]
+        },
+        'wildcards': {}
+    },
 }
-
-RULES['elision']['rules'] = {k: [('0', '[-stress]')] for k in VOWELS}
-RULES['vowel_reduction']['rules'] = {k: [('ə', '[-stress]')] for k in VOWELS}
-RULES['final_consonant_loss']['rules'] = {k: [('0', '_#')] for k in CONSONANTS}
-RULES['final_vowel_loss']['rules'] = {k: [('0', '_# [-stress]')] for k in VOWELS}

@@ -6,7 +6,7 @@ from typing import List, Dict, Tuple, Optional
 from .utils import split_phonemes, map_stress
 from .vocabulary import Vocabulary
 from .rules import RULES
-from .phonemes import VOWELS
+from .phonemes import VOWELS, CONSONANTS
 
 
 class SoundChange:
@@ -76,7 +76,16 @@ class SoundChange:
 
         for i, phoneme in enumerate(phonemes):
             if phoneme in self.rules:
-                for after, environment in self.rules[phoneme]:
+                rule_key = phoneme
+            elif phoneme in VOWELS and 'V' in self.rules:
+                rule_key = 'V'
+            elif phoneme in CONSONANTS and 'C' in self.rules:
+                rule_key = 'C'
+            else:
+                rule_key = None
+
+            if rule_key:
+                for after, environment in self.rules[rule_key]:
                     # Handle stress-specific environments
                     if ('[+stress]' in environment and not stressed[i]) or ('[-stress]' in environment and stressed[i]):
                         continue
@@ -85,6 +94,10 @@ class SoundChange:
                         '[+stress]', '').replace('[-stress]', '').strip()
 
                     if matches_environment(i, environment):
+                        if 'V' in after:
+                            after = after.replace('V', phoneme).replace("ː̃", "̃ː")
+                        elif 'C' in after:
+                            after = after.replace('C', phoneme)
                         result.append(after)
                         break
                 else:
