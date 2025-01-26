@@ -106,15 +106,35 @@ class LanguageConfig:
             return LanguageConfig.from_dict(json.load(f))
 
     @staticmethod
-    def random(preset_key: Optional[str] = None) -> 'LanguageConfig':
+    def random() -> 'LanguageConfig':
         """
         Generates a random LanguageConfig instance using predefined presets.
 
         Returns:
             LanguageConfig: A randomly selected language configuration.
         """
-        preset_key = preset_key or np.random.choice(list(PRESETS.keys()))
+        preset_key = np.random.choice(list(PRESETS.keys()))
         preset = PRESETS[preset_key]
+        return LanguageConfig(
+            phonemes=preset['phonemes'],
+            patterns=preset['patterns'],
+            stress=preset['stress']
+        )
+    
+    @staticmethod
+    def load_preset(name: str) -> 'LanguageConfig':
+        """
+        Loads a language configuration preset by name.
+
+        Args:
+            name (str): The name of the preset to load.
+
+        Returns:
+            LanguageConfig: The language configuration preset.
+        """
+        if name not in PRESETS:
+            raise ValueError(f'Preset not found: {name}')
+        preset = PRESETS[name]
         return LanguageConfig(
             phonemes=preset['phonemes'],
             patterns=preset['patterns'],
@@ -162,12 +182,12 @@ class LanguageConfig:
             is_consonant = phoneme_list[0] in CONSONANTS
 
             for phoneme in phoneme_list[1:]:
-                if (phoneme in CONSONANTS) == is_consonant:
+                if phoneme in CONSONANTS and is_consonant:
                     current_chunk.append(phoneme)
                 else:
                     consonants_and_vowels.append(current_chunk)
                     current_chunk = [phoneme]
-                    is_consonant = not is_consonant
+                    is_consonant = phoneme in CONSONANTS
             consonants_and_vowels.append(current_chunk)
 
             for i, chunk in enumerate(consonants_and_vowels):
@@ -209,5 +229,10 @@ class LanguageConfig:
             del phonemes['N']
             for i, pattern in enumerate(patterns):
                 patterns[i] = pattern.replace('N', 'C')
+        
+        if 'Q' in phonemes and 'X' in phonemes and set(phonemes['Q']) == set(phonemes['X']):
+            del phonemes['X']
+            for i, pattern in enumerate(patterns):
+                patterns[i] = pattern.replace('X', 'Q')
 
         return LanguageConfig(phonemes, patterns, stress)

@@ -116,7 +116,7 @@ PRESETS = {
             'V': ['a', 'e', 'i', 'o', 'u', 'y', 'ɛ'],
             'F': ['a', 'i']
         },
-        'patterns': ['VCF', 'CVCF'],
+        'patterns': ['VCF', 'CVCF', 'VQV', 'CVQF'],
         'stress': [-2]
     },
     'germanic': {

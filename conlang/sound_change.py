@@ -167,6 +167,21 @@ class SoundChange:
         selected_rules = np.random.choice(list(RULES.keys()))
         return SoundChange(RULES[selected_rules]['rules'], RULES[selected_rules]['wildcards'])
 
+    @staticmethod
+    def load_preset(name: str) -> 'SoundChange':
+        """
+        Load a SoundChange instance from a predefined preset.
+
+        Args:
+            name (str): The name of the preset.
+
+        Returns:
+            SoundChange: A new instance with rules and wildcards from the preset.
+        """
+        if name not in RULES:
+            raise ValueError(f'Preset not found: {name}')
+        return SoundChange(RULES[name]['rules'], RULES[name]['wildcards'])
+
     def _matches_phoneme(self, phoneme: str, condition: str) -> bool:
         """
         Check if a phoneme matches a condition (literal or wildcard).

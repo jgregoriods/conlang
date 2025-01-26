@@ -5,7 +5,7 @@ BASE_CONSONANTS = [
     'ʙ', 'r', 'ʀ',                                                      # trills
     'ⱱ', 'ɾ', 'ɽ',                                                      # taps/flaps
     'ɸ', 'β', 'f', 'v', 'θ', 'ð', 's', 'z', 'ʃ', 'ʒ', 'ʂ', 'ʐ',         # fricatives
-    'ç', 'ʝ', 'x', 'ɣ', 'χ', 'ʁ', 'ħ', 'ʕ', 'h', 'ɦ',
+    'ɕ', 'ʑ', 'ç', 'ʝ', 'x', 'ɣ', 'χ', 'ʁ', 'ħ', 'ʕ', 'h', 'ɦ',
     'ɬ', 'ɮ',                                                           # lateral fricatives
     'ʋ', 'ɹ', 'ɻ', 'j', 'ɰ',                                            # approximants
     'l', 'ɭ', 'ʎ', 'ʟ',                                                 # laterals
@@ -21,7 +21,7 @@ EJECTIVES = [f'{c}ʼ' for c in BASE_CONSONANTS + AFFRICATES]
 LABIALIZED = [f'{c}ʷ' for c in BASE_CONSONANTS + AFFRICATES]
 
 # Combined consonants
-CONSONANTS = BASE_CONSONANTS + AFFRICATES + ASPIRATED + EJECTIVES
+CONSONANTS = BASE_CONSONANTS + AFFRICATES + ASPIRATED + EJECTIVES + LABIALIZED
 
 # Base vowels: High, mid, and low, including rounded and unrounded variants
 BASE_VOWELS = [
