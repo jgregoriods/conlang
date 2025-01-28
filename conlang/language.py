@@ -85,3 +85,18 @@ class Language:
         Returns a string representation of the language.
         """
         return self.__str__()
+
+    @staticmethod
+    def from_vocabulary(name: str, vocabulary: Vocabulary) -> 'Language':
+        """
+        Create a new Language instance from a vocabulary.
+
+        Args:
+            name (str): The name of the language.
+            vocabulary (Vocabulary): The vocabulary for the language.
+
+        Returns:
+            Language: A new Language instance.
+        """
+        config = LanguageConfig.from_vocabulary(vocabulary)
+        return Language(name, config, vocabulary)

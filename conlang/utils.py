@@ -77,10 +77,11 @@ def map_stress(word: str) -> List[bool]:
     syllables = split_syllables(word)
     stressed = []
     for syllable in syllables:
-        if 'ˈ' in syllable:
-            stressed.extend([True] * len(syllable))
+        phonemes = split_phonemes(syllable)
+        if 'ˈ' in phonemes:
+            stressed.extend([True] * len(phonemes))
         else:
-            stressed.extend([False] * len(syllable))
+            stressed.extend([False] * len(phonemes))
     return stressed
 
 

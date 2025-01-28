@@ -44,6 +44,7 @@
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'modules';</script>
+    <link rel="canonical" href="https://hlan0.github.io/conlang/modules.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -299,6 +300,7 @@
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.language.Language.name"><code class="docutils literal notranslate"><span class="pre">Language.name</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.language.Language.config"><code class="docutils literal notranslate"><span class="pre">Language.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.language.Language.vocabulary"><code class="docutils literal notranslate"><span class="pre">Language.vocabulary</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.language.Language.from_vocabulary"><code class="docutils literal notranslate"><span class="pre">Language.from_vocabulary()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.language.Language.generate_vocabulary"><code class="docutils literal notranslate"><span class="pre">Language.generate_vocabulary()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.language.Language.generate_word"><code class="docutils literal notranslate"><span class="pre">Language.generate_word()</span></code></a></li>
 </ul>
@@ -314,6 +316,8 @@
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.language_config.LanguageConfig.from_json"><code class="docutils literal notranslate"><span class="pre">LanguageConfig.from_json()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.language_config.LanguageConfig.from_str"><code class="docutils literal notranslate"><span class="pre">LanguageConfig.from_str()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.language_config.LanguageConfig.from_txt"><code class="docutils literal notranslate"><span class="pre">LanguageConfig.from_txt()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.language_config.LanguageConfig.from_vocabulary"><code class="docutils literal notranslate"><span class="pre">LanguageConfig.from_vocabulary()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.language_config.LanguageConfig.load_preset"><code class="docutils literal notranslate"><span class="pre">LanguageConfig.load_preset()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.language_config.LanguageConfig.random"><code class="docutils literal notranslate"><span class="pre">LanguageConfig.random()</span></code></a></li>
 </ul>
 </li>
@@ -330,6 +334,7 @@
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.sound_change.SoundChange.apply_to_word"><code class="docutils literal notranslate"><span class="pre">SoundChange.apply_to_word()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.sound_change.SoundChange.from_str"><code class="docutils literal notranslate"><span class="pre">SoundChange.from_str()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.sound_change.SoundChange.from_txt"><code class="docutils literal notranslate"><span class="pre">SoundChange.from_txt()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.sound_change.SoundChange.load_preset"><code class="docutils literal notranslate"><span class="pre">SoundChange.load_preset()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.sound_change.SoundChange.random"><code class="docutils literal notranslate"><span class="pre">SoundChange.random()</span></code></a></li>
 </ul>
 </li>
@@ -337,6 +342,7 @@
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.sound_change.SoundChangePipeline.changes"><code class="docutils literal notranslate"><span class="pre">SoundChangePipeline.changes</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.sound_change.SoundChangePipeline.apply_to_vocabulary"><code class="docutils literal notranslate"><span class="pre">SoundChangePipeline.apply_to_vocabulary()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.sound_change.SoundChangePipeline.apply_to_word"><code class="docutils literal notranslate"><span class="pre">SoundChangePipeline.apply_to_word()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.sound_change.SoundChangePipeline.from_txt"><code class="docutils literal notranslate"><span class="pre">SoundChangePipeline.from_txt()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.sound_change.SoundChangePipeline.random"><code class="docutils literal notranslate"><span class="pre">SoundChangePipeline.random()</span></code></a></li>
 </ul>
 </li>
@@ -373,6 +379,7 @@
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.Language.name"><code class="docutils literal notranslate"><span class="pre">Language.name</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.Language.config"><code class="docutils literal notranslate"><span class="pre">Language.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.Language.vocabulary"><code class="docutils literal notranslate"><span class="pre">Language.vocabulary</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.Language.from_vocabulary"><code class="docutils literal notranslate"><span class="pre">Language.from_vocabulary()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.Language.generate_vocabulary"><code class="docutils literal notranslate"><span class="pre">Language.generate_vocabulary()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.Language.generate_word"><code class="docutils literal notranslate"><span class="pre">Language.generate_word()</span></code></a></li>
 </ul>
@@ -385,6 +392,8 @@
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.LanguageConfig.from_json"><code class="docutils literal notranslate"><span class="pre">LanguageConfig.from_json()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.LanguageConfig.from_str"><code class="docutils literal notranslate"><span class="pre">LanguageConfig.from_str()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.LanguageConfig.from_txt"><code class="docutils literal notranslate"><span class="pre">LanguageConfig.from_txt()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.LanguageConfig.from_vocabulary"><code class="docutils literal notranslate"><span class="pre">LanguageConfig.from_vocabulary()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.LanguageConfig.load_preset"><code class="docutils literal notranslate"><span class="pre">LanguageConfig.load_preset()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.LanguageConfig.random"><code class="docutils literal notranslate"><span class="pre">LanguageConfig.random()</span></code></a></li>
 </ul>
 </li>
@@ -395,6 +404,7 @@
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.SoundChange.apply_to_word"><code class="docutils literal notranslate"><span class="pre">SoundChange.apply_to_word()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.SoundChange.from_str"><code class="docutils literal notranslate"><span class="pre">SoundChange.from_str()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.SoundChange.from_txt"><code class="docutils literal notranslate"><span class="pre">SoundChange.from_txt()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.SoundChange.load_preset"><code class="docutils literal notranslate"><span class="pre">SoundChange.load_preset()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.SoundChange.random"><code class="docutils literal notranslate"><span class="pre">SoundChange.random()</span></code></a></li>
 </ul>
 </li>
@@ -402,6 +412,7 @@
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.SoundChangePipeline.changes"><code class="docutils literal notranslate"><span class="pre">SoundChangePipeline.changes</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.SoundChangePipeline.apply_to_vocabulary"><code class="docutils literal notranslate"><span class="pre">SoundChangePipeline.apply_to_vocabulary()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.SoundChangePipeline.apply_to_word"><code class="docutils literal notranslate"><span class="pre">SoundChangePipeline.apply_to_word()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.SoundChangePipeline.from_txt"><code class="docutils literal notranslate"><span class="pre">SoundChangePipeline.from_txt()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.SoundChangePipeline.random"><code class="docutils literal notranslate"><span class="pre">SoundChangePipeline.random()</span></code></a></li>
 </ul>
 </li>
@@ -419,8 +430,6 @@
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.Vocabulary.to_txt"><code class="docutils literal notranslate"><span class="pre">Vocabulary.to_txt()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="conlang.html#conlang.is_acceptable"><code class="docutils literal notranslate"><span class="pre">is_acceptable()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="conlang.html#conlang.split_syllables"><code class="docutils literal notranslate"><span class="pre">split_syllables()</span></code></a></li>
 </ul>
 </li>
 </ul>

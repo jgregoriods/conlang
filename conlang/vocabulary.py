@@ -1,4 +1,5 @@
 import csv
+import json
 
 from pathlib import Path
 from typing import List, Dict, Iterator
@@ -214,8 +215,6 @@ class Vocabulary:
         Returns:
             Vocabulary: A new Vocabulary object.
         """
-        import json
-
         with open(file_path, 'r', encoding='utf-8') as f:
             items = json.load(f)
         return Vocabulary.from_list(items)

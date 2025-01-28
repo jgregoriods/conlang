@@ -42,7 +42,7 @@ class SoundChange:
 
             Args:
                 index (int): The index of the phoneme.
-                environment (str): The environment string (e.g., "#_", "_#", "a_b").
+                environment (str): The environment string (e.g., "#_", "_#", "V_V").
 
             Returns:
                 bool: True if the environment matches, False otherwise.
@@ -51,7 +51,7 @@ class SoundChange:
                 return True
 
             if environment == "#_":
-                return index == 0
+                return index == 0 or index == 1 and phonemes[0] == "ˈ"
             if environment == "_#":
                 return index == len(phonemes) - 1
 
@@ -59,32 +59,43 @@ class SoundChange:
                 '_') if '_' in environment else (None, None)
 
             if prv:
-                prev_idx = index - \
-                    1 if index > 0 and phonemes[index -
-                                                1] != "ˈ" else index - 2
-                if prev_idx < 0 or not self._matches_phoneme(phonemes[prev_idx], prv):
-                    return False
+                if prv == '#':
+                    if index != 0 or (phonemes[0] == "ˈ" and index != 1):
+                        return False
+
+                else:
+                    prev_idx = index - \
+                        1 if index > 0 and phonemes[index -
+                                                    1] != "ˈ" else index - 2
+                    if prev_idx < 0 or not self._matches_phoneme(phonemes[prev_idx], prv):
+                        return False
 
             if nxt:
-                next_idx = index + \
-                    1 if index < len(
-                        phonemes) - 1 and phonemes[index + 1] != "ˈ" else index + 2
-                if next_idx >= len(phonemes) or not self._matches_phoneme(phonemes[next_idx], nxt):
-                    return False
+                if nxt == '#':
+                    if index != len(phonemes) - 1:
+                        return False
+
+                else:
+                    next_idx = index + \
+                        1 if index < len(
+                            phonemes) - 1 and phonemes[index + 1] != "ˈ" else index + 2
+                    if next_idx >= len(phonemes) or not self._matches_phoneme(phonemes[next_idx], nxt):
+                        return False
 
             return True
 
         for i, phoneme in enumerate(phonemes):
-            if phoneme in self.rules:
-                rule_key = phoneme
-            elif phoneme in VOWELS and 'V' in self.rules:
-                rule_key = 'V'
+            possible_keys = [phoneme]
+            if phoneme in VOWELS and 'V' in self.rules:
+                possible_keys.append('V')
             elif phoneme in CONSONANTS and 'C' in self.rules:
-                rule_key = 'C'
-            else:
-                rule_key = None
+                possible_keys.append('C')
 
-            if rule_key:
+            matched = False
+
+            for rule_key in possible_keys:
+                if rule_key not in self.rules:
+                    continue
                 for after, environment in self.rules[rule_key]:
                     # Handle stress-specific environments
                     if ('[+stress]' in environment and not stressed[i]) or ('[-stress]' in environment and stressed[i]):
@@ -95,14 +106,18 @@ class SoundChange:
 
                     if matches_environment(i, environment):
                         if 'V' in after:
-                            after = after.replace('V', phoneme).replace("ː̃", "̃ː")
+                            after = after.replace(
+                                'V', phoneme).replace("ː̃", "̃ː")
                         elif 'C' in after:
                             after = after.replace('C', phoneme)
                         result.append(after)
+                        matched = True
                         break
-                else:
-                    result.append(phoneme)
-            else:
+
+                if matched:
+                    break
+
+            if not matched:
                 result.append(phoneme)
 
         # Remove null phonemes (e.g., ∅ or 0)
@@ -140,6 +155,8 @@ class SoundChange:
 
         for line in string.splitlines():
             line = line.strip()
+            if not line or line.startswith('['):
+                continue
             if '>' in line:
                 before, after = map(str.strip, line.split('>'))
                 environment = ''
@@ -215,6 +232,9 @@ class SoundChange:
         if condition == 'V':
             return phoneme in VOWELS
 
+        if condition == 'C':
+            return phoneme in CONSONANTS
+
         return False
 
     def __str__(self) -> str:
@@ -281,7 +301,7 @@ class SoundChangePipeline:
         """
         Return the string representation of the SoundChangePipeline instance.
         """
-        return '\n\n'.join(str(change) for change in self.changes)
+        return '\n'.join(str(change) for change in self.changes)
 
     def __repr__(self) -> str:
         """
@@ -299,3 +319,22 @@ class SoundChangePipeline:
         """
         num_changes = num_changes or np.random.randint(1, 5)
         return SoundChangePipeline([SoundChange.random() for _ in range(num_changes)])
+
+    @staticmethod
+    def from_txt(file_path: str) -> 'SoundChangePipeline':
+        """
+        Create a SoundChangePipeline instance from a text file of rules.
+
+        Args:
+            file_path (str): The path to the file.
+
+        Returns:
+            SoundChangePipeline: A new instance with parsed sound changes.
+        """
+        path = Path(file_path)
+        if not path.is_file():
+            raise FileNotFoundError(f'File not found: {file_path}')
+        with path.open('r', encoding='utf-8') as f:
+            pattern = r"(?s)(\(\w+ \d+\).*?)(?=\(\w+ \d+\)|\Z)"
+            segments = re.findall(pattern, f.read())
+            return SoundChangePipeline([SoundChange.from_str(segment) for segment in segments])

@@ -43,6 +43,7 @@
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/conlang/sound_change';</script>
+    <link rel="canonical" href="https://hlan0.github.io/conlang/_modules/conlang/sound_change.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -248,6 +249,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">split_phonemes</span><span class="p">,</span> <span class="n">map_stress</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.vocabulary</span><span class="w"> </span><span class="kn">import</span> <span class="n">Vocabulary</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.rules</span><span class="w"> </span><span class="kn">import</span> <span class="n">RULES</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.phonemes</span><span class="w"> </span><span class="kn">import</span> <span class="n">VOWELS</span><span class="p">,</span> <span class="n">CONSONANTS</span>
 
 
 <div class="viewcode-block" id="SoundChange">
@@ -277,8 +279,8 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The transformed word.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stressed</span> <span class="o">=</span> <span class="n">map_stress</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
         <span class="n">phonemes</span> <span class="o">=</span> <span class="n">split_phonemes</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
-        <span class="n">stressed</span> <span class="o">=</span> <span class="n">map_stress</span><span class="p">(</span><span class="n">phonemes</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">matches_environment</span><span class="p">(</span><span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -287,7 +289,7 @@
 
 <span class="sd">            Args:</span>
 <span class="sd">                index (int): The index of the phoneme.</span>
-<span class="sd">                environment (str): The environment string (e.g., &quot;#_&quot;, &quot;_#&quot;, &quot;a_b&quot;).</span>
+<span class="sd">                environment (str): The environment string (e.g., &quot;#_&quot;, &quot;_#&quot;, &quot;V_V&quot;).</span>
 
 <span class="sd">            Returns:</span>
 <span class="sd">                bool: True if the environment matches, False otherwise.</span>
@@ -296,39 +298,73 @@
                 <span class="k">return</span> <span class="kc">True</span>
 
             <span class="k">if</span> <span class="n">environment</span> <span class="o">==</span> <span class="s2">&quot;#_&quot;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span>
+                <span class="k">return</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">phonemes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;ˈ&quot;</span>
             <span class="k">if</span> <span class="n">environment</span> <span class="o">==</span> <span class="s2">&quot;_#&quot;</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">index</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">phonemes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
 
-            <span class="n">prv</span><span class="p">,</span> <span class="n">nxt</span> <span class="o">=</span> <span class="n">environment</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="s1">&#39;_&#39;</span> <span class="ow">in</span> <span class="n">environment</span> <span class="k">else</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">prv</span><span class="p">,</span> <span class="n">nxt</span> <span class="o">=</span> <span class="n">environment</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+                <span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="s1">&#39;_&#39;</span> <span class="ow">in</span> <span class="n">environment</span> <span class="k">else</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">prv</span><span class="p">:</span>
-                <span class="n">prev_idx</span> <span class="o">=</span> <span class="n">index</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">phonemes</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;ˈ&quot;</span> <span class="k">else</span> <span class="n">index</span> <span class="o">-</span> <span class="mi">2</span>
-                <span class="k">if</span> <span class="n">prev_idx</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matches_phoneme</span><span class="p">(</span><span class="n">phonemes</span><span class="p">[</span><span class="n">prev_idx</span><span class="p">],</span> <span class="n">prv</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="kc">False</span>
+                <span class="k">if</span> <span class="n">prv</span> <span class="o">==</span> <span class="s1">&#39;#&#39;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">index</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span><span class="n">phonemes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;ˈ&quot;</span> <span class="ow">and</span> <span class="n">index</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">):</span>
+                        <span class="k">return</span> <span class="kc">False</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">prev_idx</span> <span class="o">=</span> <span class="n">index</span> <span class="o">-</span> \
+                        <span class="mi">1</span> <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">phonemes</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span>
+                                                    <span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;ˈ&quot;</span> <span class="k">else</span> <span class="n">index</span> <span class="o">-</span> <span class="mi">2</span>
+                    <span class="k">if</span> <span class="n">prev_idx</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matches_phoneme</span><span class="p">(</span><span class="n">phonemes</span><span class="p">[</span><span class="n">prev_idx</span><span class="p">],</span> <span class="n">prv</span><span class="p">):</span>
+                        <span class="k">return</span> <span class="kc">False</span>
 
             <span class="k">if</span> <span class="n">nxt</span><span class="p">:</span>
-                <span class="n">next_idx</span> <span class="o">=</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">phonemes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">phonemes</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;ˈ&quot;</span> <span class="k">else</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">2</span>
-                <span class="k">if</span> <span class="n">next_idx</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">phonemes</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matches_phoneme</span><span class="p">(</span><span class="n">phonemes</span><span class="p">[</span><span class="n">next_idx</span><span class="p">],</span> <span class="n">nxt</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="kc">False</span>
+                <span class="k">if</span> <span class="n">nxt</span> <span class="o">==</span> <span class="s1">&#39;#&#39;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">index</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">phonemes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="kc">False</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">next_idx</span> <span class="o">=</span> <span class="n">index</span> <span class="o">+</span> \
+                        <span class="mi">1</span> <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span>
+                            <span class="n">phonemes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">phonemes</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;ˈ&quot;</span> <span class="k">else</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">2</span>
+                    <span class="k">if</span> <span class="n">next_idx</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">phonemes</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matches_phoneme</span><span class="p">(</span><span class="n">phonemes</span><span class="p">[</span><span class="n">next_idx</span><span class="p">],</span> <span class="n">nxt</span><span class="p">):</span>
+                        <span class="k">return</span> <span class="kc">False</span>
 
             <span class="k">return</span> <span class="kc">True</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">phonemes</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">after</span><span class="p">,</span> <span class="n">environment</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">[</span><span class="n">phoneme</span><span class="p">]:</span>
+            <span class="n">possible_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">phoneme</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="n">VOWELS</span> <span class="ow">and</span> <span class="s1">&#39;V&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">:</span>
+                <span class="n">possible_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;V&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="n">CONSONANTS</span> <span class="ow">and</span> <span class="s1">&#39;C&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">:</span>
+                <span class="n">possible_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+
+            <span class="n">matched</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="k">for</span> <span class="n">rule_key</span> <span class="ow">in</span> <span class="n">possible_keys</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">rule_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">for</span> <span class="n">after</span><span class="p">,</span> <span class="n">environment</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">[</span><span class="n">rule_key</span><span class="p">]:</span>
                     <span class="c1"># Handle stress-specific environments</span>
                     <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;[+stress]&#39;</span> <span class="ow">in</span> <span class="n">environment</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">stressed</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;[-stress]&#39;</span> <span class="ow">in</span> <span class="n">environment</span> <span class="ow">and</span> <span class="n">stressed</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
                         <span class="k">continue</span>
 
-                    <span class="n">environment</span> <span class="o">=</span> <span class="n">environment</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;[+stress]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;[-stress]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="n">environment</span> <span class="o">=</span> <span class="n">environment</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                        <span class="s1">&#39;[+stress]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;[-stress]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
                     <span class="k">if</span> <span class="n">matches_environment</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">environment</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="s1">&#39;V&#39;</span> <span class="ow">in</span> <span class="n">after</span><span class="p">:</span>
+                            <span class="n">after</span> <span class="o">=</span> <span class="n">after</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                                <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="n">phoneme</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;ː̃&quot;</span><span class="p">,</span> <span class="s2">&quot;̃ː&quot;</span><span class="p">)</span>
+                        <span class="k">elif</span> <span class="s1">&#39;C&#39;</span> <span class="ow">in</span> <span class="n">after</span><span class="p">:</span>
+                            <span class="n">after</span> <span class="o">=</span> <span class="n">after</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">phoneme</span><span class="p">)</span>
                         <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">after</span><span class="p">)</span>
+                        <span class="n">matched</span> <span class="o">=</span> <span class="kc">True</span>
                         <span class="k">break</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">phoneme</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="n">matched</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">matched</span><span class="p">:</span>
                 <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">phoneme</span><span class="p">)</span>
 
         <span class="c1"># Remove null phonemes (e.g., ∅ or 0)</span>
@@ -372,6 +408,8 @@
 
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">splitlines</span><span class="p">():</span>
             <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">):</span>
+                <span class="k">continue</span>
             <span class="k">if</span> <span class="s1">&#39;&gt;&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
                 <span class="n">before</span><span class="p">,</span> <span class="n">after</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">strip</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;&gt;&#39;</span><span class="p">))</span>
                 <span class="n">environment</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -419,6 +457,24 @@
         <span class="k">return</span> <span class="n">SoundChange</span><span class="p">(</span><span class="n">RULES</span><span class="p">[</span><span class="n">selected_rules</span><span class="p">][</span><span class="s1">&#39;rules&#39;</span><span class="p">],</span> <span class="n">RULES</span><span class="p">[</span><span class="n">selected_rules</span><span class="p">][</span><span class="s1">&#39;wildcards&#39;</span><span class="p">])</span></div>
 
 
+<div class="viewcode-block" id="SoundChange.load_preset">
+<a class="viewcode-back" href="../../conlang.html#conlang.sound_change.SoundChange.load_preset">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_preset</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;SoundChange&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load a SoundChange instance from a predefined preset.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The name of the preset.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            SoundChange: A new instance with rules and wildcards from the preset.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">RULES</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Preset not found: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">SoundChange</span><span class="p">(</span><span class="n">RULES</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s1">&#39;rules&#39;</span><span class="p">],</span> <span class="n">RULES</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s1">&#39;wildcards&#39;</span><span class="p">])</span></div>
+
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_matches_phoneme</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phoneme</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Check if a phoneme matches a condition (literal or wildcard).</span>
@@ -430,11 +486,19 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if the condition matches, False otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="n">phoneme</span> <span class="o">==</span> <span class="n">condition</span>
-            <span class="k">if</span> <span class="n">condition</span><span class="o">.</span><span class="n">islower</span><span class="p">()</span>
-            <span class="k">else</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wildcards</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="p">[])</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">condition</span><span class="o">.</span><span class="n">islower</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">phoneme</span> <span class="o">==</span> <span class="n">condition</span>
+
+        <span class="k">if</span> <span class="n">condition</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wildcards</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wildcards</span><span class="p">[</span><span class="n">condition</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">condition</span> <span class="o">==</span> <span class="s1">&#39;V&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="n">VOWELS</span>
+
+        <span class="k">if</span> <span class="n">condition</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="n">CONSONANTS</span>
+
+        <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -509,14 +573,14 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the string representation of the SoundChangePipeline instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">change</span><span class="p">)</span> <span class="k">for</span> <span class="n">change</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">changes</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">change</span><span class="p">)</span> <span class="k">for</span> <span class="n">change</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">changes</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the string representation of the SoundChangePipeline instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
-    
+
 <div class="viewcode-block" id="SoundChangePipeline.random">
 <a class="viewcode-back" href="../../conlang.html#conlang.sound_change.SoundChangePipeline.random">[docs]</a>
     <span class="nd">@staticmethod</span>
@@ -529,6 +593,28 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">num_changes</span> <span class="o">=</span> <span class="n">num_changes</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">SoundChangePipeline</span><span class="p">([</span><span class="n">SoundChange</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_changes</span><span class="p">)])</span></div>
+
+
+<div class="viewcode-block" id="SoundChangePipeline.from_txt">
+<a class="viewcode-back" href="../../conlang.html#conlang.sound_change.SoundChangePipeline.from_txt">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_txt</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;SoundChangePipeline&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a SoundChangePipeline instance from a text file of rules.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            file_path (str): The path to the file.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            SoundChangePipeline: A new instance with parsed sound changes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;File not found: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;(?s)(\(\w+ \d+\).*?)(?=\(\w+ \d+\)|\Z)&quot;</span>
+            <span class="n">segments</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+            <span class="k">return</span> <span class="n">SoundChangePipeline</span><span class="p">([</span><span class="n">SoundChange</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="n">segment</span><span class="p">)</span> <span class="k">for</span> <span class="n">segment</span> <span class="ow">in</span> <span class="n">segments</span><span class="p">])</span></div>
 </div>
 
 </pre></div>

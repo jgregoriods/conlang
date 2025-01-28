@@ -164,6 +164,29 @@ You can chain multiple sound changes together by using the :class:`conlang.Sound
     pipeline = SoundChangePipeline([sound_change1, sound_change2, ...])
     mutated_vocabulary = pipeline.apply_to_vocabulary(vocabulary)
 
+Alternatively, you can load a pipeline from a text file, which must contain
+the sound change rules identified by labels between parentheses:
+
+.. code-block:: text
+
+    (A)
+    p > b
+    t > d
+
+    (B)
+    a > ɔ / [+stress]
+    a > ə / [-stress]
+
+    (C)
+    k > tʃ / _i
+
+.. code-block:: python
+
+    from conlang import SoundChangePipeline
+
+    pipeline = SoundChangePipeline.from_txt('path/to/pipeline.txt')
+    mutated_vocabulary = pipeline.apply_to_vocabulary(vocabulary)
+
 Saving a vocabulary
 ~~~~~~~~~~~~~~~~~~~
 

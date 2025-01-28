@@ -44,6 +44,7 @@
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'start';</script>
+    <link rel="canonical" href="https://hlan0.github.io/conlang/start.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="Conlang documentation" href="index.html" />
@@ -433,6 +434,26 @@ object:</p>
 <span class="o">...</span>
 
 <span class="n">pipeline</span> <span class="o">=</span> <span class="n">SoundChangePipeline</span><span class="p">([</span><span class="n">sound_change1</span><span class="p">,</span> <span class="n">sound_change2</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span>
+<span class="n">mutated_vocabulary</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">apply_to_vocabulary</span><span class="p">(</span><span class="n">vocabulary</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Alternatively, you can load a pipeline from a text file, which must contain
+the sound change rules identified by labels between parentheses:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>(A)
+p &gt; b
+t &gt; d
+
+(B)
+a &gt; ɔ / [+stress]
+a &gt; ə / [-stress]
+
+(C)
+k &gt; tʃ / _i
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">conlang</span><span class="w"> </span><span class="kn">import</span> <span class="n">SoundChangePipeline</span>
+
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">SoundChangePipeline</span><span class="o">.</span><span class="n">from_txt</span><span class="p">(</span><span class="s1">&#39;path/to/pipeline.txt&#39;</span><span class="p">)</span>
 <span class="n">mutated_vocabulary</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">apply_to_vocabulary</span><span class="p">(</span><span class="n">vocabulary</span><span class="p">)</span>
 </pre></div>
 </div>
