@@ -3,7 +3,7 @@ import re
 
 from pathlib import Path
 from typing import List, Dict, Tuple, Optional
-from .utils import split_phonemes, map_stress
+from .utils import split_phonemes, get_stress_bounds
 from .vocabulary import Vocabulary
 from .rules import RULES
 from .phonemes import VOWELS, CONSONANTS
@@ -32,7 +32,7 @@ class SoundChange:
         Returns:
             str: The transformed word.
         """
-        stressed = map_stress(word)
+        stress_start, stress_end = get_stress_bounds(word)
         phonemes = split_phonemes(word)
         result = []
 
@@ -98,7 +98,7 @@ class SoundChange:
                     continue
                 for after, environment in self.rules[rule_key]:
                     # Handle stress-specific environments
-                    if ('[+stress]' in environment and not stressed[i]) or ('[-stress]' in environment and stressed[i]):
+                    if ('[+stress]' in environment and not stress_start <= i < stress_end) or ('[-stress]' in environment and stress_start <= i < stress_end):
                         continue
 
                     environment = environment.replace(

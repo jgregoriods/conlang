@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Tuple
 from .phonemes import PHONEMES, CONSONANTS, VOWELS, COMMON_PHONEMES
 
 
@@ -64,7 +64,7 @@ def split_syllables(word: str) -> List[str]:
     return [''.join(syllable) for syllable in adjusted_syllables]
 
 
-def map_stress(word: str) -> List[bool]:
+def get_stress_bounds(word: str) -> Tuple[int, int]:
     """
     Maps which phonemes are in a stressed syllable.
 
@@ -75,15 +75,13 @@ def map_stress(word: str) -> List[bool]:
         List[bool]: A list indicating stressed (True) and unstressed (False) phonemes.
     """
     syllables = split_syllables(word)
-    stressed = []
+    start = end = 0
     for syllable in syllables:
-        phonemes = split_phonemes(syllable)
-        if 'ˈ' in phonemes:
-            stressed.extend([True] * len(phonemes))
-        else:
-            stressed.extend([False] * len(phonemes))
-    return stressed
-
+        start = end
+        end += len(split_phonemes(syllable))
+        if 'ˈ' in syllable:
+            break
+    return start, end
 
 def process_phonemes(phonemes: Dict[str, List[str]]) -> Dict[str, List[str]]:
     """
