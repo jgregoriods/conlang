@@ -4,7 +4,6 @@ import numpy as np
 from pathlib import Path
 from typing import Dict, List
 from .presets import PRESETS
-from .utils import split_phonemes, split_syllables
 from .phonemes import CONSONANTS
 
 
@@ -175,7 +174,7 @@ class LanguageConfig:
             word = item['word']
             word_pattern = ''
 
-            phoneme_list = split_phonemes(word.replace("ˈ", ''))
+            phoneme_list = word.phonemes
 
             consonants_and_vowels = []
             current_chunk = [phoneme_list[0]]
@@ -217,13 +216,8 @@ class LanguageConfig:
             if word_pattern not in patterns:
                 patterns.append(word_pattern)
 
-            syllables = split_syllables(word)
-            for i, syllable in enumerate(syllables):
-                if 'ˈ' in syllable:
-                    stress_index = i - len(syllables)
-                    if stress_index not in stress:
-                        stress.append(stress_index)
-                    break
+            if word.stress not in stress:
+                stress.append(word.stress)
 
         if 'N' in phonemes and set(phonemes['N']) == set(phonemes['C']):
             del phonemes['N']

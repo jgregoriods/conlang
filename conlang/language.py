@@ -5,7 +5,8 @@ from typing import List, Optional
 from .swadesh import SWADESH
 from .vocabulary import Vocabulary
 from .language_config import LanguageConfig
-from .utils import split_syllables, is_acceptable
+from .word import Word
+from .utils import is_acceptable
 
 
 MAX_ATTEMPTS = 10
@@ -39,14 +40,12 @@ class Language:
         patterns = self.config.patterns[:2] if 0 <= rank < 25 else self.config.patterns
         pattern = np.random.choice(patterns)
 
-        word = ''.join(np.random.choice(self.config.phonemes[k]) for k in pattern)
+        word = Word(''.join(np.random.choice(self.config.phonemes[k]) for k in pattern))
 
-        syllables = split_syllables(word)
+        stressed_index = np.random.choice(self.config.stress)
+        word.set_stress(stressed_index)
 
-        stressed_index = max(np.random.choice(self.config.stress), -len(syllables))
-        syllables[stressed_index] = "ˈ" + syllables[stressed_index]
-
-        return ''.join(syllables)
+        return word
 
     def generate_vocabulary(self, glosses: Optional[List[str]] = None):
         """

@@ -4,6 +4,8 @@ import json
 from pathlib import Path
 from typing import List, Dict, Iterator
 
+from .word import Word
+
 
 class Vocabulary:
     """
@@ -14,9 +16,9 @@ class Vocabulary:
     """
     def __init__(self):
         """Initialize an empty vocabulary."""
-        self.items: List[Dict[str, str]] = []
+        self.items: List[Dict[Word, str]] = []
 
-    def add_item(self, word: str, gloss: str) -> None:
+    def add_item(self, word: Word, gloss: str) -> None:
         """
         Add a word and its gloss to the vocabulary.
 
@@ -26,7 +28,7 @@ class Vocabulary:
         """
         self.items.append({'word': word, 'gloss': gloss})
 
-    def has_word(self, word: str) -> bool:
+    def has_word(self, word: Word) -> bool:
         """
         Check if the vocabulary contains a specific word.
 
@@ -38,7 +40,7 @@ class Vocabulary:
         """
         return any(item['word'] == word for item in self.items)
 
-    def __iter__(self) -> Iterator[Dict[str, str]]:
+    def __iter__(self) -> Iterator[Dict[Word, str]]:
         """
         Iterate over the vocabulary items.
 
@@ -134,7 +136,7 @@ class Vocabulary:
         for line in lines:
             if delimiter in line:
                 word, gloss = line.strip().split(delimiter, 1)
-                items.append({'word': word, 'gloss': gloss})
+                items.append({'word': Word(word), 'gloss': gloss})
         return items
 
     @staticmethod
@@ -169,7 +171,7 @@ class Vocabulary:
             reader = csv.DictReader(f)
             for row in reader:
                 if 'word' in row and 'gloss' in row:
-                    vocabulary.add_item(row['word'], row['gloss'])
+                    vocabulary.add_item(Word(row['word']), row['gloss'])
         return vocabulary
 
     @staticmethod

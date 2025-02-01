@@ -4,10 +4,11 @@ import re
 from pathlib import Path
 from typing import List, Dict, Tuple, Optional
 from itertools import product
-from .utils import split_phonemes, get_stress_bounds
+from .utils import parse_phonemes
 from .vocabulary import Vocabulary
 from .rules import RULES
 from .phonemes import VOWELS, CONSONANTS
+from .word import Word
 
 
 class SoundChange:
@@ -23,7 +24,7 @@ class SoundChange:
         self.rules = rules
         self.wildcards = wildcards
 
-    def apply_to_word(self, word: str) -> str:
+    def apply_to_word(self, word: Word) -> str:
         """
         Apply sound changes to a single word based on defined rules.
 
@@ -33,8 +34,8 @@ class SoundChange:
         Returns:
             str: The transformed word.
         """
-        stress_start, stress_end = get_stress_bounds(word)
-        phonemes = split_phonemes(word)
+        stress_start, stress_end = word.stress_bounds
+        phonemes = word.phonemes
         result = []
 
         def matches_sequence(start_idx: int, sequence: Tuple[str]) -> bool:
@@ -63,7 +64,7 @@ class SoundChange:
                 return True
 
             if environment == "#_":
-                return start_idx == 0 or (start_idx == 1 and phonemes[0] == "ˈ")
+                return start_idx == 0
             if environment == "_#":
                 return end_idx == len(phonemes) - 1
 
@@ -71,11 +72,11 @@ class SoundChange:
 
             if prv:
                 if prv == '#':
-                    if start_idx != 0 and not (start_idx == 1 and phonemes[0] == "ˈ"):
+                    if start_idx != 0:
                         return False
 
                 else:
-                    prev_idx = start_idx - 1 if start_idx > 0 and phonemes[start_idx - 1] != "ˈ" else start_idx - 2
+                    prev_idx = start_idx - 1
                     if prev_idx < 0 or not self._matches_phoneme(phonemes[prev_idx], prv):
                         return False
 
@@ -85,7 +86,7 @@ class SoundChange:
                         return False
 
                 else:
-                    next_idx = end_idx + 1 if end_idx < len(phonemes) - 1 and phonemes[end_idx + 1] != "ˈ" else end_idx + 2
+                    next_idx = end_idx + 1
                     if next_idx >= len(phonemes) or not self._matches_phoneme(phonemes[next_idx], nxt):
                         return False
 
@@ -148,7 +149,9 @@ class SoundChange:
                 i += 1
 
         # Remove null phonemes (e.g., ∅ or 0)
-        return re.sub('[∅0]', '', ''.join(result))
+        mutated_word = Word(re.sub('[∅0]', '', ''.join(result)))
+        mutated_word.set_stress(word.stress)
+        return mutated_word
 
     def apply_to_vocabulary(self, vocabulary: Vocabulary) -> Vocabulary:
         """
@@ -188,7 +191,7 @@ class SoundChange:
                 continue
             if '>' in line:
                 before, after = map(str.strip, line.split('>'))
-                before = tuple(split_phonemes(before))
+                before = tuple(parse_phonemes(before))
                 environment = ''
                 if '/' in after:
                     after, environment = map(str.strip, after.split('/'))
