@@ -2,7 +2,7 @@ import json
 import numpy as np
 
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List
 from .presets import PRESETS
 from .utils import split_phonemes, split_syllables
 from .phonemes import CONSONANTS
@@ -229,7 +229,7 @@ class LanguageConfig:
             del phonemes['N']
             for i, pattern in enumerate(patterns):
                 patterns[i] = pattern.replace('N', 'C')
-        
+
         if 'Q' in phonemes and 'X' in phonemes and set(phonemes['Q']) == set(phonemes['X']):
             del phonemes['X']
             for i, pattern in enumerate(patterns):
