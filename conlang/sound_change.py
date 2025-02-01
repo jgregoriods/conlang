@@ -3,10 +3,12 @@ import re
 
 from pathlib import Path
 from typing import List, Dict, Tuple, Optional
-from .utils import split_phonemes, get_stress_bounds
+from itertools import product
+from .utils import parse_phonemes
 from .vocabulary import Vocabulary
 from .rules import RULES
 from .phonemes import VOWELS, CONSONANTS
+from .word import Word
 
 
 class SoundChange:
@@ -18,11 +20,11 @@ class SoundChange:
         wildcards (Optional[Dict]): A dictionary mapping wildcard symbols to lists of phonemes.
     """
 
-    def __init__(self, rules: Dict[str, List[Tuple[str]]], wildcards: Optional[Dict] = None):
+    def __init__(self, rules: Dict[Tuple[str], List[Tuple[str]]], wildcards: Optional[Dict] = None):
         self.rules = rules
         self.wildcards = wildcards
 
-    def apply_to_word(self, word: str) -> str:
+    def apply_to_word(self, word: Word) -> str:
         """
         Apply sound changes to a single word based on defined rules.
 
@@ -32,11 +34,22 @@ class SoundChange:
         Returns:
             str: The transformed word.
         """
-        stress_start, stress_end = get_stress_bounds(word)
-        phonemes = split_phonemes(word)
+        stress_start, stress_end = word.stress_bounds
+        phonemes = word.phonemes
         result = []
 
-        def matches_environment(index: int, environment: str) -> bool:
+        def matches_sequence(start_idx: int, sequence: Tuple[str]) -> bool:
+            if start_idx + len(sequence) > len(phonemes):
+                return False
+            for i, phoneme in enumerate(sequence):
+                if phoneme in 'CV':
+                    if not self._matches_phoneme(phonemes[start_idx + i], phoneme):
+                        return False
+                elif phonemes[start_idx + i] != phoneme:
+                    return False
+            return True
+
+        def matches_environment(start_idx: int, end_idx: int, environment: str) -> bool:
             """
             Check if the phoneme at the given index matches the environment.
 
@@ -51,77 +64,94 @@ class SoundChange:
                 return True
 
             if environment == "#_":
-                return index == 0 or index == 1 and phonemes[0] == "ˈ"
+                return start_idx == 0
             if environment == "_#":
-                return index == len(phonemes) - 1
+                return end_idx == len(phonemes) - 1
 
-            prv, nxt = environment.split(
-                '_') if '_' in environment else (None, None)
+            prv, nxt = environment.split('_') if '_' in environment else (None, None)
 
             if prv:
                 if prv == '#':
-                    if index != 0 or (phonemes[0] == "ˈ" and index != 1):
+                    if start_idx != 0:
                         return False
 
                 else:
-                    prev_idx = index - \
-                        1 if index > 0 and phonemes[index -
-                                                    1] != "ˈ" else index - 2
+                    prev_idx = start_idx - 1
                     if prev_idx < 0 or not self._matches_phoneme(phonemes[prev_idx], prv):
                         return False
 
             if nxt:
                 if nxt == '#':
-                    if index != len(phonemes) - 1:
+                    if end_idx != len(phonemes) - 1:
                         return False
 
                 else:
-                    next_idx = index + \
-                        1 if index < len(
-                            phonemes) - 1 and phonemes[index + 1] != "ˈ" else index + 2
+                    next_idx = end_idx + 1
                     if next_idx >= len(phonemes) or not self._matches_phoneme(phonemes[next_idx], nxt):
                         return False
 
             return True
 
-        for i, phoneme in enumerate(phonemes):
-            possible_keys = [phoneme]
-            if phoneme in VOWELS and 'V' in self.rules:
-                possible_keys.append('V')
-            elif phoneme in CONSONANTS and 'C' in self.rules:
-                possible_keys.append('C')
-
+        i = 0
+        while i < len(phonemes):
             matched = False
 
-            for rule_key in possible_keys:
-                if rule_key not in self.rules:
+            # Check for the longest matching sequence first
+            for sequence_length in range(max(len(k) for k in self.rules.keys()), 0, -1):
+                if i + sequence_length > len(phonemes):
                     continue
-                for after, environment in self.rules[rule_key]:
-                    # Handle stress-specific environments
-                    if ('[+stress]' in environment and not stress_start <= i < stress_end) or ('[-stress]' in environment and stress_start <= i < stress_end):
-                        continue
 
-                    environment = environment.replace(
-                        '[+stress]', '').replace('[-stress]', '').strip()
+                sequence = tuple(phonemes[i:i + sequence_length])
+                possible_keys = [sequence]
 
-                    if matches_environment(i, environment):
-                        if 'V' in after:
-                            after = after.replace(
-                                'V', phoneme).replace("ː̃", "̃ː")
-                        elif 'C' in after:
-                            after = after.replace('C', phoneme)
-                        result.append(after)
-                        matched = True
+                # Add wildcard-based keys (e.g., ('V', 't') for ('a', 't'))
+                combinations = []
+                for key in possible_keys:
+                    replacement_options = []
+                    for phoneme in key:
+                        options = []
+                        if phoneme in VOWELS:
+                            options.append('V')
+                        if phoneme in CONSONANTS:
+                            options.append('C')
+                        options.append(phoneme)
+                        replacement_options.append(options)
+                    combinations.extend([tuple(repl) for repl in set(list(product(*replacement_options)))])
+                possible_keys.extend(combinations)
+
+                for key in possible_keys:
+                    if key in self.rules:
+                        for after, environment in self.rules[key]:
+                            # Handle stress-specific environments
+                            if ('[+stress]' in environment and not stress_start <= i < stress_end) or \
+                                ('[-stress]' in environment and stress_start <= i < stress_end):
+                                continue
+
+                            environment = environment.replace('[+stress]', '').replace('[-stress]', '').strip()
+
+                            if matches_sequence(i, key) and matches_environment(i, i + sequence_length - 1, environment):
+                                if 'V' in after:
+                                    original_vowels = [p for p in phonemes[i:i + sequence_length] if p in VOWELS]
+                                    for vowel in original_vowels:
+                                        after = after.replace('V', vowel, 1)
+                                    after = after.replace('ː̃', '̃ː')
+                                result.append(after)
+                                i += sequence_length
+                                matched = True
+                                break
+
+                    if matched:
                         break
-
                 if matched:
                     break
-
             if not matched:
-                result.append(phoneme)
+                result.append(phonemes[i])
+                i += 1
 
         # Remove null phonemes (e.g., ∅ or 0)
-        return re.sub('[∅0]', '', ''.join(result))
+        mutated_word = Word(re.sub('[∅0]', '', ''.join(result)))
+        mutated_word.set_stress(word.stress)
+        return mutated_word
 
     def apply_to_vocabulary(self, vocabulary: Vocabulary) -> Vocabulary:
         """
@@ -133,6 +163,8 @@ class SoundChange:
         Returns:
             Vocabulary: A new vocabulary with transformed words.
         """
+        if not self.rules:
+            raise ValueError('No rules defined for sound change')
         mutated_vocabulary = Vocabulary()
         for word, gloss in vocabulary:
             mutated_word = self.apply_to_word(word)
@@ -159,6 +191,7 @@ class SoundChange:
                 continue
             if '>' in line:
                 before, after = map(str.strip, line.split('>'))
+                before = tuple(parse_phonemes(before))
                 environment = ''
                 if '/' in after:
                     after, environment = map(str.strip, after.split('/'))
@@ -242,7 +275,7 @@ class SoundChange:
         Return the string representation of the SoundChange instance.
         """
         rules = '\n'.join(
-            f'{k} > {", ".join(f"{a}" if not e else f"{a} / {e}" for a, e in v)}'
+            f'{"".join(k)} > {", ".join(f"{a}" if not e else f"{a} / {e}" for a, e in v)}'
             for k, v in self.rules.items()
         )
         wildcards = '\n'.join(
@@ -301,7 +334,7 @@ class SoundChangePipeline:
         """
         Return the string representation of the SoundChangePipeline instance.
         """
-        return '\n'.join(str(change) for change in self.changes)
+        return '\n\n'.join(str(change) for change in self.changes)
 
     def __repr__(self) -> str:
         """
