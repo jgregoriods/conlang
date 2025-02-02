@@ -52,3 +52,9 @@ COMMON_PHONEMES = [
     'l', 'r',
     'i', 'u', 'e', 'o', 'a'
 ]
+
+# For faster lookups
+PHONEME_SET = set(PHONEMES)
+COMMON_PHONEME_SET = set(COMMON_PHONEMES)
+VOWEL_SET = set(VOWELS)
+CONSONANT_SET = set(CONSONANTS)

@@ -350,11 +350,9 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="conlang.html#module-conlang.swadesh">conlang.swadesh module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="conlang.html#module-conlang.utils">conlang.utils module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="conlang.html#conlang.utils.is_acceptable"><code class="docutils literal notranslate"><span class="pre">is_acceptable()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="conlang.html#conlang.utils.map_stress"><code class="docutils literal notranslate"><span class="pre">map_stress()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="conlang.html#conlang.utils.parse_phonemes"><code class="docutils literal notranslate"><span class="pre">parse_phonemes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="conlang.html#conlang.utils.process_patterns"><code class="docutils literal notranslate"><span class="pre">process_patterns()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="conlang.html#conlang.utils.process_phonemes"><code class="docutils literal notranslate"><span class="pre">process_phonemes()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="conlang.html#conlang.utils.split_phonemes"><code class="docutils literal notranslate"><span class="pre">split_phonemes()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="conlang.html#conlang.utils.split_syllables"><code class="docutils literal notranslate"><span class="pre">split_syllables()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="conlang.html#module-conlang.vocabulary">conlang.vocabulary module</a><ul>
@@ -368,7 +366,6 @@
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.vocabulary.Vocabulary.from_txt"><code class="docutils literal notranslate"><span class="pre">Vocabulary.from_txt()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.vocabulary.Vocabulary.has_word"><code class="docutils literal notranslate"><span class="pre">Vocabulary.has_word()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.vocabulary.Vocabulary.to_csv"><code class="docutils literal notranslate"><span class="pre">Vocabulary.to_csv()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.vocabulary.Vocabulary.to_str"><code class="docutils literal notranslate"><span class="pre">Vocabulary.to_str()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.vocabulary.Vocabulary.to_txt"><code class="docutils literal notranslate"><span class="pre">Vocabulary.to_txt()</span></code></a></li>
 </ul>
 </li>
@@ -426,8 +423,21 @@
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.Vocabulary.from_txt"><code class="docutils literal notranslate"><span class="pre">Vocabulary.from_txt()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.Vocabulary.has_word"><code class="docutils literal notranslate"><span class="pre">Vocabulary.has_word()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.Vocabulary.to_csv"><code class="docutils literal notranslate"><span class="pre">Vocabulary.to_csv()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.Vocabulary.to_str"><code class="docutils literal notranslate"><span class="pre">Vocabulary.to_str()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.Vocabulary.to_txt"><code class="docutils literal notranslate"><span class="pre">Vocabulary.to_txt()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="conlang.html#conlang.Word"><code class="docutils literal notranslate"><span class="pre">Word</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.Word.word_str"><code class="docutils literal notranslate"><span class="pre">Word.word_str</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.Word.display"><code class="docutils literal notranslate"><span class="pre">Word.display</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.Word.stress"><code class="docutils literal notranslate"><span class="pre">Word.stress</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.Word.phonemes"><code class="docutils literal notranslate"><span class="pre">Word.phonemes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.Word.syllables"><code class="docutils literal notranslate"><span class="pre">Word.syllables</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.Word.stress_bounds"><code class="docutils literal notranslate"><span class="pre">Word.stress_bounds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.Word.get_stress_bounds"><code class="docutils literal notranslate"><span class="pre">Word.get_stress_bounds()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.Word.is_acceptable"><code class="docutils literal notranslate"><span class="pre">Word.is_acceptable()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.Word.set_stress"><code class="docutils literal notranslate"><span class="pre">Word.set_stress()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.Word.split_syllables"><code class="docutils literal notranslate"><span class="pre">Word.split_syllables()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="conlang.html#conlang.Word.update_display"><code class="docutils literal notranslate"><span class="pre">Word.update_display()</span></code></a></li>
 </ul>
 </li>
 </ul>

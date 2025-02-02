@@ -50,6 +50,14 @@ choose from a set of predefined values meant to resemble natural languages:
 
     config = LanguageConfig.random()
 
+Instead of choosing randomly, you can also select a specific preset:
+
+.. code-block:: python
+
+    from conlang import LanguageConfig
+
+    config = LanguageConfig.load_preset('germanic')
+
 Once you have the configuration object, you can generate a conlang object
 and its associated lexicon:
 
@@ -90,6 +98,14 @@ a colon or another delimiter (to be specified as an argument to the method):
     ˈnaːcar: god
     naˈcaːrat: goddess
 
+If you already have a vocabulary object, a configuration object or even a
+language object can be generated from it. The configuration will be detected
+from the vocabulary:
+
+.. code-block:: python
+
+    conlang = Conlang.from_vocabulary('Name', vocabulary)
+
 Mutating a vocabulary
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -99,16 +115,14 @@ create a SoundChange object, which can be loaded from a text file:
 .. code-block:: text
 
     p > b
-    t > d
     k > tʃ / _i
     k > g / _a
     r > 0 / _#
 
 This file contains a set of sound changes, each on a separate line. The
 syntax is `source > target / context`, where the context is optional.
-In this example, `p` becomes `b` and `t` becomes `d` unconditionally, while
-`k` becomes `tʃ` before `i` and `g` before `a`, and `r` is deleted at the
-end of a word.
+In this example, `p` becomes `b` unconditionally, while `k` becomes `tʃ`
+before `i` and `g` before `a`, and `r` is deleted at the end of a word.
 
 In addition to the phoneme environment, you can specify stress:
 
@@ -122,11 +136,22 @@ You can also use wildcards:
 
 .. code-block:: text
 
+    k > tʃ / _I
     p > b / V_V
 
-    V: a e i o u
+    I: i iː j
 
-You can load this file using the :func:`conlang.SoundChange.from_txt` method:
+Notice that if you use the symbol `V` you don't need to specify that it
+refers to all vowels.
+
+You are not restricted to single phonemes, but can use sequences:
+
+.. code-block:: text
+
+    Vt > ə / _# [-stress]
+    Vw > 0 / _# [-stress]
+
+You can load the text file using the :func:`conlang.SoundChange.from_txt` method:
 
 .. code-block:: python
 
@@ -134,13 +159,22 @@ You can load this file using the :func:`conlang.SoundChange.from_txt` method:
 
     sound_change = SoundChange.from_txt('path/to/sound_change.txt')
 
-You can also create a random sound change object:
+You can also create a random sound change object, which will select from a
+set of predefined, realistic sound changes:
 
 .. code-block:: python
 
     from conlang import SoundChange
 
     sound_change = SoundChange.random()
+
+As with the configuration object, you can load a specific sound change preset:
+
+.. code-block:: python
+
+    from conlang import SoundChange
+
+    sound_change = SoundChange.load_preset('great_vowel_shift')
 
 Once you have the sound change object, you can apply it to the vocabulary
 object:
@@ -165,19 +199,19 @@ You can chain multiple sound changes together by using the :class:`conlang.Sound
     mutated_vocabulary = pipeline.apply_to_vocabulary(vocabulary)
 
 Alternatively, you can load a pipeline from a text file, which must contain
-the sound change rules identified by labels between parentheses:
+the sound change rules identified by labels between square brackets:
 
 .. code-block:: text
 
-    (A)
+    [stage 1]
     p > b
     t > d
 
-    (B)
+    [stage 2]
     a > ɔ / [+stress]
     a > ə / [-stress]
 
-    (C)
+    [stage 3]
     k > tʃ / _i
 
 .. code-block:: python
@@ -190,8 +224,10 @@ the sound change rules identified by labels between parentheses:
 Saving a vocabulary
 ~~~~~~~~~~~~~~~~~~~
 
-You can save a vocabulary object to a text file using the :func:`conlang.Vocabulary.to_txt` method:
+You can save a vocabulary object to a text or csv file using the :func:`conlang.Vocabulary.to_txt`
+or :func:`conlang.Vocabulary.to_csv` methods:
 
 .. code-block:: python
 
     vocabulary.to_txt('path/to/vocabulary.txt')
+    vocabulary.to_csv('path/to/vocabulary.csv')

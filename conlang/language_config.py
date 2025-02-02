@@ -1,26 +1,56 @@
-import json
-import numpy as np
+"""
+Language Configuration Module
 
+This module provides functionality to define, load, and manipulate language configurations,
+including phonemes, word patterns, and stress rules. It supports loading configurations from
+strings, text files, JSON files, and presets, as well as detecting the configuration from a
+vocabulary.
+"""
+
+import json
 from pathlib import Path
 from typing import Dict, List
+import numpy as np
+from .phonemes import CONSONANT_SET
 from .presets import PRESETS
-from .phonemes import CONSONANTS
+from .vocabulary import Vocabulary
+from .utils import process_phonemes, process_patterns
 
 
 class LanguageConfig:
     """
-    Represents the configuration of a language, including its phonemes, patterns, and stress rules.
+    Represents the configuration of a language, including its phonemes, word patterns, and stress
+    rules.
 
     Attributes:
-        phonemes (Dict[str, List[str]]): A dictionary mapping categories to phoneme lists.
-        patterns (List[str]): A list of word patterns.
-        stress (List[int]): A list of stress positions.
+        phonemes (Dict[str, List[str]]): A dictionary mapping phoneme categories to lists of
+                                         phonemes.
+        patterns (List[str]): A list of word patterns, where each pattern is a sequence of phoneme
+                              categories.
+        stress (List[int]): A list of stressed syllable positions (as negative indices).
     """
 
     def __init__(self, phonemes: Dict[str, List[str]], patterns: List[str], stress: List[int]):
+        """
+        Initializes a LanguageConfig instance.
+
+        Args:
+            phonemes (Dict[str, List[str]]): A dictionary mapping phoneme categories to lists of
+                                             phonemes.
+            patterns (List[str]): A list of word patterns.
+            stress (List[int]): A list of stress positions.
+            phonemes_weighted (Dict[str, List[str]]): A dictionary where common phonemes are more
+                                                      likely to be chosen.
+            patterns_weighted (List[str]): A list of word patterns with simple patterns more likely.
+            short_patterns (List[str]): A list of the shortest patterns.
+        """
         self.phonemes = phonemes
-        self.patterns = patterns
+        self.patterns = sorted(patterns, key=len)
         self.stress = stress
+        self.phonemes_weighted = process_phonemes(phonemes)
+        self.patterns_weighted = process_patterns(patterns, phonemes)
+        self.short_patterns = self.patterns_weighted[:len(
+            self.patterns_weighted) // 2] if len(self.patterns_weighted) > 1 else self.patterns_weighted
 
     @staticmethod
     def from_str(config_str: str) -> 'LanguageConfig':
@@ -76,7 +106,8 @@ class LanguageConfig:
         Creates a LanguageConfig instance from a dictionary.
 
         Args:
-            config_dict (Dict): A dictionary containing the configuration.
+            config_dict (Dict): A dictionary containing the configuration with keys 'phonemes',
+                                'patterns', and 'stress'.
 
         Returns:
             LanguageConfig: The parsed language configuration.
@@ -119,7 +150,7 @@ class LanguageConfig:
             patterns=preset['patterns'],
             stress=preset['stress']
         )
-    
+
     @staticmethod
     def load_preset(name: str) -> 'LanguageConfig':
         """
@@ -143,20 +174,27 @@ class LanguageConfig:
     def __str__(self) -> str:
         """
         Returns a string representation of the configuration.
+
+        Returns:
+            str: A formatted string showing phonemes, patterns, and stress.
         """
-        phonemes = '\n'.join(f'{k}: {" ".join(v)}' for k, v in self.phonemes.items())
+        phonemes = '\n'.join(f'{k}: {" ".join(v)}' for k,
+                             v in self.phonemes.items())
         patterns = ' '.join(self.patterns)
         stress = ' '.join(map(str, self.stress))
         return f'{phonemes}\n{patterns}\n{stress}'
 
     def __repr__(self) -> str:
         """
-        Returns a string representation of the configuration.
+        Returns a string representation of the configuration for debugging.
+
+        Returns:
+            str: A string representation of the LanguageConfig instance.
         """
-        return self.__str__()
+        return f'LanguageConfig(phonemes={self.phonemes}, patterns={self.patterns}, stress={self.stress})'
 
     @staticmethod
-    def from_vocabulary(vocabulary: 'Vocabulary') -> 'LanguageConfig':
+    def from_vocabulary(vocabulary: Vocabulary) -> 'LanguageConfig':
         """
         Generates a language configuration from a vocabulary.
 
@@ -178,26 +216,27 @@ class LanguageConfig:
 
             consonants_and_vowels = []
             current_chunk = [phoneme_list[0]]
-            is_consonant = phoneme_list[0] in CONSONANTS
+            is_consonant = phoneme_list[0] in CONSONANT_SET
 
             for phoneme in phoneme_list[1:]:
-                if phoneme in CONSONANTS and is_consonant:
+                if phoneme in CONSONANT_SET and is_consonant:
                     current_chunk.append(phoneme)
                 else:
                     consonants_and_vowels.append(current_chunk)
                     current_chunk = [phoneme]
-                    is_consonant = phoneme in CONSONANTS
+                    is_consonant = phoneme in CONSONANT_SET
             consonants_and_vowels.append(current_chunk)
 
             for i, chunk in enumerate(consonants_and_vowels):
-                first_is_consonant = chunk[0] in CONSONANTS
+                first_is_consonant = chunk[0] in CONSONANT_SET
 
                 # Assign key based on position and type
                 # We are using Q for initial clusters, X for medial clusters,
                 # Z for final clusters and N for final consonants
                 if first_is_consonant:
                     if len(chunk) > 1:
-                        phoneme_key = 'Q' if i == 0 else 'X' if i < len(consonants_and_vowels) - 1 else 'Z'
+                        phoneme_key = 'Q' if i == 0 else 'X' if i < len(
+                            consonants_and_vowels) - 1 else 'Z'
                     elif i == len(consonants_and_vowels) - 1:
                         phoneme_key = 'N'
                     else:
@@ -219,14 +258,13 @@ class LanguageConfig:
             if word.stress not in stress:
                 stress.append(word.stress)
 
+        # Simplify phoneme categories if redundant
         if 'N' in phonemes and set(phonemes['N']) == set(phonemes['C']):
             del phonemes['N']
-            for i, pattern in enumerate(patterns):
-                patterns[i] = pattern.replace('N', 'C')
+            patterns = [pattern.replace('N', 'C') for pattern in patterns]
 
         if 'Q' in phonemes and 'X' in phonemes and set(phonemes['Q']) == set(phonemes['X']):
             del phonemes['X']
-            for i, pattern in enumerate(patterns):
-                patterns[i] = pattern.replace('X', 'Q')
+            patterns = [pattern.replace('X', 'Q') for pattern in patterns]
 
         return LanguageConfig(phonemes, patterns, stress)

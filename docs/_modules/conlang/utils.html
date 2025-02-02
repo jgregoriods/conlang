@@ -241,18 +241,26 @@
                 <article class="bd-article">
                   
   <h1>Source code for conlang.utils</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.phonemes</span><span class="w"> </span><span class="kn">import</span> <span class="n">PHONEMES</span><span class="p">,</span> <span class="n">CONSONANTS</span><span class="p">,</span> <span class="n">VOWELS</span><span class="p">,</span> <span class="n">COMMON_PHONEMES</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Utils Module</span>
+
+<span class="sd">This module provides utility functions for processing phonemes and word patterns. It includes</span>
+<span class="sd">functionality to parse words into phonemes, process phoneme sets to prioritize common phonemes,</span>
+<span class="sd">and adjust patterns to prioritize simpler patterns for common words.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.phonemes</span><span class="w"> </span><span class="kn">import</span> <span class="n">PHONEME_SET</span><span class="p">,</span> <span class="n">COMMON_PHONEME_SET</span>
 
 
-<div class="viewcode-block" id="split_phonemes">
-<a class="viewcode-back" href="../../conlang.html#conlang.utils.split_phonemes">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">split_phonemes</span><span class="p">(</span><span class="n">word</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<div class="viewcode-block" id="parse_phonemes">
+<a class="viewcode-back" href="../../conlang.html#conlang.utils.parse_phonemes">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_phonemes</span><span class="p">(</span><span class="n">word</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Splits a word into phonemes using the predefined PHONEMES list.</span>
+<span class="sd">    Splits a word string into phonemes using the predefined PHONEME_SET list.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        word (str): The word to split into phonemes.</span>
+<span class="sd">        word (str): The word to split into phonemes as a string.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        List[str]: A list of phonemes.</span>
@@ -262,7 +270,7 @@
     <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>
         <span class="c1"># Phonemes can be up to 3 characters long</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="n">word</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="ow">in</span> <span class="n">PHONEMES</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">word</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="ow">in</span> <span class="n">PHONEME_SET</span><span class="p">:</span>
                 <span class="n">phonemes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">word</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">])</span>
                 <span class="n">i</span> <span class="o">+=</span> <span class="n">j</span>
                 <span class="k">break</span>
@@ -273,70 +281,6 @@
 
 
 
-<div class="viewcode-block" id="split_syllables">
-<a class="viewcode-back" href="../../conlang.html#conlang.utils.split_syllables">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">split_syllables</span><span class="p">(</span><span class="n">word</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Splits a word into syllables.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        word (str): The word to split into syllables.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        List[str]: A list of syllables.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">phonemes</span> <span class="o">=</span> <span class="n">split_phonemes</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
-    <span class="n">syllables</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">current_syllable</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="k">for</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="n">phonemes</span><span class="p">:</span>
-        <span class="n">current_syllable</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">phoneme</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="n">VOWELS</span><span class="p">:</span>
-            <span class="n">syllables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_syllable</span><span class="p">)</span>
-            <span class="n">current_syllable</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="k">if</span> <span class="n">current_syllable</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">syllables</span><span class="p">:</span>
-            <span class="n">syllables</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">current_syllable</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">syllables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_syllable</span><span class="p">)</span>
-
-    <span class="c1"># Adjust consonant clusters across syllable boundaries</span>
-    <span class="n">adjusted_syllables</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">syllable</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">syllables</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">syllable</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">syllable</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">CONSONANTS</span> <span class="ow">and</span> <span class="n">syllable</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">CONSONANTS</span><span class="p">:</span>
-            <span class="c1"># Move the leading consonant to the previous syllable</span>
-            <span class="n">adjusted_syllables</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">syllable</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
-        <span class="n">adjusted_syllables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">syllable</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">syllable</span><span class="p">)</span> <span class="k">for</span> <span class="n">syllable</span> <span class="ow">in</span> <span class="n">adjusted_syllables</span><span class="p">]</span></div>
-
-
-
-<div class="viewcode-block" id="map_stress">
-<a class="viewcode-back" href="../../conlang.html#conlang.utils.map_stress">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">map_stress</span><span class="p">(</span><span class="n">word</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Maps which phonemes are in a stressed syllable.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        phonemes (List[str]): A list of phonemes.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        List[bool]: A list indicating stressed (True) and unstressed (False) phonemes.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">syllables</span> <span class="o">=</span> <span class="n">split_syllables</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
-    <span class="n">stressed</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">syllable</span> <span class="ow">in</span> <span class="n">syllables</span><span class="p">:</span>
-        <span class="n">phonemes</span> <span class="o">=</span> <span class="n">split_phonemes</span><span class="p">(</span><span class="n">syllable</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s1">&#39;ˈ&#39;</span> <span class="ow">in</span> <span class="n">phonemes</span><span class="p">:</span>
-            <span class="n">stressed</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="kc">True</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">phonemes</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">stressed</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">phonemes</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">stressed</span></div>
-
-
-
 <div class="viewcode-block" id="process_phonemes">
 <a class="viewcode-back" href="../../conlang.html#conlang.utils.process_phonemes">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">process_phonemes</span><span class="p">(</span><span class="n">phonemes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
@@ -344,16 +288,16 @@
 <span class="sd">    Processes phoneme sets to make common phonemes more likely to be chosen.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        phonemes (Dict[str, List[str]]): A dictionary of phoneme categories and their respective phonemes.</span>
+<span class="sd">        phonemes (Dict[str, List[str]]): A dictionary of phoneme categories and their respective</span>
+<span class="sd">                                         phonemes.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Dict[str, List[str]]: A modified dictionary where common phonemes are more likely.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">common_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">COMMON_PHONEMES</span><span class="p">)</span>  <span class="c1"># Convert to set for faster lookup</span>
     <span class="n">processed</span> <span class="o">=</span> <span class="p">{</span>
         <span class="n">category</span><span class="p">:</span> <span class="p">[</span>
             <span class="n">phoneme</span> <span class="k">for</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="n">phoneme_list</span>
-            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span> <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">item</span> <span class="ow">in</span> <span class="n">common_set</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">split_phonemes</span><span class="p">(</span><span class="n">phoneme</span><span class="p">))</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span> <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">item</span> <span class="ow">in</span> <span class="n">COMMON_PHONEME_SET</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">parse_phonemes</span><span class="p">(</span><span class="n">phoneme</span><span class="p">))</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span>
         <span class="p">]</span>
         <span class="k">for</span> <span class="n">category</span><span class="p">,</span> <span class="n">phoneme_list</span> <span class="ow">in</span> <span class="n">phonemes</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
     <span class="p">}</span>
@@ -361,35 +305,41 @@
 
 
 
-<div class="viewcode-block" id="is_acceptable">
-<a class="viewcode-back" href="../../conlang.html#conlang.utils.is_acceptable">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">is_acceptable</span><span class="p">(</span><span class="n">word</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="process_patterns">
+<a class="viewcode-back" href="../../conlang.html#conlang.utils.process_patterns">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">process_patterns</span><span class="p">(</span><span class="n">patterns</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">phonemes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Determines whether a word is acceptable based on specific phonetic constraints.</span>
+<span class="sd">    Processes patterns to prioritize simpler ones (short and without clusters).</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        word (str): The word to validate.</span>
+<span class="sd">        patterns (List[str]): A list of patterns to process.</span>
+<span class="sd">        phonemes (Dict[str, List[str]]): A dictionary of phoneme categories and their respective</span>
+<span class="sd">                                         phonemes.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        bool: True if the word is acceptable, False otherwise.</span>
+<span class="sd">        List[str]: A modified list of patterns where simpler patterns are more likely.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Constraints on specific phonetic elements</span>
-    <span class="n">constraints</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;ʰ&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># Aspirated consonants</span>
-        <span class="s1">&#39;ʼ&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># Ejective consonants</span>
-        <span class="s1">&#39;ː&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># Long vowels</span>
-        <span class="s1">&#39;ʷ&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># Labialized consonants</span>
-        <span class="s1">&#39;̃&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># Nasalized vowels</span>
-    <span class="p">}</span>
-    <span class="k">for</span> <span class="n">char</span><span class="p">,</span> <span class="n">max_count</span> <span class="ow">in</span> <span class="n">constraints</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">word</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">char</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_count</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_cluster</span><span class="p">(</span><span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if a pattern contains phoneme clusters.</span>
 
-    <span class="c1"># Prevent excessive repetition of characters</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">word</span><span class="p">))</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">word</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">:</span>
+<span class="sd">        Args:</span>
+<span class="sd">            pattern (str): The pattern to check.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the pattern contains clusters, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">pattern</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">char</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">PHONEME_SET</span> <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">phonemes</span><span class="p">[</span><span class="n">letter</span><span class="p">]):</span>
+                <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">False</span>
 
-    <span class="k">return</span> <span class="kc">True</span></div>
+    <span class="c1"># Prioritize simpler patterns (those without clusters)</span>
+    <span class="n">processed</span> <span class="o">=</span> <span class="p">[</span><span class="n">pattern</span> <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">patterns</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span>
+        <span class="mi">2</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">has_cluster</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)]</span>
+    <span class="c1"># Sort by length to prioritize shorter patterns</span>
+    <span class="n">processed</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">processed</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">processed</span></div>
 
 </pre></div>
 

@@ -241,32 +241,61 @@
                 <article class="bd-article">
                   
   <h1>Source code for conlang.language_config</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Language Configuration Module</span>
 
+<span class="sd">This module provides functionality to define, load, and manipulate language configurations,</span>
+<span class="sd">including phonemes, word patterns, and stress rules. It supports loading configurations from</span>
+<span class="sd">strings, text files, JSON files, and presets, as well as detecting the configuration from a</span>
+<span class="sd">vocabulary.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.phonemes</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONSONANT_SET</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.presets</span><span class="w"> </span><span class="kn">import</span> <span class="n">PRESETS</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">split_phonemes</span><span class="p">,</span> <span class="n">split_syllables</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.phonemes</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONSONANTS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.vocabulary</span><span class="w"> </span><span class="kn">import</span> <span class="n">Vocabulary</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">process_phonemes</span><span class="p">,</span> <span class="n">process_patterns</span>
 
 
 <div class="viewcode-block" id="LanguageConfig">
 <a class="viewcode-back" href="../../conlang.html#conlang.language_config.LanguageConfig">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LanguageConfig</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Represents the configuration of a language, including its phonemes, patterns, and stress rules.</span>
+<span class="sd">    Represents the configuration of a language, including its phonemes, word patterns, and stress</span>
+<span class="sd">    rules.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        phonemes (Dict[str, List[str]]): A dictionary mapping categories to phoneme lists.</span>
-<span class="sd">        patterns (List[str]): A list of word patterns.</span>
-<span class="sd">        stress (List[int]): A list of stress positions.</span>
+<span class="sd">        phonemes (Dict[str, List[str]]): A dictionary mapping phoneme categories to lists of</span>
+<span class="sd">                                         phonemes.</span>
+<span class="sd">        patterns (List[str]): A list of word patterns, where each pattern is a sequence of phoneme</span>
+<span class="sd">                              categories.</span>
+<span class="sd">        stress (List[int]): A list of stressed syllable positions (as negative indices).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phonemes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">patterns</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">stress</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes a LanguageConfig instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            phonemes (Dict[str, List[str]]): A dictionary mapping phoneme categories to lists of</span>
+<span class="sd">                                             phonemes.</span>
+<span class="sd">            patterns (List[str]): A list of word patterns.</span>
+<span class="sd">            stress (List[int]): A list of stress positions.</span>
+<span class="sd">            phonemes_weighted (Dict[str, List[str]]): A dictionary where common phonemes are more</span>
+<span class="sd">                                                      likely to be chosen.</span>
+<span class="sd">            patterns_weighted (List[str]): A list of word patterns with simple patterns more likely.</span>
+<span class="sd">            short_patterns (List[str]): A list of the shortest patterns.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">phonemes</span> <span class="o">=</span> <span class="n">phonemes</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">patterns</span> <span class="o">=</span> <span class="n">patterns</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">patterns</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">patterns</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stress</span> <span class="o">=</span> <span class="n">stress</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phonemes_weighted</span> <span class="o">=</span> <span class="n">process_phonemes</span><span class="p">(</span><span class="n">phonemes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">patterns_weighted</span> <span class="o">=</span> <span class="n">process_patterns</span><span class="p">(</span><span class="n">patterns</span><span class="p">,</span> <span class="n">phonemes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">short_patterns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">patterns_weighted</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">patterns_weighted</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">patterns_weighted</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">patterns_weighted</span>
 
 <div class="viewcode-block" id="LanguageConfig.from_str">
 <a class="viewcode-back" href="../../conlang.html#conlang.language_config.LanguageConfig.from_str">[docs]</a>
@@ -330,7 +359,8 @@
 <span class="sd">        Creates a LanguageConfig instance from a dictionary.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            config_dict (Dict): A dictionary containing the configuration.</span>
+<span class="sd">            config_dict (Dict): A dictionary containing the configuration with keys &#39;phonemes&#39;,</span>
+<span class="sd">                                &#39;patterns&#39;, and &#39;stress&#39;.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            LanguageConfig: The parsed language configuration.</span>
@@ -380,7 +410,7 @@
             <span class="n">stress</span><span class="o">=</span><span class="n">preset</span><span class="p">[</span><span class="s1">&#39;stress&#39;</span><span class="p">]</span>
         <span class="p">)</span></div>
 
-    
+
 <div class="viewcode-block" id="LanguageConfig.load_preset">
 <a class="viewcode-back" href="../../conlang.html#conlang.language_config.LanguageConfig.load_preset">[docs]</a>
     <span class="nd">@staticmethod</span>
@@ -407,22 +437,29 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a string representation of the configuration.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: A formatted string showing phonemes, patterns, and stress.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">phonemes</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">phonemes</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+        <span class="n">phonemes</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span>
+                             <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">phonemes</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
         <span class="n">patterns</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">patterns</span><span class="p">)</span>
         <span class="n">stress</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stress</span><span class="p">))</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">phonemes</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">patterns</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">stress</span><span class="si">}</span><span class="s1">&#39;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns a string representation of the configuration.</span>
+<span class="sd">        Returns a string representation of the configuration for debugging.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: A string representation of the LanguageConfig instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;LanguageConfig(phonemes=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">phonemes</span><span class="si">}</span><span class="s1">, patterns=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">patterns</span><span class="si">}</span><span class="s1">, stress=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">stress</span><span class="si">}</span><span class="s1">)&#39;</span>
 
 <div class="viewcode-block" id="LanguageConfig.from_vocabulary">
 <a class="viewcode-back" href="../../conlang.html#conlang.language_config.LanguageConfig.from_vocabulary">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_vocabulary</span><span class="p">(</span><span class="n">vocabulary</span><span class="p">:</span> <span class="s1">&#39;Vocabulary&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;LanguageConfig&#39;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_vocabulary</span><span class="p">(</span><span class="n">vocabulary</span><span class="p">:</span> <span class="n">Vocabulary</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;LanguageConfig&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generates a language configuration from a vocabulary.</span>
 
@@ -440,30 +477,31 @@
             <span class="n">word</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;word&#39;</span><span class="p">]</span>
             <span class="n">word_pattern</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 
-            <span class="n">phoneme_list</span> <span class="o">=</span> <span class="n">split_phonemes</span><span class="p">(</span><span class="n">word</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;ˈ&quot;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+            <span class="n">phoneme_list</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">phonemes</span>
 
             <span class="n">consonants_and_vowels</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">current_chunk</span> <span class="o">=</span> <span class="p">[</span><span class="n">phoneme_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
-            <span class="n">is_consonant</span> <span class="o">=</span> <span class="n">phoneme_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">CONSONANTS</span>
+            <span class="n">is_consonant</span> <span class="o">=</span> <span class="n">phoneme_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">CONSONANT_SET</span>
 
             <span class="k">for</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="n">phoneme_list</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-                <span class="k">if</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="n">CONSONANTS</span> <span class="ow">and</span> <span class="n">is_consonant</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="n">CONSONANT_SET</span> <span class="ow">and</span> <span class="n">is_consonant</span><span class="p">:</span>
                     <span class="n">current_chunk</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">phoneme</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">consonants_and_vowels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_chunk</span><span class="p">)</span>
                     <span class="n">current_chunk</span> <span class="o">=</span> <span class="p">[</span><span class="n">phoneme</span><span class="p">]</span>
-                    <span class="n">is_consonant</span> <span class="o">=</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="n">CONSONANTS</span>
+                    <span class="n">is_consonant</span> <span class="o">=</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="n">CONSONANT_SET</span>
             <span class="n">consonants_and_vowels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_chunk</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">consonants_and_vowels</span><span class="p">):</span>
-                <span class="n">first_is_consonant</span> <span class="o">=</span> <span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">CONSONANTS</span>
+                <span class="n">first_is_consonant</span> <span class="o">=</span> <span class="n">chunk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">CONSONANT_SET</span>
 
                 <span class="c1"># Assign key based on position and type</span>
                 <span class="c1"># We are using Q for initial clusters, X for medial clusters,</span>
                 <span class="c1"># Z for final clusters and N for final consonants</span>
                 <span class="k">if</span> <span class="n">first_is_consonant</span><span class="p">:</span>
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                        <span class="n">phoneme_key</span> <span class="o">=</span> <span class="s1">&#39;Q&#39;</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;X&#39;</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">consonants_and_vowels</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">else</span> <span class="s1">&#39;Z&#39;</span>
+                        <span class="n">phoneme_key</span> <span class="o">=</span> <span class="s1">&#39;Q&#39;</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;X&#39;</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span>
+                            <span class="n">consonants_and_vowels</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">else</span> <span class="s1">&#39;Z&#39;</span>
                     <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">consonants_and_vowels</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
                         <span class="n">phoneme_key</span> <span class="o">=</span> <span class="s1">&#39;N&#39;</span>
                     <span class="k">else</span><span class="p">:</span>
@@ -482,23 +520,17 @@
             <span class="k">if</span> <span class="n">word_pattern</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">:</span>
                 <span class="n">patterns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">word_pattern</span><span class="p">)</span>
 
-            <span class="n">syllables</span> <span class="o">=</span> <span class="n">split_syllables</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">syllable</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">syllables</span><span class="p">):</span>
-                <span class="k">if</span> <span class="s1">&#39;ˈ&#39;</span> <span class="ow">in</span> <span class="n">syllable</span><span class="p">:</span>
-                    <span class="n">stress_index</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">syllables</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">stress_index</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stress</span><span class="p">:</span>
-                        <span class="n">stress</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stress_index</span><span class="p">)</span>
-                    <span class="k">break</span>
+            <span class="k">if</span> <span class="n">word</span><span class="o">.</span><span class="n">stress</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stress</span><span class="p">:</span>
+                <span class="n">stress</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">word</span><span class="o">.</span><span class="n">stress</span><span class="p">)</span>
 
+        <span class="c1"># Simplify phoneme categories if redundant</span>
         <span class="k">if</span> <span class="s1">&#39;N&#39;</span> <span class="ow">in</span> <span class="n">phonemes</span> <span class="ow">and</span> <span class="nb">set</span><span class="p">(</span><span class="n">phonemes</span><span class="p">[</span><span class="s1">&#39;N&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">phonemes</span><span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">]):</span>
             <span class="k">del</span> <span class="n">phonemes</span><span class="p">[</span><span class="s1">&#39;N&#39;</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">patterns</span><span class="p">):</span>
-                <span class="n">patterns</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span>
-        
+            <span class="n">patterns</span> <span class="o">=</span> <span class="p">[</span><span class="n">pattern</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">]</span>
+
         <span class="k">if</span> <span class="s1">&#39;Q&#39;</span> <span class="ow">in</span> <span class="n">phonemes</span> <span class="ow">and</span> <span class="s1">&#39;X&#39;</span> <span class="ow">in</span> <span class="n">phonemes</span> <span class="ow">and</span> <span class="nb">set</span><span class="p">(</span><span class="n">phonemes</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">phonemes</span><span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">]):</span>
             <span class="k">del</span> <span class="n">phonemes</span><span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">patterns</span><span class="p">):</span>
-                <span class="n">patterns</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">)</span>
+            <span class="n">patterns</span> <span class="o">=</span> <span class="p">[</span><span class="n">pattern</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="n">LanguageConfig</span><span class="p">(</span><span class="n">phonemes</span><span class="p">,</span> <span class="n">patterns</span><span class="p">,</span> <span class="n">stress</span><span class="p">)</span></div>
 </div>

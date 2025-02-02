@@ -241,54 +241,97 @@
                 <article class="bd-article">
                   
   <h1>Source code for conlang.sound_change</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Sound Change Module</span>
 
+<span class="sd">This module provides functionality to define, apply, and manage phonological sound changes.</span>
+<span class="sd">The main classes, `SoundChange` and `SoundChangePipeline`, allow for the application of</span>
+<span class="sd">sound changes to individual words or entire vocabularies.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">product</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">split_phonemes</span><span class="p">,</span> <span class="n">map_stress</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.vocabulary</span><span class="w"> </span><span class="kn">import</span> <span class="n">Vocabulary</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.phonemes</span><span class="w"> </span><span class="kn">import</span> <span class="n">VOWEL_SET</span><span class="p">,</span> <span class="n">CONSONANT_SET</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.rules</span><span class="w"> </span><span class="kn">import</span> <span class="n">RULES</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.phonemes</span><span class="w"> </span><span class="kn">import</span> <span class="n">VOWELS</span><span class="p">,</span> <span class="n">CONSONANTS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_phonemes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.vocabulary</span><span class="w"> </span><span class="kn">import</span> <span class="n">Vocabulary</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.word</span><span class="w"> </span><span class="kn">import</span> <span class="n">Word</span>
 
 
 <div class="viewcode-block" id="SoundChange">
 <a class="viewcode-back" href="../../conlang.html#conlang.sound_change.SoundChange">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SoundChange</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A class to handle phonological sound changes using defined rules and wildcards.</span>
+<span class="sd">    A class to handle phonological sound changes using defined rules.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        rules (Dict[str, List[Tuple[str]]): A dictionary mapping phonemes to lists of tuples, where each tuple contains the new phoneme and the environment.</span>
-<span class="sd">        wildcards (Optional[Dict]): A dictionary mapping wildcard symbols to lists of phonemes.</span>
+<span class="sd">        rules (Dict[Tuple[str], List[Tuple[str]]]): A dictionary mapping phonemes or phoneme</span>
+<span class="sd">                                                    sequences to lists of tuples, where each tuple</span>
+<span class="sd">                                                    contains the new phoneme(s) and the environment.</span>
+<span class="sd">        wildcards (Optional[Dict[str, List[str]]]): A dictionary mapping wildcard symbols to lists</span>
+<span class="sd">                                                    of phonemes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rules</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]],</span> <span class="n">wildcards</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rules</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]],</span>
+                 <span class="n">wildcards</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes a SoundChange instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            rules (Dict[Tuple[str], List[Tuple[str]]]): A dictionary of sound change rules.</span>
+<span class="sd">            wildcards (Optional[Dict[str, List[str]]]): A dictionary of wildcard mappings.</span>
+<span class="sd">                                                        Defaults to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rules</span> <span class="o">=</span> <span class="n">rules</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wildcards</span> <span class="o">=</span> <span class="n">wildcards</span>
 
 <div class="viewcode-block" id="SoundChange.apply_to_word">
 <a class="viewcode-back" href="../../conlang.html#conlang.sound_change.SoundChange.apply_to_word">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">apply_to_word</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply_to_word</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">:</span> <span class="n">Word</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Word</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Apply sound changes to a single word based on defined rules.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            word (str): The input word.</span>
+<span class="sd">            word (Word): The input word.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            str: The transformed word.</span>
+<span class="sd">            Word: The transformed word.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">stressed</span> <span class="o">=</span> <span class="n">map_stress</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
-        <span class="n">phonemes</span> <span class="o">=</span> <span class="n">split_phonemes</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+        <span class="n">stress_start</span><span class="p">,</span> <span class="n">stress_end</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">stress_bounds</span>
+        <span class="n">phonemes</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">phonemes</span>
         <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">def</span><span class="w"> </span><span class="nf">matches_environment</span><span class="p">(</span><span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">matches_sequence</span><span class="p">(</span><span class="n">start_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">sequence</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Check if a sequence of phonemes matches the input phonemes starting at the given index.</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                start_idx (int): The starting index in the phonemes list.</span>
+<span class="sd">                sequence (Tuple[str]): The sequence of phonemes to match.</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                bool: True if the sequence matches, False otherwise.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">start_idx</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">phonemes</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sequence</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="s1">&#39;CV&#39;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matches_phoneme</span><span class="p">(</span><span class="n">phonemes</span><span class="p">[</span><span class="n">start_idx</span> <span class="o">+</span> <span class="n">i</span><span class="p">],</span> <span class="n">phoneme</span><span class="p">):</span>
+                        <span class="k">return</span> <span class="kc">False</span>
+                <span class="k">elif</span> <span class="n">phonemes</span><span class="p">[</span><span class="n">start_idx</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">phoneme</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">matches_environment</span><span class="p">(</span><span class="n">start_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">end_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Check if the phoneme at the given index matches the environment.</span>
 
 <span class="sd">            Args:</span>
-<span class="sd">                index (int): The index of the phoneme.</span>
+<span class="sd">                start_idx (int): The starting index of the phoneme sequence.</span>
+<span class="sd">                end_idx (int): The ending index of the phoneme sequence.</span>
 <span class="sd">                environment (str): The environment string (e.g., &quot;#_&quot;, &quot;_#&quot;, &quot;V_V&quot;).</span>
 
 <span class="sd">            Returns:</span>
@@ -298,77 +341,98 @@
                 <span class="k">return</span> <span class="kc">True</span>
 
             <span class="k">if</span> <span class="n">environment</span> <span class="o">==</span> <span class="s2">&quot;#_&quot;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">phonemes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;ˈ&quot;</span>
+                <span class="k">return</span> <span class="n">start_idx</span> <span class="o">==</span> <span class="mi">0</span>
             <span class="k">if</span> <span class="n">environment</span> <span class="o">==</span> <span class="s2">&quot;_#&quot;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">index</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">phonemes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="k">return</span> <span class="n">end_idx</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">phonemes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
 
             <span class="n">prv</span><span class="p">,</span> <span class="n">nxt</span> <span class="o">=</span> <span class="n">environment</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
                 <span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="s1">&#39;_&#39;</span> <span class="ow">in</span> <span class="n">environment</span> <span class="k">else</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">prv</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">prv</span> <span class="o">==</span> <span class="s1">&#39;#&#39;</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">index</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span><span class="n">phonemes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;ˈ&quot;</span> <span class="ow">and</span> <span class="n">index</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">start_idx</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="k">return</span> <span class="kc">False</span>
 
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">prev_idx</span> <span class="o">=</span> <span class="n">index</span> <span class="o">-</span> \
-                        <span class="mi">1</span> <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">phonemes</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span>
-                                                    <span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;ˈ&quot;</span> <span class="k">else</span> <span class="n">index</span> <span class="o">-</span> <span class="mi">2</span>
+                    <span class="n">prev_idx</span> <span class="o">=</span> <span class="n">start_idx</span> <span class="o">-</span> <span class="mi">1</span>
                     <span class="k">if</span> <span class="n">prev_idx</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matches_phoneme</span><span class="p">(</span><span class="n">phonemes</span><span class="p">[</span><span class="n">prev_idx</span><span class="p">],</span> <span class="n">prv</span><span class="p">):</span>
                         <span class="k">return</span> <span class="kc">False</span>
 
             <span class="k">if</span> <span class="n">nxt</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">nxt</span> <span class="o">==</span> <span class="s1">&#39;#&#39;</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">index</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">phonemes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">end_idx</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">phonemes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
                         <span class="k">return</span> <span class="kc">False</span>
 
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">next_idx</span> <span class="o">=</span> <span class="n">index</span> <span class="o">+</span> \
-                        <span class="mi">1</span> <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span>
-                            <span class="n">phonemes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">phonemes</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;ˈ&quot;</span> <span class="k">else</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">2</span>
+                    <span class="n">next_idx</span> <span class="o">=</span> <span class="n">end_idx</span> <span class="o">+</span> <span class="mi">1</span>
                     <span class="k">if</span> <span class="n">next_idx</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">phonemes</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matches_phoneme</span><span class="p">(</span><span class="n">phonemes</span><span class="p">[</span><span class="n">next_idx</span><span class="p">],</span> <span class="n">nxt</span><span class="p">):</span>
                         <span class="k">return</span> <span class="kc">False</span>
 
             <span class="k">return</span> <span class="kc">True</span>
 
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">phonemes</span><span class="p">):</span>
-            <span class="n">possible_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">phoneme</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="n">VOWELS</span> <span class="ow">and</span> <span class="s1">&#39;V&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">:</span>
-                <span class="n">possible_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;V&#39;</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="n">CONSONANTS</span> <span class="ow">and</span> <span class="s1">&#39;C&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">:</span>
-                <span class="n">possible_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
-
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">phonemes</span><span class="p">):</span>
             <span class="n">matched</span> <span class="o">=</span> <span class="kc">False</span>
 
-            <span class="k">for</span> <span class="n">rule_key</span> <span class="ow">in</span> <span class="n">possible_keys</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">rule_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">:</span>
+            <span class="c1"># Check for the longest matching sequence first</span>
+            <span class="k">for</span> <span class="n">sequence_length</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">+</span> <span class="n">sequence_length</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">phonemes</span><span class="p">):</span>
                     <span class="k">continue</span>
-                <span class="k">for</span> <span class="n">after</span><span class="p">,</span> <span class="n">environment</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">[</span><span class="n">rule_key</span><span class="p">]:</span>
-                    <span class="c1"># Handle stress-specific environments</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;[+stress]&#39;</span> <span class="ow">in</span> <span class="n">environment</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">stressed</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;[-stress]&#39;</span> <span class="ow">in</span> <span class="n">environment</span> <span class="ow">and</span> <span class="n">stressed</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
-                        <span class="k">continue</span>
 
-                    <span class="n">environment</span> <span class="o">=</span> <span class="n">environment</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
-                        <span class="s1">&#39;[+stress]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;[-stress]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">sequence</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">phonemes</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="n">sequence_length</span><span class="p">])</span>
+                <span class="n">possible_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">sequence</span><span class="p">]</span>
 
-                    <span class="k">if</span> <span class="n">matches_environment</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">environment</span><span class="p">):</span>
-                        <span class="k">if</span> <span class="s1">&#39;V&#39;</span> <span class="ow">in</span> <span class="n">after</span><span class="p">:</span>
-                            <span class="n">after</span> <span class="o">=</span> <span class="n">after</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
-                                <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="n">phoneme</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;ː̃&quot;</span><span class="p">,</span> <span class="s2">&quot;̃ː&quot;</span><span class="p">)</span>
-                        <span class="k">elif</span> <span class="s1">&#39;C&#39;</span> <span class="ow">in</span> <span class="n">after</span><span class="p">:</span>
-                            <span class="n">after</span> <span class="o">=</span> <span class="n">after</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">phoneme</span><span class="p">)</span>
-                        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">after</span><span class="p">)</span>
-                        <span class="n">matched</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="c1"># Add wildcard-based keys (e.g., (&#39;V&#39;, &#39;t&#39;) for (&#39;a&#39;, &#39;t&#39;))</span>
+                <span class="n">combinations</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">possible_keys</span><span class="p">:</span>
+                    <span class="n">replacement_options</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+                        <span class="n">options</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="k">if</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="n">VOWEL_SET</span><span class="p">:</span>
+                            <span class="n">options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;V&#39;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="n">CONSONANT_SET</span><span class="p">:</span>
+                            <span class="n">options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+                        <span class="n">options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">phoneme</span><span class="p">)</span>
+                        <span class="n">replacement_options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+                    <span class="n">combinations</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="nb">tuple</span><span class="p">(</span><span class="n">repl</span><span class="p">)</span> <span class="k">for</span> <span class="n">repl</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span>
+                        <span class="nb">list</span><span class="p">(</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">replacement_options</span><span class="p">)))])</span>
+                <span class="n">possible_keys</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">combinations</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">possible_keys</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">after</span><span class="p">,</span> <span class="n">environment</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                            <span class="c1"># Handle stress-specific environments</span>
+                            <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;[+stress]&#39;</span> <span class="ow">in</span> <span class="n">environment</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">stress_start</span> <span class="o">&lt;=</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">stress_end</span><span class="p">)</span> <span class="ow">or</span> \
+                                    <span class="p">(</span><span class="s1">&#39;[-stress]&#39;</span> <span class="ow">in</span> <span class="n">environment</span> <span class="ow">and</span> <span class="n">stress_start</span> <span class="o">&lt;=</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">stress_end</span><span class="p">):</span>
+                                <span class="k">continue</span>
+
+                            <span class="n">environment</span> <span class="o">=</span> <span class="n">environment</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                                <span class="s1">&#39;[+stress]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;[-stress]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+                            <span class="k">if</span> <span class="n">matches_sequence</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span> <span class="ow">and</span> <span class="n">matches_environment</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="n">sequence_length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">environment</span><span class="p">):</span>
+                                <span class="k">if</span> <span class="s1">&#39;V&#39;</span> <span class="ow">in</span> <span class="n">after</span><span class="p">:</span>
+                                    <span class="n">original_vowels</span> <span class="o">=</span> <span class="p">[</span>
+                                        <span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">phonemes</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="n">sequence_length</span><span class="p">]</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">VOWEL_SET</span><span class="p">]</span>
+                                    <span class="k">for</span> <span class="n">vowel</span> <span class="ow">in</span> <span class="n">original_vowels</span><span class="p">:</span>
+                                        <span class="n">after</span> <span class="o">=</span> <span class="n">after</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="n">vowel</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                                    <span class="n">after</span> <span class="o">=</span> <span class="n">after</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;ː̃&#39;</span><span class="p">,</span> <span class="s1">&#39;̃ː&#39;</span><span class="p">)</span>
+                                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">after</span><span class="p">)</span>
+                                <span class="n">i</span> <span class="o">+=</span> <span class="n">sequence_length</span>
+                                <span class="n">matched</span> <span class="o">=</span> <span class="kc">True</span>
+                                <span class="k">break</span>
+
+                    <span class="k">if</span> <span class="n">matched</span><span class="p">:</span>
                         <span class="k">break</span>
-
                 <span class="k">if</span> <span class="n">matched</span><span class="p">:</span>
                     <span class="k">break</span>
-
             <span class="k">if</span> <span class="ow">not</span> <span class="n">matched</span><span class="p">:</span>
-                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">phoneme</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">phonemes</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="c1"># Remove null phonemes (e.g., ∅ or 0)</span>
-        <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;[∅0]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">))</span></div>
+        <span class="n">mutated_word</span> <span class="o">=</span> <span class="n">Word</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;[∅0]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">)))</span>
+        <span class="n">mutated_word</span><span class="o">.</span><span class="n">set_stress</span><span class="p">(</span><span class="n">word</span><span class="o">.</span><span class="n">stress</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mutated_word</span></div>
 
 
 <div class="viewcode-block" id="SoundChange.apply_to_vocabulary">
@@ -381,8 +445,10 @@
 <span class="sd">            vocabulary (Vocabulary): The input vocabulary.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Vocabulary: A new vocabulary with transformed words.</span>
+<span class="sd">            Vocabulary: A new vocabulary with mutated words.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No rules defined for sound change&#39;</span><span class="p">)</span>
         <span class="n">mutated_vocabulary</span> <span class="o">=</span> <span class="n">Vocabulary</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">word</span><span class="p">,</span> <span class="n">gloss</span> <span class="ow">in</span> <span class="n">vocabulary</span><span class="p">:</span>
             <span class="n">mutated_word</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_to_word</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
@@ -412,6 +478,7 @@
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="s1">&#39;&gt;&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
                 <span class="n">before</span><span class="p">,</span> <span class="n">after</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">strip</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;&gt;&#39;</span><span class="p">))</span>
+                <span class="n">before</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">parse_phonemes</span><span class="p">(</span><span class="n">before</span><span class="p">))</span>
                 <span class="n">environment</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
                 <span class="k">if</span> <span class="s1">&#39;/&#39;</span> <span class="ow">in</span> <span class="n">after</span><span class="p">:</span>
                     <span class="n">after</span><span class="p">,</span> <span class="n">environment</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">strip</span><span class="p">,</span> <span class="n">after</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">))</span>
@@ -493,19 +560,22 @@
             <span class="k">return</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wildcards</span><span class="p">[</span><span class="n">condition</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">condition</span> <span class="o">==</span> <span class="s1">&#39;V&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="n">VOWELS</span>
+            <span class="k">return</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="n">VOWEL_SET</span>
 
         <span class="k">if</span> <span class="n">condition</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="n">CONSONANTS</span>
+            <span class="k">return</span> <span class="n">phoneme</span> <span class="ow">in</span> <span class="n">CONSONANT_SET</span>
 
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the string representation of the SoundChange instance.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The string representation of the SoundChange instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">rules</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1"> &gt; </span><span class="si">{</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="si">}</span><span class="s1"> &gt; </span><span class="si">{</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
         <span class="p">)</span>
         <span class="n">wildcards</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
@@ -516,9 +586,12 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return the string representation of the SoundChange instance.</span>
+<span class="sd">        Return the string representation of the SoundChange instance for debugging.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The string representation of the SoundChange instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;SoundChange(rules=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rules</span><span class="si">}</span><span class="s2">, wildcards=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">wildcards</span><span class="si">}</span><span class="s2">)&quot;</span></div>
 
 
 
@@ -533,19 +606,25 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">changes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SoundChange</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes a SoundChangePipeline instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            changes (List[SoundChange]): A list of SoundChange instances.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">changes</span> <span class="o">=</span> <span class="n">changes</span>
 
 <div class="viewcode-block" id="SoundChangePipeline.apply_to_word">
 <a class="viewcode-back" href="../../conlang.html#conlang.sound_change.SoundChangePipeline.apply_to_word">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">apply_to_word</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply_to_word</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">:</span> <span class="n">Word</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Word</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Apply all sound changes in the pipeline to a single word.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            word (str): The input word.</span>
+<span class="sd">            word (Word): The input word.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            str: The transformed word.</span>
+<span class="sd">            Word: The mutated word.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">change</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">changes</span><span class="p">:</span>
             <span class="n">word</span> <span class="o">=</span> <span class="n">change</span><span class="o">.</span><span class="n">apply_to_word</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
@@ -562,7 +641,7 @@
 <span class="sd">            vocabulary (Vocabulary): The input vocabulary.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Vocabulary: A new vocabulary with transformed words.</span>
+<span class="sd">            Vocabulary: A new vocabulary with mutated words.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">change</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">changes</span><span class="p">:</span>
             <span class="n">vocabulary</span> <span class="o">=</span> <span class="n">change</span><span class="o">.</span><span class="n">apply_to_vocabulary</span><span class="p">(</span><span class="n">vocabulary</span><span class="p">)</span>
@@ -572,14 +651,20 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the string representation of the SoundChangePipeline instance.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The string representation of the SoundChangePipeline</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">change</span><span class="p">)</span> <span class="k">for</span> <span class="n">change</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">changes</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">change</span><span class="p">)</span> <span class="k">for</span> <span class="n">change</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">changes</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return the string representation of the SoundChangePipeline instance.</span>
+<span class="sd">        Return the string representation of the SoundChangePipeline instance for debugging.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The string representation of the SoundChangePipeline</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;SoundChangePipeline(changes=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">changes</span><span class="si">}</span><span class="s2">)&quot;</span>
 
 <div class="viewcode-block" id="SoundChangePipeline.random">
 <a class="viewcode-back" href="../../conlang.html#conlang.sound_change.SoundChangePipeline.random">[docs]</a>
@@ -587,6 +672,10 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">random</span><span class="p">(</span><span class="n">num_changes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;SoundChangePipeline&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate a random SoundChangePipeline instance with random sound changes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            num_changes (Optional[int]): The number of sound changes to include. Defaults to a</span>
+<span class="sd">                                         random number between 1 and 5.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            SoundChangePipeline: A new instance with random sound changes.</span>

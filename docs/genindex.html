@@ -246,6 +246,7 @@
 <div class="genindex-jumpbox">
  <a href="#A"><strong>A</strong></a>
  | <a href="#C"><strong>C</strong></a>
+ | <a href="#D"><strong>D</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
@@ -257,6 +258,7 @@
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
  | <a href="#W"><strong>W</strong></a>
  
@@ -385,6 +387,14 @@
   </ul></td>
 </tr></table>
 
+<h2 id="D">D</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="conlang.html#conlang.Word.display">display (conlang.Word attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -480,6 +490,8 @@
         <li><a href="conlang.html#conlang.language.Language.generate_word">(conlang.language.Language method)</a>
 </li>
       </ul></li>
+      <li><a href="conlang.html#conlang.Word.get_stress_bounds">get_stress_bounds() (conlang.Word method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -498,7 +510,7 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="conlang.html#conlang.utils.is_acceptable">is_acceptable() (in module conlang.utils)</a>
+      <li><a href="conlang.html#conlang.Word.is_acceptable">is_acceptable() (conlang.Word method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -544,8 +556,6 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="conlang.html#conlang.utils.map_stress">map_stress() (in module conlang.utils)</a>
-</li>
       <li>
     module
 
@@ -589,20 +599,26 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="conlang.html#conlang.utils.parse_phonemes">parse_phonemes() (in module conlang.utils)</a>
+</li>
       <li><a href="conlang.html#conlang.language_config.LanguageConfig.patterns">patterns (conlang.language_config.LanguageConfig attribute)</a>
 
       <ul>
         <li><a href="conlang.html#conlang.LanguageConfig.patterns">(conlang.LanguageConfig attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="conlang.html#conlang.language_config.LanguageConfig.phonemes">phonemes (conlang.language_config.LanguageConfig attribute)</a>
 
       <ul>
         <li><a href="conlang.html#conlang.LanguageConfig.phonemes">(conlang.LanguageConfig attribute)</a>
 </li>
+        <li><a href="conlang.html#conlang.Word.phonemes">(conlang.Word attribute)</a>
+</li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="conlang.html#conlang.utils.process_patterns">process_patterns() (in module conlang.utils)</a>
+</li>
       <li><a href="conlang.html#conlang.utils.process_phonemes">process_phonemes() (in module conlang.utils)</a>
 </li>
   </ul></td>
@@ -639,6 +655,8 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="conlang.html#conlang.Word.set_stress">set_stress() (conlang.Word method)</a>
+</li>
       <li><a href="conlang.html#conlang.SoundChange">SoundChange (class in conlang)</a>
 
       <ul>
@@ -653,16 +671,20 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="conlang.html#conlang.utils.split_phonemes">split_phonemes() (in module conlang.utils)</a>
-</li>
-      <li><a href="conlang.html#conlang.utils.split_syllables">split_syllables() (in module conlang.utils)</a>
+      <li><a href="conlang.html#conlang.Word.split_syllables">split_syllables() (conlang.Word method)</a>
 </li>
       <li><a href="conlang.html#conlang.language_config.LanguageConfig.stress">stress (conlang.language_config.LanguageConfig attribute)</a>
 
       <ul>
         <li><a href="conlang.html#conlang.LanguageConfig.stress">(conlang.LanguageConfig attribute)</a>
 </li>
+        <li><a href="conlang.html#conlang.Word.stress">(conlang.Word attribute)</a>
+</li>
       </ul></li>
+      <li><a href="conlang.html#conlang.Word.stress_bounds">stress_bounds (conlang.Word attribute)</a>
+</li>
+      <li><a href="conlang.html#conlang.Word.syllables">syllables (conlang.Word attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -675,12 +697,6 @@
         <li><a href="conlang.html#conlang.vocabulary.Vocabulary.to_csv">(conlang.vocabulary.Vocabulary method)</a>
 </li>
       </ul></li>
-      <li><a href="conlang.html#conlang.Vocabulary.to_str">to_str() (conlang.Vocabulary method)</a>
-
-      <ul>
-        <li><a href="conlang.html#conlang.vocabulary.Vocabulary.to_str">(conlang.vocabulary.Vocabulary method)</a>
-</li>
-      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="conlang.html#conlang.Vocabulary.to_txt">to_txt() (conlang.Vocabulary method)</a>
@@ -689,6 +705,14 @@
         <li><a href="conlang.html#conlang.vocabulary.Vocabulary.to_txt">(conlang.vocabulary.Vocabulary method)</a>
 </li>
       </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="conlang.html#conlang.Word.update_display">update_display() (conlang.Word method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -721,6 +745,12 @@
         <li><a href="conlang.html#conlang.SoundChange.wildcards">(conlang.SoundChange attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="conlang.html#conlang.Word">Word (class in conlang)</a>
+</li>
+      <li><a href="conlang.html#conlang.Word.word_str">word_str (conlang.Word attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 

@@ -1,9 +1,15 @@
+"""
+Vocabulary Module
+
+This module provides functionality to manage a collection of words and their glosses.
+The main class, `Vocabulary`, allows for adding, retrieving, and exporting word-gloss pairs.
+It supports loading and saving vocabularies from/to CSV, text, and JSON files.
+"""
+
 import csv
 import json
-
 from pathlib import Path
-from typing import List, Dict, Iterator
-
+from typing import Any, List, Dict, Iterator
 from .word import Word
 
 
@@ -12,18 +18,22 @@ class Vocabulary:
     A class to manage a collection of words and their glosses.
 
     Attributes:
-        items (List[Dict[str, str]]): A list of dictionaries with 'word' and 'gloss' keys.
+        items (List[Dict[str, Any]]): A list of dictionaries with 'word' and 'gloss' keys.
+                                      Where 'word' is a Word object and 'gloss' is a string.
     """
+
     def __init__(self):
-        """Initialize an empty vocabulary."""
-        self.items: List[Dict[Word, str]] = []
+        """
+        Initialize an empty vocabulary.
+        """
+        self.items: List[Dict[str, Any]] = []
 
     def add_item(self, word: Word, gloss: str) -> None:
         """
         Add a word and its gloss to the vocabulary.
 
         Args:
-            word (str): The word to add.
+            word (Word): The word to add.
             gloss (str): The gloss or meaning of the word.
         """
         self.items.append({'word': word, 'gloss': gloss})
@@ -33,19 +43,19 @@ class Vocabulary:
         Check if the vocabulary contains a specific word.
 
         Args:
-            word (str): The word to check.
+            word (Word): The word to check.
 
         Returns:
             bool: True if the word exists, False otherwise.
         """
         return any(item['word'] == word for item in self.items)
 
-    def __iter__(self) -> Iterator[Dict[Word, str]]:
+    def __iter__(self) -> Iterator[Dict[str, Any]]:
         """
         Iterate over the vocabulary items.
 
         Yields:
-            Iterator[Dict[str, str]]: A dictionary containing 'word' and 'gloss'.
+            Iterator[Dict[str, Any]]: A dictionary containing 'word' and 'gloss'.
         """
         for item in self.items:
             yield (item['word'], item['gloss'])
@@ -61,12 +71,12 @@ class Vocabulary:
 
     def __repr__(self) -> str:
         """
-        Return the string representation of the vocabulary.
+        Return the string representation of the vocabulary for debugging.
 
         Returns:
             str: A string representation of the vocabulary.
         """
-        return self.__str__()
+        return f"Vocabulary({self.items})"
 
     def __getitem__(self, key) -> str:
         """
@@ -101,15 +111,6 @@ class Vocabulary:
             writer.writeheader()
             writer.writerows(self.items)
 
-    def to_str(self) -> str:
-        """
-        Convert the vocabulary to a string representation.
-
-        Returns:
-            str: A string with each word-gloss pair on a new line in "word: gloss" format.
-        """
-        return '\n'.join(f"{item['word']}: {item['gloss']}" for item in self.items)
-
     def to_txt(self, filename: str) -> None:
         """
         Save the vocabulary to a text file.
@@ -118,10 +119,10 @@ class Vocabulary:
             filename (str): Path to the output text file.
         """
         with open(filename, 'w', encoding='utf-8') as f:
-            f.write(self.to_str())
+            f.write(str(self))
 
     @staticmethod
-    def _parse_lines(lines: List[str], delimiter: str = ': ') -> List[Dict[str, str]]:
+    def _parse_lines(lines: List[str], delimiter: str = ': ') -> List[Dict[str, Any]]:
         """
         Parse lines of text to extract word-gloss pairs.
 
@@ -130,7 +131,7 @@ class Vocabulary:
             delimiter (str): The delimiter separating words and glosses.
 
         Returns:
-            List[Dict[str, str]]: A list of parsed word-gloss dictionaries.
+            List[Dict[str, Any]]: A list of parsed word-gloss dictionaries.
         """
         items = []
         for line in lines:
@@ -192,7 +193,7 @@ class Vocabulary:
             return Vocabulary.from_str(f.read())
 
     @staticmethod
-    def from_list(items: List[Dict[str, str]]) -> 'Vocabulary':
+    def from_list(items: List[Dict[str, Any]]) -> 'Vocabulary':
         """
         Create a Vocabulary object from a list of word-gloss dictionaries.
 

@@ -241,14 +241,22 @@
                 <article class="bd-article">
                   
   <h1>Source code for conlang.language</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Language Module</span>
 
+<span class="sd">This module provides functionality to generate and manage languages, including their vocabulary,</span>
+<span class="sd">word generation, and configuration. The main class, `Language`, represents a language and provides</span>
+<span class="sd">methods for generating words, building vocabulary, and creating languages from existing</span>
+<span class="sd">vocabularies.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.language_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">LanguageConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.swadesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">SWADESH</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.vocabulary</span><span class="w"> </span><span class="kn">import</span> <span class="n">Vocabulary</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.language_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">LanguageConfig</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">split_syllables</span><span class="p">,</span> <span class="n">is_acceptable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.word</span><span class="w"> </span><span class="kn">import</span> <span class="n">Word</span>
 
 
 <span class="n">MAX_ATTEMPTS</span> <span class="o">=</span> <span class="mi">10</span>
@@ -262,10 +270,20 @@
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        name (str): The name of the language.</span>
-<span class="sd">        config (LanguageConfig): The configuration for phonemes, patterns, and stress.</span>
+<span class="sd">        config (LanguageConfig): The configuration for phonemes, word patterns, and stress.</span>
 <span class="sd">        vocabulary (Vocabulary): The generated vocabulary for the language.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">LanguageConfig</span><span class="p">,</span> <span class="n">vocabulary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Vocabulary</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes a Language instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The name of the language.</span>
+<span class="sd">            config (LanguageConfig): The configuration for phonemes, patterns, and stress.</span>
+<span class="sd">            vocabulary (Vocabulary, optional): The vocabulary for the language. Defaults to an</span>
+<span class="sd">                                               empty Vocabulary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vocabulary</span> <span class="o">=</span> <span class="n">vocabulary</span> <span class="ow">or</span> <span class="n">Vocabulary</span><span class="p">()</span>
@@ -277,23 +295,25 @@
 <span class="sd">        Generates a word based on the language&#39;s configuration and word frequency rank.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            rank (int): The rank of the word for frequency purposes. Defaults to -1.</span>
+<span class="sd">            rank (int): The rank of the word for frequency purposes. Common words (rank &lt; 25)</span>
+<span class="sd">                        use simpler patterns. Defaults to -1.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The generated word.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Select a pattern based on rank (common words have simpler patterns)</span>
-        <span class="n">patterns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">patterns</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">rank</span> <span class="o">&lt;</span> <span class="mi">25</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">patterns</span>
+        <span class="n">patterns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">short_patterns</span> <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">rank</span> <span class="o">&lt;</span> <span class="mi">25</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">patterns_weighted</span>
         <span class="n">pattern</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">patterns</span><span class="p">)</span>
 
-        <span class="n">word</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">phonemes</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">pattern</span><span class="p">)</span>
+        <span class="c1"># Generate the word by selecting random phonemes for each category in the pattern</span>
+        <span class="n">word</span> <span class="o">=</span> <span class="n">Word</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">phonemes_weighted</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">pattern</span><span class="p">))</span>
 
-        <span class="n">syllables</span> <span class="o">=</span> <span class="n">split_syllables</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+        <span class="c1"># Assign stress to the word</span>
+        <span class="n">stressed_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">stress</span><span class="p">)</span>
+        <span class="n">word</span><span class="o">.</span><span class="n">set_stress</span><span class="p">(</span><span class="n">stressed_index</span><span class="p">)</span>
 
-        <span class="n">stressed_index</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">stress</span><span class="p">),</span> <span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">syllables</span><span class="p">))</span>
-        <span class="n">syllables</span><span class="p">[</span><span class="n">stressed_index</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ˈ&quot;</span> <span class="o">+</span> <span class="n">syllables</span><span class="p">[</span><span class="n">stressed_index</span><span class="p">]</span>
-
-        <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">syllables</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">word</span></div>
 
 
 <div class="viewcode-block" id="Language.generate_vocabulary">
@@ -308,48 +328,62 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vocabulary</span> <span class="o">=</span> <span class="n">Vocabulary</span><span class="p">()</span>
 
+        <span class="c1"># Use the SWADESH list if no glosses are provided</span>
         <span class="n">glosses</span> <span class="o">=</span> <span class="n">glosses</span> <span class="ow">or</span> <span class="n">SWADESH</span>
 
         <span class="k">for</span> <span class="n">gloss</span> <span class="ow">in</span> <span class="n">glosses</span><span class="p">:</span>
             <span class="n">rank</span> <span class="o">=</span> <span class="n">SWADESH</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">gloss</span><span class="p">)</span> <span class="k">if</span> <span class="n">gloss</span> <span class="ow">in</span> <span class="n">SWADESH</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
             <span class="n">attempts</span> <span class="o">=</span> <span class="mi">0</span>
 
+            <span class="c1"># Generate a unique and acceptable word for the gloss</span>
             <span class="k">while</span> <span class="n">attempts</span> <span class="o">&lt;</span> <span class="n">MAX_ATTEMPTS</span><span class="p">:</span>
                 <span class="n">word</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_word</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="n">rank</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">is_acceptable</span><span class="p">(</span><span class="n">word</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocabulary</span><span class="o">.</span><span class="n">has_word</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">word</span><span class="o">.</span><span class="n">is_acceptable</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocabulary</span><span class="o">.</span><span class="n">has_word</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>
                     <span class="k">break</span>
                 <span class="n">attempts</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="c1"># Add the word to the vocabulary</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">vocabulary</span><span class="o">.</span><span class="n">add_item</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">gloss</span><span class="p">)</span>
 
+            <span class="c1"># Warn if a unique acceptable word could not be generated</span>
             <span class="k">if</span> <span class="n">attempts</span> <span class="o">==</span> <span class="n">MAX_ATTEMPTS</span><span class="p">:</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to generate unique acceptable word for &#39;</span><span class="si">{</span><span class="n">gloss</span><span class="si">}</span><span class="s2">&#39;. Please, check your configuration.&quot;</span><span class="p">)</span></div>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Failed to generate unique acceptable word for &#39;</span><span class="si">{</span><span class="n">gloss</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
+                    <span class="s2">&quot;Please, check your configuration.&quot;</span>
+                <span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a string representation of the language.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: A formatted string showing the language name, configuration, and vocabulary.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="se">\n\n</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="si">}</span><span class="se">\n\n</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">vocabulary</span><span class="si">}</span><span class="s2">&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns a string representation of the language.</span>
+<span class="sd">        Returns a string representation of the language for debugging.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: A string representation of the Language instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Language(name=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, config=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="si">}</span><span class="s2">, vocabulary=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">vocabulary</span><span class="si">}</span><span class="s2">)&quot;</span>
 
 <div class="viewcode-block" id="Language.from_vocabulary">
 <a class="viewcode-back" href="../../conlang.html#conlang.language.Language.from_vocabulary">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_vocabulary</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vocabulary</span><span class="p">:</span> <span class="n">Vocabulary</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Language&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create a new Language instance from a vocabulary.</span>
+<span class="sd">        Create a new Language instance from an existing vocabulary.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            name (str): The name of the language.</span>
 <span class="sd">            vocabulary (Vocabulary): The vocabulary for the language.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Language: A new Language instance.</span>
+<span class="sd">            Language: A new Language instance with a configuration derived from the vocabulary.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">config</span> <span class="o">=</span> <span class="n">LanguageConfig</span><span class="o">.</span><span class="n">from_vocabulary</span><span class="p">(</span><span class="n">vocabulary</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Language</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">vocabulary</span><span class="p">)</span></div>

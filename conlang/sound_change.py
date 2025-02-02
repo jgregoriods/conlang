@@ -1,44 +1,73 @@
-import numpy as np
-import re
+"""
+Sound Change Module
 
-from pathlib import Path
-from typing import List, Dict, Tuple, Optional
+This module provides functionality to define, apply, and manage phonological sound changes.
+The main classes, `SoundChange` and `SoundChangePipeline`, allow for the application of
+sound changes to individual words or entire vocabularies.
+"""
+
 from itertools import product
+from pathlib import Path
+import re
+from typing import List, Dict, Tuple, Optional
+import numpy as np
+from .phonemes import VOWEL_SET, CONSONANT_SET
+from .rules import RULES
 from .utils import parse_phonemes
 from .vocabulary import Vocabulary
-from .rules import RULES
-from .phonemes import VOWELS, CONSONANTS
 from .word import Word
 
 
 class SoundChange:
     """
-    A class to handle phonological sound changes using defined rules and wildcards.
+    A class to handle phonological sound changes using defined rules.
 
     Attributes:
-        rules (Dict[str, List[Tuple[str]]): A dictionary mapping phonemes to lists of tuples, where each tuple contains the new phoneme and the environment.
-        wildcards (Optional[Dict]): A dictionary mapping wildcard symbols to lists of phonemes.
+        rules (Dict[Tuple[str], List[Tuple[str]]]): A dictionary mapping phonemes or phoneme
+                                                    sequences to lists of tuples, where each tuple
+                                                    contains the new phoneme(s) and the environment.
+        wildcards (Optional[Dict[str, List[str]]]): A dictionary mapping wildcard symbols to lists
+                                                    of phonemes.
     """
 
-    def __init__(self, rules: Dict[Tuple[str], List[Tuple[str]]], wildcards: Optional[Dict] = None):
+    def __init__(self, rules: Dict[Tuple[str], List[Tuple[str]]],
+                 wildcards: Optional[Dict[str, List[str]]] = None):
+        """
+        Initializes a SoundChange instance.
+
+        Args:
+            rules (Dict[Tuple[str], List[Tuple[str]]]): A dictionary of sound change rules.
+            wildcards (Optional[Dict[str, List[str]]]): A dictionary of wildcard mappings.
+                                                        Defaults to None.
+        """
         self.rules = rules
         self.wildcards = wildcards
 
-    def apply_to_word(self, word: Word) -> str:
+    def apply_to_word(self, word: Word) -> Word:
         """
         Apply sound changes to a single word based on defined rules.
 
         Args:
-            word (str): The input word.
+            word (Word): The input word.
 
         Returns:
-            str: The transformed word.
+            Word: The transformed word.
         """
         stress_start, stress_end = word.stress_bounds
         phonemes = word.phonemes
         result = []
 
         def matches_sequence(start_idx: int, sequence: Tuple[str]) -> bool:
+            """
+            Check if a sequence of phonemes matches the input phonemes starting at the given index.
+
+            Args:
+                start_idx (int): The starting index in the phonemes list.
+                sequence (Tuple[str]): The sequence of phonemes to match.
+
+            Returns:
+                bool: True if the sequence matches, False otherwise.
+            """
             if start_idx + len(sequence) > len(phonemes):
                 return False
             for i, phoneme in enumerate(sequence):
@@ -54,7 +83,8 @@ class SoundChange:
             Check if the phoneme at the given index matches the environment.
 
             Args:
-                index (int): The index of the phoneme.
+                start_idx (int): The starting index of the phoneme sequence.
+                end_idx (int): The ending index of the phoneme sequence.
                 environment (str): The environment string (e.g., "#_", "_#", "V_V").
 
             Returns:
@@ -68,7 +98,8 @@ class SoundChange:
             if environment == "_#":
                 return end_idx == len(phonemes) - 1
 
-            prv, nxt = environment.split('_') if '_' in environment else (None, None)
+            prv, nxt = environment.split(
+                '_') if '_' in environment else (None, None)
 
             if prv:
                 if prv == '#':
@@ -110,13 +141,14 @@ class SoundChange:
                     replacement_options = []
                     for phoneme in key:
                         options = []
-                        if phoneme in VOWELS:
+                        if phoneme in VOWEL_SET:
                             options.append('V')
-                        if phoneme in CONSONANTS:
+                        if phoneme in CONSONANT_SET:
                             options.append('C')
                         options.append(phoneme)
                         replacement_options.append(options)
-                    combinations.extend([tuple(repl) for repl in set(list(product(*replacement_options)))])
+                    combinations.extend([tuple(repl) for repl in set(
+                        list(product(*replacement_options)))])
                 possible_keys.extend(combinations)
 
                 for key in possible_keys:
@@ -124,14 +156,16 @@ class SoundChange:
                         for after, environment in self.rules[key]:
                             # Handle stress-specific environments
                             if ('[+stress]' in environment and not stress_start <= i < stress_end) or \
-                                ('[-stress]' in environment and stress_start <= i < stress_end):
+                                    ('[-stress]' in environment and stress_start <= i < stress_end):
                                 continue
 
-                            environment = environment.replace('[+stress]', '').replace('[-stress]', '').strip()
+                            environment = environment.replace(
+                                '[+stress]', '').replace('[-stress]', '').strip()
 
                             if matches_sequence(i, key) and matches_environment(i, i + sequence_length - 1, environment):
                                 if 'V' in after:
-                                    original_vowels = [p for p in phonemes[i:i + sequence_length] if p in VOWELS]
+                                    original_vowels = [
+                                        p for p in phonemes[i:i + sequence_length] if p in VOWEL_SET]
                                     for vowel in original_vowels:
                                         after = after.replace('V', vowel, 1)
                                     after = after.replace('ː̃', '̃ː')
@@ -161,7 +195,7 @@ class SoundChange:
             vocabulary (Vocabulary): The input vocabulary.
 
         Returns:
-            Vocabulary: A new vocabulary with transformed words.
+            Vocabulary: A new vocabulary with mutated words.
         """
         if not self.rules:
             raise ValueError('No rules defined for sound change')
@@ -263,16 +297,19 @@ class SoundChange:
             return phoneme in self.wildcards[condition]
 
         if condition == 'V':
-            return phoneme in VOWELS
+            return phoneme in VOWEL_SET
 
         if condition == 'C':
-            return phoneme in CONSONANTS
+            return phoneme in CONSONANT_SET
 
         return False
 
     def __str__(self) -> str:
         """
         Return the string representation of the SoundChange instance.
+
+        Returns:
+            str: The string representation of the SoundChange instance.
         """
         rules = '\n'.join(
             f'{"".join(k)} > {", ".join(f"{a}" if not e else f"{a} / {e}" for a, e in v)}'
@@ -286,9 +323,12 @@ class SoundChange:
 
     def __repr__(self) -> str:
         """
-        Return the string representation of the SoundChange instance.
+        Return the string representation of the SoundChange instance for debugging.
+
+        Returns:
+            str: The string representation of the SoundChange instance.
         """
-        return self.__str__()
+        return f"SoundChange(rules={self.rules}, wildcards={self.wildcards})"
 
 
 class SoundChangePipeline:
@@ -300,17 +340,23 @@ class SoundChangePipeline:
     """
 
     def __init__(self, changes: List[SoundChange]):
+        """
+        Initializes a SoundChangePipeline instance.
+
+        Args:
+            changes (List[SoundChange]): A list of SoundChange instances.
+        """
         self.changes = changes
 
-    def apply_to_word(self, word: str) -> str:
+    def apply_to_word(self, word: Word) -> Word:
         """
         Apply all sound changes in the pipeline to a single word.
 
         Args:
-            word (str): The input word.
+            word (Word): The input word.
 
         Returns:
-            str: The transformed word.
+            Word: The mutated word.
         """
         for change in self.changes:
             word = change.apply_to_word(word)
@@ -324,7 +370,7 @@ class SoundChangePipeline:
             vocabulary (Vocabulary): The input vocabulary.
 
         Returns:
-            Vocabulary: A new vocabulary with transformed words.
+            Vocabulary: A new vocabulary with mutated words.
         """
         for change in self.changes:
             vocabulary = change.apply_to_vocabulary(vocabulary)
@@ -333,19 +379,29 @@ class SoundChangePipeline:
     def __str__(self) -> str:
         """
         Return the string representation of the SoundChangePipeline instance.
+
+        Returns:
+            str: The string representation of the SoundChangePipeline
         """
         return '\n\n'.join(str(change) for change in self.changes)
 
     def __repr__(self) -> str:
         """
-        Return the string representation of the SoundChangePipeline instance.
+        Return the string representation of the SoundChangePipeline instance for debugging.
+
+        Returns:
+            str: The string representation of the SoundChangePipeline
         """
-        return self.__str__()
+        return f"SoundChangePipeline(changes={self.changes})"
 
     @staticmethod
     def random(num_changes: Optional[int] = None) -> 'SoundChangePipeline':
         """
         Generate a random SoundChangePipeline instance with random sound changes.
+
+        Args:
+            num_changes (Optional[int]): The number of sound changes to include. Defaults to a
+                                         random number between 1 and 5.
 
         Returns:
             SoundChangePipeline: A new instance with random sound changes.

@@ -347,6 +347,12 @@ choose from a set of predefined values meant to resemble natural languages:</p>
 <span class="n">config</span> <span class="o">=</span> <span class="n">LanguageConfig</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
 </pre></div>
 </div>
+<p>Instead of choosing randomly, you can also select a specific preset:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">conlang</span><span class="w"> </span><span class="kn">import</span> <span class="n">LanguageConfig</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">LanguageConfig</span><span class="o">.</span><span class="n">load_preset</span><span class="p">(</span><span class="s1">&#39;germanic&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>Once you have the configuration object, you can generate a conlang object
 and its associated lexicon:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">conlang</span><span class="w"> </span><span class="kn">import</span> <span class="n">Conlang</span>
@@ -379,13 +385,18 @@ a colon or another delimiter (to be specified as an argument to the method):</p>
 naˈcaːrat: goddess
 </pre></div>
 </div>
+<p>If you already have a vocabulary object, a configuration object or even a
+language object can be generated from it. The configuration will be detected
+from the vocabulary:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">conlang</span> <span class="o">=</span> <span class="n">Conlang</span><span class="o">.</span><span class="n">from_vocabulary</span><span class="p">(</span><span class="s1">&#39;Name&#39;</span><span class="p">,</span> <span class="n">vocabulary</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="mutating-a-vocabulary">
 <h2>Mutating a vocabulary<a class="headerlink" href="#mutating-a-vocabulary" title="Link to this heading">#</a></h2>
 <p>You can mutate a vocabulary object by applying a set of rules to it. You must
 create a SoundChange object, which can be loaded from a text file:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>p &gt; b
-t &gt; d
 k &gt; tʃ / _i
 k &gt; g / _a
 r &gt; 0 / _#
@@ -393,9 +404,8 @@ r &gt; 0 / _#
 </div>
 <p>This file contains a set of sound changes, each on a separate line. The
 syntax is <cite>source &gt; target / context</cite>, where the context is optional.
-In this example, <cite>p</cite> becomes <cite>b</cite> and <cite>t</cite> becomes <cite>d</cite> unconditionally, while
-<cite>k</cite> becomes <cite>tʃ</cite> before <cite>i</cite> and <cite>g</cite> before <cite>a</cite>, and <cite>r</cite> is deleted at the
-end of a word.</p>
+In this example, <cite>p</cite> becomes <cite>b</cite> unconditionally, while <cite>k</cite> becomes <cite>tʃ</cite>
+before <cite>i</cite> and <cite>g</cite> before <cite>a</cite>, and <cite>r</cite> is deleted at the end of a word.</p>
 <p>In addition to the phoneme environment, you can specify stress:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>a &gt; ɔ / [+stress]
 a &gt; ə / [-stress]
@@ -403,21 +413,36 @@ t &gt; 0 / _# [-stress]
 </pre></div>
 </div>
 <p>You can also use wildcards:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>p &gt; b / V_V
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>k &gt; tʃ / _I
+p &gt; b / V_V
 
-V: a e i o u
+I: i iː j
 </pre></div>
 </div>
-<p>You can load this file using the <a class="reference internal" href="conlang.html#conlang.SoundChange.from_txt" title="conlang.SoundChange.from_txt"><code class="xref py py-func docutils literal notranslate"><span class="pre">conlang.SoundChange.from_txt()</span></code></a> method:</p>
+<p>Notice that if you use the symbol <cite>V</cite> you don’t need to specify that it
+refers to all vowels.</p>
+<p>You are not restricted to single phonemes, but can use sequences:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Vt &gt; ə / _# [-stress]
+Vw &gt; 0 / _# [-stress]
+</pre></div>
+</div>
+<p>You can load the text file using the <a class="reference internal" href="conlang.html#conlang.SoundChange.from_txt" title="conlang.SoundChange.from_txt"><code class="xref py py-func docutils literal notranslate"><span class="pre">conlang.SoundChange.from_txt()</span></code></a> method:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">conlang</span><span class="w"> </span><span class="kn">import</span> <span class="n">SoundChange</span>
 
 <span class="n">sound_change</span> <span class="o">=</span> <span class="n">SoundChange</span><span class="o">.</span><span class="n">from_txt</span><span class="p">(</span><span class="s1">&#39;path/to/sound_change.txt&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>You can also create a random sound change object:</p>
+<p>You can also create a random sound change object, which will select from a
+set of predefined, realistic sound changes:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">conlang</span><span class="w"> </span><span class="kn">import</span> <span class="n">SoundChange</span>
 
 <span class="n">sound_change</span> <span class="o">=</span> <span class="n">SoundChange</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>As with the configuration object, you can load a specific sound change preset:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">conlang</span><span class="w"> </span><span class="kn">import</span> <span class="n">SoundChange</span>
+
+<span class="n">sound_change</span> <span class="o">=</span> <span class="n">SoundChange</span><span class="o">.</span><span class="n">load_preset</span><span class="p">(</span><span class="s1">&#39;great_vowel_shift&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Once you have the sound change object, you can apply it to the vocabulary
@@ -438,16 +463,16 @@ object:</p>
 </pre></div>
 </div>
 <p>Alternatively, you can load a pipeline from a text file, which must contain
-the sound change rules identified by labels between parentheses:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>(A)
+the sound change rules identified by labels between square brackets:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[stage 1]
 p &gt; b
 t &gt; d
 
-(B)
+[stage 2]
 a &gt; ɔ / [+stress]
 a &gt; ə / [-stress]
 
-(C)
+[stage 3]
 k &gt; tʃ / _i
 </pre></div>
 </div>
@@ -460,8 +485,10 @@ k &gt; tʃ / _i
 </section>
 <section id="saving-a-vocabulary">
 <h2>Saving a vocabulary<a class="headerlink" href="#saving-a-vocabulary" title="Link to this heading">#</a></h2>
-<p>You can save a vocabulary object to a text file using the <a class="reference internal" href="conlang.html#conlang.Vocabulary.to_txt" title="conlang.Vocabulary.to_txt"><code class="xref py py-func docutils literal notranslate"><span class="pre">conlang.Vocabulary.to_txt()</span></code></a> method:</p>
+<p>You can save a vocabulary object to a text or csv file using the <a class="reference internal" href="conlang.html#conlang.Vocabulary.to_txt" title="conlang.Vocabulary.to_txt"><code class="xref py py-func docutils literal notranslate"><span class="pre">conlang.Vocabulary.to_txt()</span></code></a>
+or <a class="reference internal" href="conlang.html#conlang.Vocabulary.to_csv" title="conlang.Vocabulary.to_csv"><code class="xref py py-func docutils literal notranslate"><span class="pre">conlang.Vocabulary.to_csv()</span></code></a> methods:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">vocabulary</span><span class="o">.</span><span class="n">to_txt</span><span class="p">(</span><span class="s1">&#39;path/to/vocabulary.txt&#39;</span><span class="p">)</span>
+<span class="n">vocabulary</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;path/to/vocabulary.csv&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

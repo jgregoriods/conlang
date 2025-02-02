@@ -192,14 +192,14 @@ RULES = {
         },
         'wildcards': {}
     },
-    'nasalization': {
-        'rules': {
-            ('V',): [('Ṽ', '_N')],
-        },
-        'wildcards': {
-            'N': ['n', 'm', 'ŋ', 'ɲ', 'ɴ']
-        }
-    },
+    # 'nasalization': {
+    #     'rules': {
+    #         ('V',): [('Ṽ', '_N')],
+    #     },
+    #     'wildcards': {
+    #         'N': ['n', 'm', 'ŋ', 'ɲ', 'ɴ']
+    #     }
+    # },
     'diphthongization': {
         'rules': {
             ('e',): [('ej', '[+stress]')],

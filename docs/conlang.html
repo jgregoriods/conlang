@@ -341,11 +341,9 @@
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-conlang.swadesh">conlang.swadesh module</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-conlang.utils">conlang.utils module</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.utils.is_acceptable"><code class="docutils literal notranslate"><span class="pre">is_acceptable()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.utils.map_stress"><code class="docutils literal notranslate"><span class="pre">map_stress()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.utils.parse_phonemes"><code class="docutils literal notranslate"><span class="pre">parse_phonemes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.utils.process_patterns"><code class="docutils literal notranslate"><span class="pre">process_patterns()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.utils.process_phonemes"><code class="docutils literal notranslate"><span class="pre">process_phonemes()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.utils.split_phonemes"><code class="docutils literal notranslate"><span class="pre">split_phonemes()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.utils.split_syllables"><code class="docutils literal notranslate"><span class="pre">split_syllables()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-conlang.vocabulary">conlang.vocabulary module</a><ul class="nav section-nav flex-column">
@@ -359,7 +357,6 @@
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.vocabulary.Vocabulary.from_txt"><code class="docutils literal notranslate"><span class="pre">Vocabulary.from_txt()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.vocabulary.Vocabulary.has_word"><code class="docutils literal notranslate"><span class="pre">Vocabulary.has_word()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.vocabulary.Vocabulary.to_csv"><code class="docutils literal notranslate"><span class="pre">Vocabulary.to_csv()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.vocabulary.Vocabulary.to_str"><code class="docutils literal notranslate"><span class="pre">Vocabulary.to_str()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.vocabulary.Vocabulary.to_txt"><code class="docutils literal notranslate"><span class="pre">Vocabulary.to_txt()</span></code></a></li>
 </ul>
 </li>
@@ -417,8 +414,21 @@
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Vocabulary.from_txt"><code class="docutils literal notranslate"><span class="pre">Vocabulary.from_txt()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Vocabulary.has_word"><code class="docutils literal notranslate"><span class="pre">Vocabulary.has_word()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Vocabulary.to_csv"><code class="docutils literal notranslate"><span class="pre">Vocabulary.to_csv()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Vocabulary.to_str"><code class="docutils literal notranslate"><span class="pre">Vocabulary.to_str()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Vocabulary.to_txt"><code class="docutils literal notranslate"><span class="pre">Vocabulary.to_txt()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Word"><code class="docutils literal notranslate"><span class="pre">Word</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Word.word_str"><code class="docutils literal notranslate"><span class="pre">Word.word_str</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Word.display"><code class="docutils literal notranslate"><span class="pre">Word.display</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Word.stress"><code class="docutils literal notranslate"><span class="pre">Word.stress</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Word.phonemes"><code class="docutils literal notranslate"><span class="pre">Word.phonemes</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Word.syllables"><code class="docutils literal notranslate"><span class="pre">Word.syllables</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Word.stress_bounds"><code class="docutils literal notranslate"><span class="pre">Word.stress_bounds</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Word.get_stress_bounds"><code class="docutils literal notranslate"><span class="pre">Word.get_stress_bounds()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Word.is_acceptable"><code class="docutils literal notranslate"><span class="pre">Word.is_acceptable()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Word.set_stress"><code class="docutils literal notranslate"><span class="pre">Word.set_stress()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Word.split_syllables"><code class="docutils literal notranslate"><span class="pre">Word.split_syllables()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Word.update_display"><code class="docutils literal notranslate"><span class="pre">Word.update_display()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -441,6 +451,11 @@
 </section>
 <section id="module-conlang.language">
 <span id="conlang-language-module"></span><h2>conlang.language module<a class="headerlink" href="#module-conlang.language" title="Link to this heading">#</a></h2>
+<p>Language Module</p>
+<p>This module provides functionality to generate and manage languages, including their vocabulary,
+word generation, and configuration. The main class, <cite>Language</cite>, represents a language and provides
+methods for generating words, building vocabulary, and creating languages from existing
+vocabularies.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="conlang.language.Language">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">conlang.language.</span></span><span class="sig-name descname"><span class="pre">Language</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#conlang.language_config.LanguageConfig" title="conlang.language_config.LanguageConfig"><span class="pre">LanguageConfig</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">vocabulary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#conlang.vocabulary.Vocabulary" title="conlang.vocabulary.Vocabulary"><span class="pre">Vocabulary</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/conlang/language.html#Language"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.language.Language" title="Link to this definition">#</a></dt>
@@ -460,7 +475,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="conlang.language.Language.config">
 <span class="sig-name descname"><span class="pre">config</span></span><a class="headerlink" href="#conlang.language.Language.config" title="Link to this definition">#</a></dt>
-<dd><p>The configuration for phonemes, patterns, and stress.</p>
+<dd><p>The configuration for phonemes, word patterns, and stress.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#conlang.language_config.LanguageConfig" title="conlang.language_config.LanguageConfig">LanguageConfig</a></p>
@@ -482,7 +497,7 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="conlang.language.Language.from_vocabulary">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_vocabulary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vocabulary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#conlang.vocabulary.Vocabulary" title="conlang.vocabulary.Vocabulary"><span class="pre">Vocabulary</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#conlang.language.Language" title="conlang.language.Language"><span class="pre">Language</span></a></span></span><a class="reference internal" href="_modules/conlang/language.html#Language.from_vocabulary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.language.Language.from_vocabulary" title="Link to this definition">#</a></dt>
-<dd><p>Create a new Language instance from a vocabulary.</p>
+<dd><p>Create a new Language instance from an existing vocabulary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -491,7 +506,7 @@
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A new Language instance.</p>
+<dd class="field-even"><p>A new Language instance with a configuration derived from the vocabulary.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#conlang.language.Language" title="conlang.language.Language">Language</a></p>
@@ -517,7 +532,8 @@ Defaults to the SWADESH list.</p>
 <dd><p>Generates a word based on the language’s configuration and word frequency rank.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>rank</strong> (<em>int</em>) – The rank of the word for frequency purposes. Defaults to -1.</p>
+<dd class="field-odd"><p><strong>rank</strong> (<em>int</em>) – The rank of the word for frequency purposes. Common words (rank &lt; 25)
+use simpler patterns. Defaults to -1.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The generated word.</p>
@@ -533,15 +549,22 @@ Defaults to the SWADESH list.</p>
 </section>
 <section id="module-conlang.language_config">
 <span id="conlang-language-config-module"></span><h2>conlang.language_config module<a class="headerlink" href="#module-conlang.language_config" title="Link to this heading">#</a></h2>
+<p>Language Configuration Module</p>
+<p>This module provides functionality to define, load, and manipulate language configurations,
+including phonemes, word patterns, and stress rules. It supports loading configurations from
+strings, text files, JSON files, and presets, as well as detecting the configuration from a
+vocabulary.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="conlang.language_config.LanguageConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">conlang.language_config.</span></span><span class="sig-name descname"><span class="pre">LanguageConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phonemes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">patterns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stress</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/conlang/language_config.html#LanguageConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.language_config.LanguageConfig" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Represents the configuration of a language, including its phonemes, patterns, and stress rules.</p>
+<p>Represents the configuration of a language, including its phonemes, word patterns, and stress
+rules.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="conlang.language_config.LanguageConfig.phonemes">
 <span class="sig-name descname"><span class="pre">phonemes</span></span><a class="headerlink" href="#conlang.language_config.LanguageConfig.phonemes" title="Link to this definition">#</a></dt>
-<dd><p>A dictionary mapping categories to phoneme lists.</p>
+<dd><p>A dictionary mapping phoneme categories to lists of
+phonemes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Dict[str, List[str]]</p>
@@ -552,7 +575,8 @@ Defaults to the SWADESH list.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="conlang.language_config.LanguageConfig.patterns">
 <span class="sig-name descname"><span class="pre">patterns</span></span><a class="headerlink" href="#conlang.language_config.LanguageConfig.patterns" title="Link to this definition">#</a></dt>
-<dd><p>A list of word patterns.</p>
+<dd><p>A list of word patterns, where each pattern is a sequence of phoneme
+categories.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List[str]</p>
@@ -563,7 +587,7 @@ Defaults to the SWADESH list.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="conlang.language_config.LanguageConfig.stress">
 <span class="sig-name descname"><span class="pre">stress</span></span><a class="headerlink" href="#conlang.language_config.LanguageConfig.stress" title="Link to this definition">#</a></dt>
-<dd><p>A list of stress positions.</p>
+<dd><p>A list of stressed syllable positions (as negative indices).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List[int]</p>
@@ -577,7 +601,8 @@ Defaults to the SWADESH list.</p>
 <dd><p>Creates a LanguageConfig instance from a dictionary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>config_dict</strong> (<em>Dict</em>) – A dictionary containing the configuration.</p>
+<dd class="field-odd"><p><strong>config_dict</strong> (<em>Dict</em>) – A dictionary containing the configuration with keys ‘phonemes’,
+‘patterns’, and ‘stress’.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The parsed language configuration.</p>
@@ -701,18 +726,24 @@ Defaults to the SWADESH list.</p>
 </section>
 <section id="module-conlang.sound_change">
 <span id="conlang-sound-change-module"></span><h2>conlang.sound_change module<a class="headerlink" href="#module-conlang.sound_change" title="Link to this heading">#</a></h2>
+<p>Sound Change Module</p>
+<p>This module provides functionality to define, apply, and manage phonological sound changes.
+The main classes, <cite>SoundChange</cite> and <cite>SoundChangePipeline</cite>, allow for the application of
+sound changes to individual words or entire vocabularies.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="conlang.sound_change.SoundChange">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">conlang.sound_change.</span></span><span class="sig-name descname"><span class="pre">SoundChange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wildcards</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/conlang/sound_change.html#SoundChange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.sound_change.SoundChange" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">conlang.sound_change.</span></span><span class="sig-name descname"><span class="pre">SoundChange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wildcards</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/conlang/sound_change.html#SoundChange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.sound_change.SoundChange" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A class to handle phonological sound changes using defined rules and wildcards.</p>
+<p>A class to handle phonological sound changes using defined rules.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="conlang.sound_change.SoundChange.rules">
 <span class="sig-name descname"><span class="pre">rules</span></span><a class="headerlink" href="#conlang.sound_change.SoundChange.rules" title="Link to this definition">#</a></dt>
-<dd><p>A dictionary mapping phonemes to lists of tuples, where each tuple contains the new phoneme and the environment.</p>
+<dd><p>A dictionary mapping phonemes or phoneme
+sequences to lists of tuples, where each tuple
+contains the new phoneme(s) and the environment.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Dict[str, List[Tuple[str]]</p>
+<dd class="field-odd"><p>Dict[Tuple[str], List[Tuple[str]]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -720,10 +751,11 @@ Defaults to the SWADESH list.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="conlang.sound_change.SoundChange.wildcards">
 <span class="sig-name descname"><span class="pre">wildcards</span></span><a class="headerlink" href="#conlang.sound_change.SoundChange.wildcards" title="Link to this definition">#</a></dt>
-<dd><p>A dictionary mapping wildcard symbols to lists of phonemes.</p>
+<dd><p>A dictionary mapping wildcard symbols to lists
+of phonemes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Optional[Dict]</p>
+<dd class="field-odd"><p>Optional[Dict[str, List[str]]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -737,7 +769,7 @@ Defaults to the SWADESH list.</p>
 <dd class="field-odd"><p><strong>vocabulary</strong> (<a class="reference internal" href="#conlang.vocabulary.Vocabulary" title="conlang.vocabulary.Vocabulary"><em>Vocabulary</em></a>) – The input vocabulary.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A new vocabulary with transformed words.</p>
+<dd class="field-even"><p>A new vocabulary with mutated words.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#conlang.vocabulary.Vocabulary" title="conlang.vocabulary.Vocabulary">Vocabulary</a></p>
@@ -747,17 +779,17 @@ Defaults to the SWADESH list.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="conlang.sound_change.SoundChange.apply_to_word">
-<span class="sig-name descname"><span class="pre">apply_to_word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/conlang/sound_change.html#SoundChange.apply_to_word"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.sound_change.SoundChange.apply_to_word" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">apply_to_word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#conlang.Word" title="conlang.word.Word"><span class="pre">Word</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#conlang.Word" title="conlang.word.Word"><span class="pre">Word</span></a></span></span><a class="reference internal" href="_modules/conlang/sound_change.html#SoundChange.apply_to_word"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.sound_change.SoundChange.apply_to_word" title="Link to this definition">#</a></dt>
 <dd><p>Apply sound changes to a single word based on defined rules.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>word</strong> (<em>str</em>) – The input word.</p>
+<dd class="field-odd"><p><strong>word</strong> (<a class="reference internal" href="#conlang.Word" title="conlang.Word"><em>Word</em></a>) – The input word.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The transformed word.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+<dd class="field-odd"><p><a class="reference internal" href="#conlang.Word" title="conlang.Word">Word</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -854,7 +886,7 @@ Defaults to the SWADESH list.</p>
 <dd class="field-odd"><p><strong>vocabulary</strong> (<a class="reference internal" href="#conlang.vocabulary.Vocabulary" title="conlang.vocabulary.Vocabulary"><em>Vocabulary</em></a>) – The input vocabulary.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A new vocabulary with transformed words.</p>
+<dd class="field-even"><p>A new vocabulary with mutated words.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#conlang.vocabulary.Vocabulary" title="conlang.vocabulary.Vocabulary">Vocabulary</a></p>
@@ -864,17 +896,17 @@ Defaults to the SWADESH list.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="conlang.sound_change.SoundChangePipeline.apply_to_word">
-<span class="sig-name descname"><span class="pre">apply_to_word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/conlang/sound_change.html#SoundChangePipeline.apply_to_word"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.sound_change.SoundChangePipeline.apply_to_word" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">apply_to_word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#conlang.Word" title="conlang.word.Word"><span class="pre">Word</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#conlang.Word" title="conlang.word.Word"><span class="pre">Word</span></a></span></span><a class="reference internal" href="_modules/conlang/sound_change.html#SoundChangePipeline.apply_to_word"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.sound_change.SoundChangePipeline.apply_to_word" title="Link to this definition">#</a></dt>
 <dd><p>Apply all sound changes in the pipeline to a single word.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>word</strong> (<em>str</em>) – The input word.</p>
+<dd class="field-odd"><p><strong>word</strong> (<a class="reference internal" href="#conlang.Word" title="conlang.Word"><em>Word</em></a>) – The input word.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The transformed word.</p>
+<dd class="field-even"><p>The mutated word.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+<dd class="field-odd"><p><a class="reference internal" href="#conlang.Word" title="conlang.Word">Word</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -901,11 +933,15 @@ Defaults to the SWADESH list.</p>
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">random</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_changes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#conlang.sound_change.SoundChangePipeline" title="conlang.sound_change.SoundChangePipeline"><span class="pre">SoundChangePipeline</span></a></span></span><a class="reference internal" href="_modules/conlang/sound_change.html#SoundChangePipeline.random"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.sound_change.SoundChangePipeline.random" title="Link to this definition">#</a></dt>
 <dd><p>Generate a random SoundChangePipeline instance with random sound changes.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A new instance with random sound changes.</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num_changes</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – The number of sound changes to include. Defaults to a
+random number between 1 and 5.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#conlang.sound_change.SoundChangePipeline" title="conlang.sound_change.SoundChangePipeline">SoundChangePipeline</a></p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new instance with random sound changes.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#conlang.sound_change.SoundChangePipeline" title="conlang.sound_change.SoundChangePipeline">SoundChangePipeline</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -918,64 +954,17 @@ Defaults to the SWADESH list.</p>
 </section>
 <section id="module-conlang.utils">
 <span id="conlang-utils-module"></span><h2>conlang.utils module<a class="headerlink" href="#module-conlang.utils" title="Link to this heading">#</a></h2>
+<p>Utils Module</p>
+<p>This module provides utility functions for processing phonemes and word patterns. It includes
+functionality to parse words into phonemes, process phoneme sets to prioritize common phonemes,
+and adjust patterns to prioritize simpler patterns for common words.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="conlang.utils.is_acceptable">
-<span class="sig-prename descclassname"><span class="pre">conlang.utils.</span></span><span class="sig-name descname"><span class="pre">is_acceptable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/conlang/utils.html#is_acceptable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.utils.is_acceptable" title="Link to this definition">#</a></dt>
-<dd><p>Determines whether a word is acceptable based on specific phonetic constraints.</p>
+<dt class="sig sig-object py" id="conlang.utils.parse_phonemes">
+<span class="sig-prename descclassname"><span class="pre">conlang.utils.</span></span><span class="sig-name descname"><span class="pre">parse_phonemes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/conlang/utils.html#parse_phonemes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.utils.parse_phonemes" title="Link to this definition">#</a></dt>
+<dd><p>Splits a word string into phonemes using the predefined PHONEME_SET list.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>word</strong> (<em>str</em>) – The word to validate.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if the word is acceptable, False otherwise.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="conlang.utils.map_stress">
-<span class="sig-prename descclassname"><span class="pre">conlang.utils.</span></span><span class="sig-name descname"><span class="pre">map_stress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/conlang/utils.html#map_stress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.utils.map_stress" title="Link to this definition">#</a></dt>
-<dd><p>Maps which phonemes are in a stressed syllable.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>phonemes</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – A list of phonemes.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list indicating stressed (True) and unstressed (False) phonemes.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List[bool]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="conlang.utils.process_phonemes">
-<span class="sig-prename descclassname"><span class="pre">conlang.utils.</span></span><span class="sig-name descname"><span class="pre">process_phonemes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phonemes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/conlang/utils.html#process_phonemes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.utils.process_phonemes" title="Link to this definition">#</a></dt>
-<dd><p>Processes phoneme sets to make common phonemes more likely to be chosen.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>phonemes</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em>) – A dictionary of phoneme categories and their respective phonemes.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A modified dictionary where common phonemes are more likely.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Dict[str, List[str]]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="conlang.utils.split_phonemes">
-<span class="sig-prename descclassname"><span class="pre">conlang.utils.</span></span><span class="sig-name descname"><span class="pre">split_phonemes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/conlang/utils.html#split_phonemes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.utils.split_phonemes" title="Link to this definition">#</a></dt>
-<dd><p>Splits a word into phonemes using the predefined PHONEMES list.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>word</strong> (<em>str</em>) – The word to split into phonemes.</p>
+<dd class="field-odd"><p><strong>word</strong> (<em>str</em>) – The word to split into phonemes as a string.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A list of phonemes.</p>
@@ -987,15 +976,19 @@ Defaults to the SWADESH list.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="conlang.utils.split_syllables">
-<span class="sig-prename descclassname"><span class="pre">conlang.utils.</span></span><span class="sig-name descname"><span class="pre">split_syllables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/conlang/utils.html#split_syllables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.utils.split_syllables" title="Link to this definition">#</a></dt>
-<dd><p>Splits a word into syllables.</p>
+<dt class="sig sig-object py" id="conlang.utils.process_patterns">
+<span class="sig-prename descclassname"><span class="pre">conlang.utils.</span></span><span class="sig-name descname"><span class="pre">process_patterns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patterns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phonemes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/conlang/utils.html#process_patterns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.utils.process_patterns" title="Link to this definition">#</a></dt>
+<dd><p>Processes patterns to prioritize simpler ones (short and without clusters).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>word</strong> (<em>str</em>) – The word to split into syllables.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>patterns</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – A list of patterns to process.</p></li>
+<li><p><strong>phonemes</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em>) – A dictionary of phoneme categories and their respective
+phonemes.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list of syllables.</p>
+<dd class="field-even"><p>A modified list of patterns where simpler patterns are more likely.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List[str]</p>
@@ -1003,9 +996,31 @@ Defaults to the SWADESH list.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="conlang.utils.process_phonemes">
+<span class="sig-prename descclassname"><span class="pre">conlang.utils.</span></span><span class="sig-name descname"><span class="pre">process_phonemes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phonemes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/conlang/utils.html#process_phonemes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.utils.process_phonemes" title="Link to this definition">#</a></dt>
+<dd><p>Processes phoneme sets to make common phonemes more likely to be chosen.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>phonemes</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em>) – A dictionary of phoneme categories and their respective
+phonemes.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A modified dictionary where common phonemes are more likely.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, List[str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-conlang.vocabulary">
 <span id="conlang-vocabulary-module"></span><h2>conlang.vocabulary module<a class="headerlink" href="#module-conlang.vocabulary" title="Link to this heading">#</a></h2>
+<p>Vocabulary Module</p>
+<p>This module provides functionality to manage a collection of words and their glosses.
+The main class, <cite>Vocabulary</cite>, allows for adding, retrieving, and exporting word-gloss pairs.
+It supports loading and saving vocabularies from/to CSV, text, and JSON files.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="conlang.vocabulary.Vocabulary">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">conlang.vocabulary.</span></span><span class="sig-name descname"><span class="pre">Vocabulary</span></span><a class="reference internal" href="_modules/conlang/vocabulary.html#Vocabulary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.vocabulary.Vocabulary" title="Link to this definition">#</a></dt>
@@ -1014,22 +1029,23 @@ Defaults to the SWADESH list.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="conlang.vocabulary.Vocabulary.items">
 <span class="sig-name descname"><span class="pre">items</span></span><a class="headerlink" href="#conlang.vocabulary.Vocabulary.items" title="Link to this definition">#</a></dt>
-<dd><p>A list of dictionaries with ‘word’ and ‘gloss’ keys.</p>
+<dd><p>A list of dictionaries with ‘word’ and ‘gloss’ keys.
+Where ‘word’ is a Word object and ‘gloss’ is a string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List[Dict[str, str]]</p>
+<dd class="field-odd"><p>List[Dict[str, Any]]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="conlang.vocabulary.Vocabulary.add_item">
-<span class="sig-name descname"><span class="pre">add_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gloss</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/conlang/vocabulary.html#Vocabulary.add_item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.vocabulary.Vocabulary.add_item" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">add_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#conlang.Word" title="conlang.word.Word"><span class="pre">Word</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">gloss</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/conlang/vocabulary.html#Vocabulary.add_item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.vocabulary.Vocabulary.add_item" title="Link to this definition">#</a></dt>
 <dd><p>Add a word and its gloss to the vocabulary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>word</strong> (<em>str</em>) – The word to add.</p></li>
+<li><p><strong>word</strong> (<a class="reference internal" href="#conlang.Word" title="conlang.Word"><em>Word</em></a>) – The word to add.</p></li>
 <li><p><strong>gloss</strong> (<em>str</em>) – The gloss or meaning of the word.</p></li>
 </ul>
 </dd>
@@ -1072,7 +1088,7 @@ Defaults to the SWADESH list.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="conlang.vocabulary.Vocabulary.from_list">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#conlang.vocabulary.Vocabulary" title="conlang.vocabulary.Vocabulary"><span class="pre">Vocabulary</span></a></span></span><a class="reference internal" href="_modules/conlang/vocabulary.html#Vocabulary.from_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.vocabulary.Vocabulary.from_list" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#conlang.vocabulary.Vocabulary" title="conlang.vocabulary.Vocabulary"><span class="pre">Vocabulary</span></a></span></span><a class="reference internal" href="_modules/conlang/vocabulary.html#Vocabulary.from_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.vocabulary.Vocabulary.from_list" title="Link to this definition">#</a></dt>
 <dd><p>Create a Vocabulary object from a list of word-gloss dictionaries.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1123,11 +1139,11 @@ Defaults to the SWADESH list.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="conlang.vocabulary.Vocabulary.has_word">
-<span class="sig-name descname"><span class="pre">has_word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/conlang/vocabulary.html#Vocabulary.has_word"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.vocabulary.Vocabulary.has_word" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">has_word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#conlang.Word" title="conlang.word.Word"><span class="pre">Word</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/conlang/vocabulary.html#Vocabulary.has_word"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.vocabulary.Vocabulary.has_word" title="Link to this definition">#</a></dt>
 <dd><p>Check if the vocabulary contains a specific word.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>word</strong> (<em>str</em>) – The word to check.</p>
+<dd class="field-odd"><p><strong>word</strong> (<a class="reference internal" href="#conlang.Word" title="conlang.Word"><em>Word</em></a>) – The word to check.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>True if the word exists, False otherwise.</p>
@@ -1145,20 +1161,6 @@ Defaults to the SWADESH list.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – Path to the output CSV file.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="conlang.vocabulary.Vocabulary.to_str">
-<span class="sig-name descname"><span class="pre">to_str</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/conlang/vocabulary.html#Vocabulary.to_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.vocabulary.Vocabulary.to_str" title="Link to this definition">#</a></dt>
-<dd><p>Convert the vocabulary to a string representation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A string with each word-gloss pair on a new line in “word: gloss” format.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1198,7 +1200,7 @@ Defaults to the SWADESH list.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="conlang.Language.config">
 <span class="sig-name descname"><span class="pre">config</span></span><a class="headerlink" href="#conlang.Language.config" title="Link to this definition">#</a></dt>
-<dd><p>The configuration for phonemes, patterns, and stress.</p>
+<dd><p>The configuration for phonemes, word patterns, and stress.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#conlang.LanguageConfig" title="conlang.LanguageConfig">LanguageConfig</a></p>
@@ -1220,7 +1222,7 @@ Defaults to the SWADESH list.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="conlang.Language.from_vocabulary">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_vocabulary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vocabulary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#conlang.vocabulary.Vocabulary" title="conlang.vocabulary.Vocabulary"><span class="pre">Vocabulary</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#conlang.language.Language" title="conlang.language.Language"><span class="pre">Language</span></a></span></span><a class="reference internal" href="_modules/conlang/language.html#Language.from_vocabulary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.Language.from_vocabulary" title="Link to this definition">#</a></dt>
-<dd><p>Create a new Language instance from a vocabulary.</p>
+<dd><p>Create a new Language instance from an existing vocabulary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1229,7 +1231,7 @@ Defaults to the SWADESH list.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A new Language instance.</p>
+<dd class="field-even"><p>A new Language instance with a configuration derived from the vocabulary.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#conlang.Language" title="conlang.Language">Language</a></p>
@@ -1255,7 +1257,8 @@ Defaults to the SWADESH list.</p>
 <dd><p>Generates a word based on the language’s configuration and word frequency rank.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>rank</strong> (<em>int</em>) – The rank of the word for frequency purposes. Defaults to -1.</p>
+<dd class="field-odd"><p><strong>rank</strong> (<em>int</em>) – The rank of the word for frequency purposes. Common words (rank &lt; 25)
+use simpler patterns. Defaults to -1.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The generated word.</p>
@@ -1272,11 +1275,13 @@ Defaults to the SWADESH list.</p>
 <dt class="sig sig-object py" id="conlang.LanguageConfig">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">conlang.</span></span><span class="sig-name descname"><span class="pre">LanguageConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phonemes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">patterns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stress</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/conlang/language_config.html#LanguageConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.LanguageConfig" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Represents the configuration of a language, including its phonemes, patterns, and stress rules.</p>
+<p>Represents the configuration of a language, including its phonemes, word patterns, and stress
+rules.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="conlang.LanguageConfig.phonemes">
 <span class="sig-name descname"><span class="pre">phonemes</span></span><a class="headerlink" href="#conlang.LanguageConfig.phonemes" title="Link to this definition">#</a></dt>
-<dd><p>A dictionary mapping categories to phoneme lists.</p>
+<dd><p>A dictionary mapping phoneme categories to lists of
+phonemes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Dict[str, List[str]]</p>
@@ -1287,7 +1292,8 @@ Defaults to the SWADESH list.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="conlang.LanguageConfig.patterns">
 <span class="sig-name descname"><span class="pre">patterns</span></span><a class="headerlink" href="#conlang.LanguageConfig.patterns" title="Link to this definition">#</a></dt>
-<dd><p>A list of word patterns.</p>
+<dd><p>A list of word patterns, where each pattern is a sequence of phoneme
+categories.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List[str]</p>
@@ -1298,7 +1304,7 @@ Defaults to the SWADESH list.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="conlang.LanguageConfig.stress">
 <span class="sig-name descname"><span class="pre">stress</span></span><a class="headerlink" href="#conlang.LanguageConfig.stress" title="Link to this definition">#</a></dt>
-<dd><p>A list of stress positions.</p>
+<dd><p>A list of stressed syllable positions (as negative indices).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List[int]</p>
@@ -1312,7 +1318,8 @@ Defaults to the SWADESH list.</p>
 <dd><p>Creates a LanguageConfig instance from a dictionary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>config_dict</strong> (<em>Dict</em>) – A dictionary containing the configuration.</p>
+<dd class="field-odd"><p><strong>config_dict</strong> (<em>Dict</em>) – A dictionary containing the configuration with keys ‘phonemes’,
+‘patterns’, and ‘stress’.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The parsed language configuration.</p>
@@ -1376,7 +1383,7 @@ Defaults to the SWADESH list.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="conlang.LanguageConfig.from_vocabulary">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_vocabulary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vocabulary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#conlang.Vocabulary" title="conlang.Vocabulary"><span class="pre">Vocabulary</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#conlang.LanguageConfig" title="conlang.LanguageConfig"><span class="pre">LanguageConfig</span></a></span></span><a class="reference internal" href="_modules/conlang/language_config.html#LanguageConfig.from_vocabulary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.LanguageConfig.from_vocabulary" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_vocabulary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vocabulary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#conlang.vocabulary.Vocabulary" title="conlang.vocabulary.Vocabulary"><span class="pre">Vocabulary</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#conlang.language_config.LanguageConfig" title="conlang.language_config.LanguageConfig"><span class="pre">LanguageConfig</span></a></span></span><a class="reference internal" href="_modules/conlang/language_config.html#LanguageConfig.from_vocabulary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.LanguageConfig.from_vocabulary" title="Link to this definition">#</a></dt>
 <dd><p>Generates a language configuration from a vocabulary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1426,16 +1433,18 @@ Defaults to the SWADESH list.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="conlang.SoundChange">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">conlang.</span></span><span class="sig-name descname"><span class="pre">SoundChange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wildcards</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/conlang/sound_change.html#SoundChange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.SoundChange" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">conlang.</span></span><span class="sig-name descname"><span class="pre">SoundChange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wildcards</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/conlang/sound_change.html#SoundChange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.SoundChange" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A class to handle phonological sound changes using defined rules and wildcards.</p>
+<p>A class to handle phonological sound changes using defined rules.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="conlang.SoundChange.rules">
 <span class="sig-name descname"><span class="pre">rules</span></span><a class="headerlink" href="#conlang.SoundChange.rules" title="Link to this definition">#</a></dt>
-<dd><p>A dictionary mapping phonemes to lists of tuples, where each tuple contains the new phoneme and the environment.</p>
+<dd><p>A dictionary mapping phonemes or phoneme
+sequences to lists of tuples, where each tuple
+contains the new phoneme(s) and the environment.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Dict[str, List[Tuple[str]]</p>
+<dd class="field-odd"><p>Dict[Tuple[str], List[Tuple[str]]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1443,10 +1452,11 @@ Defaults to the SWADESH list.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="conlang.SoundChange.wildcards">
 <span class="sig-name descname"><span class="pre">wildcards</span></span><a class="headerlink" href="#conlang.SoundChange.wildcards" title="Link to this definition">#</a></dt>
-<dd><p>A dictionary mapping wildcard symbols to lists of phonemes.</p>
+<dd><p>A dictionary mapping wildcard symbols to lists
+of phonemes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Optional[Dict]</p>
+<dd class="field-odd"><p>Optional[Dict[str, List[str]]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1460,7 +1470,7 @@ Defaults to the SWADESH list.</p>
 <dd class="field-odd"><p><strong>vocabulary</strong> (<a class="reference internal" href="#conlang.Vocabulary" title="conlang.Vocabulary"><em>Vocabulary</em></a>) – The input vocabulary.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A new vocabulary with transformed words.</p>
+<dd class="field-even"><p>A new vocabulary with mutated words.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#conlang.Vocabulary" title="conlang.Vocabulary">Vocabulary</a></p>
@@ -1470,17 +1480,17 @@ Defaults to the SWADESH list.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="conlang.SoundChange.apply_to_word">
-<span class="sig-name descname"><span class="pre">apply_to_word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/conlang/sound_change.html#SoundChange.apply_to_word"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.SoundChange.apply_to_word" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">apply_to_word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#conlang.Word" title="conlang.word.Word"><span class="pre">Word</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#conlang.Word" title="conlang.word.Word"><span class="pre">Word</span></a></span></span><a class="reference internal" href="_modules/conlang/sound_change.html#SoundChange.apply_to_word"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.SoundChange.apply_to_word" title="Link to this definition">#</a></dt>
 <dd><p>Apply sound changes to a single word based on defined rules.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>word</strong> (<em>str</em>) – The input word.</p>
+<dd class="field-odd"><p><strong>word</strong> (<a class="reference internal" href="#conlang.Word" title="conlang.Word"><em>Word</em></a>) – The input word.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The transformed word.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+<dd class="field-odd"><p><a class="reference internal" href="#conlang.Word" title="conlang.Word">Word</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1577,7 +1587,7 @@ Defaults to the SWADESH list.</p>
 <dd class="field-odd"><p><strong>vocabulary</strong> (<a class="reference internal" href="#conlang.Vocabulary" title="conlang.Vocabulary"><em>Vocabulary</em></a>) – The input vocabulary.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A new vocabulary with transformed words.</p>
+<dd class="field-even"><p>A new vocabulary with mutated words.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#conlang.Vocabulary" title="conlang.Vocabulary">Vocabulary</a></p>
@@ -1587,17 +1597,17 @@ Defaults to the SWADESH list.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="conlang.SoundChangePipeline.apply_to_word">
-<span class="sig-name descname"><span class="pre">apply_to_word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/conlang/sound_change.html#SoundChangePipeline.apply_to_word"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.SoundChangePipeline.apply_to_word" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">apply_to_word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#conlang.Word" title="conlang.word.Word"><span class="pre">Word</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#conlang.Word" title="conlang.word.Word"><span class="pre">Word</span></a></span></span><a class="reference internal" href="_modules/conlang/sound_change.html#SoundChangePipeline.apply_to_word"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.SoundChangePipeline.apply_to_word" title="Link to this definition">#</a></dt>
 <dd><p>Apply all sound changes in the pipeline to a single word.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>word</strong> (<em>str</em>) – The input word.</p>
+<dd class="field-odd"><p><strong>word</strong> (<a class="reference internal" href="#conlang.Word" title="conlang.Word"><em>Word</em></a>) – The input word.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The transformed word.</p>
+<dd class="field-even"><p>The mutated word.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+<dd class="field-odd"><p><a class="reference internal" href="#conlang.Word" title="conlang.Word">Word</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1624,11 +1634,15 @@ Defaults to the SWADESH list.</p>
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">random</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_changes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#conlang.sound_change.SoundChangePipeline" title="conlang.sound_change.SoundChangePipeline"><span class="pre">SoundChangePipeline</span></a></span></span><a class="reference internal" href="_modules/conlang/sound_change.html#SoundChangePipeline.random"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.SoundChangePipeline.random" title="Link to this definition">#</a></dt>
 <dd><p>Generate a random SoundChangePipeline instance with random sound changes.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A new instance with random sound changes.</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num_changes</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – The number of sound changes to include. Defaults to a
+random number between 1 and 5.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#conlang.SoundChangePipeline" title="conlang.SoundChangePipeline">SoundChangePipeline</a></p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new instance with random sound changes.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#conlang.SoundChangePipeline" title="conlang.SoundChangePipeline">SoundChangePipeline</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1643,22 +1657,23 @@ Defaults to the SWADESH list.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="conlang.Vocabulary.items">
 <span class="sig-name descname"><span class="pre">items</span></span><a class="headerlink" href="#conlang.Vocabulary.items" title="Link to this definition">#</a></dt>
-<dd><p>A list of dictionaries with ‘word’ and ‘gloss’ keys.</p>
+<dd><p>A list of dictionaries with ‘word’ and ‘gloss’ keys.
+Where ‘word’ is a Word object and ‘gloss’ is a string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List[Dict[str, str]]</p>
+<dd class="field-odd"><p>List[Dict[str, Any]]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="conlang.Vocabulary.add_item">
-<span class="sig-name descname"><span class="pre">add_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gloss</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/conlang/vocabulary.html#Vocabulary.add_item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.Vocabulary.add_item" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">add_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#conlang.Word" title="conlang.word.Word"><span class="pre">Word</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">gloss</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/conlang/vocabulary.html#Vocabulary.add_item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.Vocabulary.add_item" title="Link to this definition">#</a></dt>
 <dd><p>Add a word and its gloss to the vocabulary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>word</strong> (<em>str</em>) – The word to add.</p></li>
+<li><p><strong>word</strong> (<a class="reference internal" href="#conlang.Word" title="conlang.Word"><em>Word</em></a>) – The word to add.</p></li>
 <li><p><strong>gloss</strong> (<em>str</em>) – The gloss or meaning of the word.</p></li>
 </ul>
 </dd>
@@ -1701,7 +1716,7 @@ Defaults to the SWADESH list.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="conlang.Vocabulary.from_list">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#conlang.vocabulary.Vocabulary" title="conlang.vocabulary.Vocabulary"><span class="pre">Vocabulary</span></a></span></span><a class="reference internal" href="_modules/conlang/vocabulary.html#Vocabulary.from_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.Vocabulary.from_list" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#conlang.vocabulary.Vocabulary" title="conlang.vocabulary.Vocabulary"><span class="pre">Vocabulary</span></a></span></span><a class="reference internal" href="_modules/conlang/vocabulary.html#Vocabulary.from_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.Vocabulary.from_list" title="Link to this definition">#</a></dt>
 <dd><p>Create a Vocabulary object from a list of word-gloss dictionaries.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1752,11 +1767,11 @@ Defaults to the SWADESH list.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="conlang.Vocabulary.has_word">
-<span class="sig-name descname"><span class="pre">has_word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/conlang/vocabulary.html#Vocabulary.has_word"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.Vocabulary.has_word" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">has_word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#conlang.Word" title="conlang.word.Word"><span class="pre">Word</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/conlang/vocabulary.html#Vocabulary.has_word"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.Vocabulary.has_word" title="Link to this definition">#</a></dt>
 <dd><p>Check if the vocabulary contains a specific word.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>word</strong> (<em>str</em>) – The word to check.</p>
+<dd class="field-odd"><p><strong>word</strong> (<a class="reference internal" href="#conlang.Word" title="conlang.Word"><em>Word</em></a>) – The word to check.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>True if the word exists, False otherwise.</p>
@@ -1779,20 +1794,6 @@ Defaults to the SWADESH list.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="conlang.Vocabulary.to_str">
-<span class="sig-name descname"><span class="pre">to_str</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/conlang/vocabulary.html#Vocabulary.to_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.Vocabulary.to_str" title="Link to this definition">#</a></dt>
-<dd><p>Convert the vocabulary to a string representation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A string with each word-gloss pair on a new line in “word: gloss” format.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="conlang.Vocabulary.to_txt">
 <span class="sig-name descname"><span class="pre">to_txt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/conlang/vocabulary.html#Vocabulary.to_txt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.Vocabulary.to_txt" title="Link to this definition">#</a></dt>
 <dd><p>Save the vocabulary to a text file.</p>
@@ -1801,6 +1802,145 @@ Defaults to the SWADESH list.</p>
 <dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – Path to the output text file.</p>
 </dd>
 </dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="conlang.Word">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">conlang.</span></span><span class="sig-name descname"><span class="pre">Word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/conlang/word.html#Word"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.Word" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents a word with its phonemes, syllables, and stress information.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="conlang.Word.word_str">
+<span class="sig-name descname"><span class="pre">word_str</span></span><a class="headerlink" href="#conlang.Word.word_str" title="Link to this definition">#</a></dt>
+<dd><p>The original string representation of the word.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="conlang.Word.display">
+<span class="sig-name descname"><span class="pre">display</span></span><a class="headerlink" href="#conlang.Word.display" title="Link to this definition">#</a></dt>
+<dd><p>The formatted display string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="conlang.Word.stress">
+<span class="sig-name descname"><span class="pre">stress</span></span><a class="headerlink" href="#conlang.Word.stress" title="Link to this definition">#</a></dt>
+<dd><p>The stressed syllable position (as a negative index).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="conlang.Word.phonemes">
+<span class="sig-name descname"><span class="pre">phonemes</span></span><a class="headerlink" href="#conlang.Word.phonemes" title="Link to this definition">#</a></dt>
+<dd><p>The list of phonemes in the word.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="conlang.Word.syllables">
+<span class="sig-name descname"><span class="pre">syllables</span></span><a class="headerlink" href="#conlang.Word.syllables" title="Link to this definition">#</a></dt>
+<dd><p>The list of syllables, each represented as a list of phonemes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[List[str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="conlang.Word.stress_bounds">
+<span class="sig-name descname"><span class="pre">stress_bounds</span></span><a class="headerlink" href="#conlang.Word.stress_bounds" title="Link to this definition">#</a></dt>
+<dd><p>The start and end indices of the stressed phonemes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[int, int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="conlang.Word.get_stress_bounds">
+<span class="sig-name descname"><span class="pre">get_stress_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/conlang/word.html#Word.get_stress_bounds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.Word.get_stress_bounds" title="Link to this definition">#</a></dt>
+<dd><p>Determines the start and end indices of the stressed phonemes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>The start and end indices of the stressed phonemes.</dt><dd><p>Returns None if no stress is set.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple[int, int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="conlang.Word.is_acceptable">
+<span class="sig-name descname"><span class="pre">is_acceptable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/conlang/word.html#Word.is_acceptable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.Word.is_acceptable" title="Link to this definition">#</a></dt>
+<dd><p>Determines whether a word is acceptable based on specific phonetic constraints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the word is acceptable, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="conlang.Word.set_stress">
+<span class="sig-name descname"><span class="pre">set_stress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stress</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/conlang/word.html#Word.set_stress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.Word.set_stress" title="Link to this definition">#</a></dt>
+<dd><p>Sets the stress position for the word.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>stress</strong> (<em>int</em>) – The stressed syllable position as a negative index.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="conlang.Word.split_syllables">
+<span class="sig-name descname"><span class="pre">split_syllables</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/conlang/word.html#Word.split_syllables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.Word.split_syllables" title="Link to this definition">#</a></dt>
+<dd><p>Splits the word into syllables based on phonemes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>phonemes</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – The list of phonemes in the word.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of syllables, each represented as a list of phonemes.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[List[str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="conlang.Word.update_display">
+<span class="sig-name descname"><span class="pre">update_display</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/conlang/word.html#Word.update_display"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#conlang.Word.update_display" title="Link to this definition">#</a></dt>
+<dd><p>Updates the display string.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1892,11 +2032,9 @@ Defaults to the SWADESH list.</p>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-conlang.swadesh">conlang.swadesh module</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-conlang.utils">conlang.utils module</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.utils.is_acceptable"><code class="docutils literal notranslate"><span class="pre">is_acceptable()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.utils.map_stress"><code class="docutils literal notranslate"><span class="pre">map_stress()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.utils.parse_phonemes"><code class="docutils literal notranslate"><span class="pre">parse_phonemes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.utils.process_patterns"><code class="docutils literal notranslate"><span class="pre">process_patterns()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.utils.process_phonemes"><code class="docutils literal notranslate"><span class="pre">process_phonemes()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.utils.split_phonemes"><code class="docutils literal notranslate"><span class="pre">split_phonemes()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.utils.split_syllables"><code class="docutils literal notranslate"><span class="pre">split_syllables()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-conlang.vocabulary">conlang.vocabulary module</a><ul class="nav section-nav flex-column">
@@ -1910,7 +2048,6 @@ Defaults to the SWADESH list.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.vocabulary.Vocabulary.from_txt"><code class="docutils literal notranslate"><span class="pre">Vocabulary.from_txt()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.vocabulary.Vocabulary.has_word"><code class="docutils literal notranslate"><span class="pre">Vocabulary.has_word()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.vocabulary.Vocabulary.to_csv"><code class="docutils literal notranslate"><span class="pre">Vocabulary.to_csv()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.vocabulary.Vocabulary.to_str"><code class="docutils literal notranslate"><span class="pre">Vocabulary.to_str()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.vocabulary.Vocabulary.to_txt"><code class="docutils literal notranslate"><span class="pre">Vocabulary.to_txt()</span></code></a></li>
 </ul>
 </li>
@@ -1968,8 +2105,21 @@ Defaults to the SWADESH list.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Vocabulary.from_txt"><code class="docutils literal notranslate"><span class="pre">Vocabulary.from_txt()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Vocabulary.has_word"><code class="docutils literal notranslate"><span class="pre">Vocabulary.has_word()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Vocabulary.to_csv"><code class="docutils literal notranslate"><span class="pre">Vocabulary.to_csv()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Vocabulary.to_str"><code class="docutils literal notranslate"><span class="pre">Vocabulary.to_str()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Vocabulary.to_txt"><code class="docutils literal notranslate"><span class="pre">Vocabulary.to_txt()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Word"><code class="docutils literal notranslate"><span class="pre">Word</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Word.word_str"><code class="docutils literal notranslate"><span class="pre">Word.word_str</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Word.display"><code class="docutils literal notranslate"><span class="pre">Word.display</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Word.stress"><code class="docutils literal notranslate"><span class="pre">Word.stress</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Word.phonemes"><code class="docutils literal notranslate"><span class="pre">Word.phonemes</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Word.syllables"><code class="docutils literal notranslate"><span class="pre">Word.syllables</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Word.stress_bounds"><code class="docutils literal notranslate"><span class="pre">Word.stress_bounds</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Word.get_stress_bounds"><code class="docutils literal notranslate"><span class="pre">Word.get_stress_bounds()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Word.is_acceptable"><code class="docutils literal notranslate"><span class="pre">Word.is_acceptable()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Word.set_stress"><code class="docutils literal notranslate"><span class="pre">Word.set_stress()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Word.split_syllables"><code class="docutils literal notranslate"><span class="pre">Word.split_syllables()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conlang.Word.update_display"><code class="docutils literal notranslate"><span class="pre">Word.update_display()</span></code></a></li>
 </ul>
 </li>
 </ul>
