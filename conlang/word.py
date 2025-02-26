@@ -1,10 +1,3 @@
-"""
-Word Module
-
-This module provides functionality to represent and manipulate words. The main class, `Word`,
-handles the parsing of phonemes, syllable splitting, stress, and display formatting.
-"""
-
 from typing import List, Tuple
 from .phonemes import VOWEL_SET, CONSONANT_SET
 from .utils import parse_phonemes

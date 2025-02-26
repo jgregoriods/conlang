@@ -1,11 +1,3 @@
-"""
-Sound Change Module
-
-This module provides functionality to define, apply, and manage phonological sound changes.
-The main classes, `SoundChange` and `SoundChangePipeline`, allow for the application of
-sound changes to individual words or entire vocabularies.
-"""
-
 from itertools import product
 from pathlib import Path
 import re

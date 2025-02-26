@@ -1,11 +1,3 @@
-"""
-Utils Module
-
-This module provides utility functions for processing phonemes and word patterns. It includes
-functionality to parse words into phonemes, process phoneme sets to prioritize common phonemes,
-and adjust patterns to prioritize simpler patterns for common words.
-"""
-
 from typing import List, Dict
 from .phonemes import PHONEME_SET, COMMON_PHONEME_SET
 

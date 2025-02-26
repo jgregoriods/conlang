@@ -1,12 +1,3 @@
-"""
-Language Module
-
-This module provides functionality to generate and manage languages, including their vocabulary,
-word generation, and configuration. The main class, `Language`, represents a language and provides
-methods for generating words, building vocabulary, and creating languages from existing
-vocabularies.
-"""
-
 import warnings
 from typing import List, Optional
 import numpy as np

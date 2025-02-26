@@ -1,12 +1,3 @@
-"""
-Language Configuration Module
-
-This module provides functionality to define, load, and manipulate language configurations,
-including phonemes, word patterns, and stress rules. It supports loading configurations from
-strings, text files, JSON files, and presets, as well as detecting the configuration from a
-vocabulary.
-"""
-
 import json
 from pathlib import Path
 from typing import Dict, List

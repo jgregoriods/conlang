@@ -1,11 +1,3 @@
-"""
-Vocabulary Module
-
-This module provides functionality to manage a collection of words and their glosses.
-The main class, `Vocabulary`, allows for adding, retrieving, and exporting word-gloss pairs.
-It supports loading and saving vocabularies from/to CSV, text, and JSON files.
-"""
-
 import csv
 import json
 from pathlib import Path
