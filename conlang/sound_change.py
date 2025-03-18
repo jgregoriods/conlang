@@ -3,9 +3,9 @@ from pathlib import Path
 import re
 from typing import List, Dict, Tuple, Optional
 import numpy as np
-from .phonemes import VOWEL_SET, CONSONANT_SET
+from .phonemes import VOWEL_SET, CONSONANT_SET, PHONEME_FEATURE_DICT, FEATURE_MAPPING, BOOLEAN_PROPS
 from .rules import RULES
-from .utils import parse_phonemes
+from .utils import parse_phonemes, get_matching_phoneme
 from .vocabulary import Vocabulary
 from .word import Word
 
@@ -48,6 +48,7 @@ class SoundChange:
         stress_start, stress_end = word.stress_bounds
         phonemes = word.phonemes
         result = []
+        feature_based_rules = {k: v for k, v in self.rules.items() if '[' in k[0]}
 
         def matches_sequence(start_idx: int, sequence: Tuple[str]) -> bool:
             """
@@ -63,7 +64,7 @@ class SoundChange:
             if start_idx + len(sequence) > len(phonemes):
                 return False
             for i, phoneme in enumerate(sequence):
-                if phoneme in 'CV':
+                if 'C' in phoneme or 'V' in phoneme:
                     if not self._matches_phoneme(phonemes[start_idx + i], phoneme):
                         return False
                 elif phonemes[start_idx + i] != phoneme:
@@ -120,7 +121,12 @@ class SoundChange:
             matched = False
 
             # Check for the longest matching sequence first
-            for sequence_length in range(max(len(k) for k in self.rules.keys()), 0, -1):
+            # for sequence_length in range(max(len(k) for k in self.rules.keys()), 0, -1):
+            for rule_key in self.rules.keys():
+                if '[' in rule_key[0]:
+                    continue
+
+                sequence_length = len(rule_key)
                 if i + sequence_length > len(phonemes):
                     continue
 
@@ -170,6 +176,33 @@ class SoundChange:
                         break
                 if matched:
                     break
+            
+            for feature_key in feature_based_rules.keys():
+                for after, environment in feature_based_rules[feature_key]:
+                    if ('[+stress]' in environment and not stress_start <= i < stress_end) or \
+                            ('[-stress]' in environment and stress_start <= i < stress_end):
+                        continue
+
+                    environment = environment.replace(
+                        '[+stress]', '').replace('[-stress]', '').strip()
+
+                    if matches_sequence(i, feature_key) and matches_environment(i, i, environment):
+                        if "[" in after:
+                            features = self._prop_from_condition(after)
+                            prop, (value, positive) = list(features.items())[0]
+                            if prop in BOOLEAN_PROPS or positive:
+                                feature_dict = {prop: value}
+                            else:
+                                feature_dict = {}
+                            after = get_matching_phoneme(phonemes[i], feature_dict)
+                        result.append(after)
+                        i += 1
+                        matched = True
+                        break
+                
+                if matched:
+                    break
+
             if not matched:
                 result.append(phonemes[i])
                 i += 1
@@ -217,7 +250,7 @@ class SoundChange:
                 continue
             if '>' in line:
                 before, after = map(str.strip, line.split('>'))
-                before = tuple(parse_phonemes(before))
+                before = tuple([before]) if "[" in before else tuple(parse_phonemes(before))
                 environment = ''
                 if '/' in after:
                     after, environment = map(str.strip, after.split('/'))
@@ -271,6 +304,30 @@ class SoundChange:
             raise ValueError(f'Preset not found: {name}')
         return SoundChange(RULES[name]['rules'], RULES[name]['wildcards'])
 
+    def _prop_from_condition(self, condition: str) -> Dict[str, Tuple[str, bool]]:
+        """
+        Extract a phoneme property from a condition string.
+
+        Args:
+            condition (str): The condition string.
+        
+        Returns:
+            Dict[str, Tuple[str, bool]]: A dictionary with the property and its value.
+        """
+        match = re.search('\[[\+\-][a-zA-Z]+\]', condition)
+        prop = None
+
+        if match:
+            positive = "+" in match.group()
+            feature = match.group()[2:-1]
+
+            if feature in BOOLEAN_PROPS:
+                return {feature: (positive, positive)}
+
+            prop = FEATURE_MAPPING.get(feature, None)
+
+        return {prop: (feature, positive)} if prop else {}
+
     def _matches_phoneme(self, phoneme: str, condition: str) -> bool:
         """
         Check if a phoneme matches a condition (literal or wildcard).
@@ -293,7 +350,27 @@ class SoundChange:
 
         if condition == 'C':
             return phoneme in CONSONANT_SET
-
+        
+        features = self._prop_from_condition(condition)
+        if features and phoneme in PHONEME_FEATURE_DICT:
+            for boolean_prop in BOOLEAN_PROPS:
+                if boolean_prop in features:
+                    try:
+                        return PHONEME_FEATURE_DICT[phoneme][boolean_prop] == features[boolean_prop][0]
+                    except KeyError:
+                        return False
+            prop, (value, positive) = list(features.items())[0]
+            if positive:
+                try:
+                    return PHONEME_FEATURE_DICT[phoneme][prop] == value
+                except KeyError:
+                    return False
+            else:
+                try:
+                    return PHONEME_FEATURE_DICT[phoneme][prop] != value
+                except KeyError:
+                    return False 
+        
         return False
 
     def __str__(self) -> str:
