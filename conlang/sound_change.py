@@ -64,7 +64,7 @@ class SoundChange:
             if start_idx + len(sequence) > len(phonemes):
                 return False
             for i, phoneme in enumerate(sequence):
-                if 'C' in phoneme or 'V' in phoneme:
+                if phoneme in 'CV' or phoneme in self.wildcards:
                     if not self._matches_phoneme(phonemes[start_idx + i], phoneme):
                         return False
                 elif phonemes[start_idx + i] != phoneme:
@@ -143,6 +143,9 @@ class SoundChange:
                             options.append('V')
                         if phoneme in CONSONANT_SET:
                             options.append('C')
+                        for wildcard, wildcard_phonemes in self.wildcards.items():
+                            if phoneme in wildcard_phonemes:
+                                options.append(wildcard)
                         options.append(phoneme)
                         replacement_options.append(options)
                     combinations.extend([tuple(repl) for repl in set(
@@ -350,6 +353,9 @@ class SoundChange:
 
         if condition == 'C':
             return phoneme in CONSONANT_SET
+
+        if condition in self.wildcards:
+            return phoneme in self.wildcards[condition]
         
         features = self._prop_from_condition(condition)
         if features and phoneme in PHONEME_FEATURE_DICT:
@@ -370,7 +376,7 @@ class SoundChange:
                     return PHONEME_FEATURE_DICT[phoneme][prop] != value
                 except KeyError:
                     return False 
-        
+
         return False
 
     def __str__(self) -> str:

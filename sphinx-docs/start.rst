@@ -205,19 +205,19 @@ You can chain multiple sound changes together by using the :class:`conlang.Sound
     mutated_vocabulary = pipeline.apply_to_vocabulary(vocabulary)
 
 Alternatively, you can load a pipeline from a text file, which must contain
-the sound change rules identified by labels between square brackets:
+the sound change rules identified by labels between brackets:
 
 .. code-block:: text
 
-    [stage 1]
+    (stage 1)
     p > b
     t > d
 
-    [stage 2]
+    (stage 2)
     a > ɔ / [+stress]
     a > ə / [-stress]
 
-    [stage 3]
+    (stage 3)
     k > tʃ / _i
 
 .. code-block:: python

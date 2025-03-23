@@ -1,0 +1,62 @@
+(stage 1)
+c > t
+ɟ > d
+sχ > χs
+fχ > χf
+ʃs > ʃ
+
+(stage 2)
+a > a / _X
+a > ɔ / [+stress]
+a > ə / ʀ_ [-stress]
+ja > a / #_ [-stress]
+aj > i / [+stress]
+aː > u / N_
+aː > o
+i > a / [+stress]
+Ij > i / [+stress]
+jI > i / [+stress]
+iː > i / g_
+iː > i / _d
+iː > e
+u > a / [+stress]
+uː > e
+ʕV > a / #_ [-stress]
+Vw > w / J_# [-stress]
+Vw > 0 / _# [-stress]
+Vr > ə / _# [-stress]
+it > ɛ / _# [+stress]
+Vt > ə / _# [-stress]
+Vj > 0 / _# [-stress]
+V > 0 / [-stress]
+j > 0 / [-stress]
+ʀ > 0
+ʕ > 0
+d > t
+ħ > h
+χ > ʃ
+r > 0 / _C
+r > 0 / _#
+t > 0 / _# [+stress]
+q > k
+ç > h
+z > s
+g > kj
+ʔ > 0
+
+N: m n
+X: ʕ χ ħ ç
+I: i iː
+J: j ʀ
+
+(stage 3)
+n > m / _p
+ww > w
+nn > n
+ʃw > wʃ / _#
+mt > mnt
+w > 0 / C_
+aə > ɛ 
+eə > e
+oə > o
+ʃr > hr
