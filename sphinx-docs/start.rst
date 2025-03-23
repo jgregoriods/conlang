@@ -151,6 +151,12 @@ You are not restricted to single phonemes, but can use sequences:
     Vt > ə / _# [-stress]
     Vw > 0 / _# [-stress]
 
+Finally, it's possible to use feature-based rules. For example:
+
+.. code-block:: text
+
+    C [-voiced] > C [+voiced] / V_V
+
 You can load the text file using the :func:`conlang.SoundChange.from_txt` method:
 
 .. code-block:: python

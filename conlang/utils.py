@@ -1,5 +1,5 @@
 from typing import List, Dict
-from .phonemes import PHONEME_SET, COMMON_PHONEME_SET
+from .phonemes import PHONEME_SET, COMMON_PHONEME_SET, PHONEME_FEATURE_DICT
 
 
 def parse_phonemes(word: str) -> List[str]:
@@ -81,3 +81,12 @@ def process_patterns(patterns: List[str], phonemes: Dict[str, List[str]]) -> Lis
     # Sort by length to prioritize shorter patterns
     processed = sorted(processed, key=len)
     return processed
+
+
+def get_matching_phoneme(phoneme: str, features: Dict):
+    if phoneme not in PHONEME_FEATURE_DICT:
+        return phoneme
+    phoneme_features = PHONEME_FEATURE_DICT[phoneme].copy()
+    phoneme_features.update(features)
+    phoneme_matches = [key for key, val in PHONEME_FEATURE_DICT.items() if val == phoneme_features]
+    return phoneme_matches[0] if phoneme_matches else phoneme
