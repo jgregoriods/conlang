@@ -34,6 +34,8 @@ class SoundChange:
         """
         self.rules = rules
         self.wildcards = wildcards
+        self.feature_based_rules = {k: v for k, v in rules.items() if '[' in k[0]}
+        self.phoneme_based_rules = {k: v for k, v in rules.items() if '[' not in k[0]}
 
     def apply_to_word(self, word: Word) -> Word:
         """
@@ -48,7 +50,6 @@ class SoundChange:
         stress_start, stress_end = word.stress_bounds
         phonemes = word.phonemes
         result = []
-        feature_based_rules = {k: v for k, v in self.rules.items() if '[' in k[0]}
 
         def matches_sequence(start_idx: int, sequence: Tuple[str]) -> bool:
             """
@@ -121,12 +122,7 @@ class SoundChange:
             matched = False
 
             # Check for the longest matching sequence first
-            # for sequence_length in range(max(len(k) for k in self.rules.keys()), 0, -1):
-            for rule_key in self.rules.keys():
-                if '[' in rule_key[0]:
-                    continue
-
-                sequence_length = len(rule_key)
+            for sequence_length in range(max(len(k) for k in self.phoneme_based_rules.keys()), 0, -1):
                 if i + sequence_length > len(phonemes):
                     continue
 
@@ -180,8 +176,8 @@ class SoundChange:
                 if matched:
                     break
             
-            for feature_key in feature_based_rules.keys():
-                for after, environment in feature_based_rules[feature_key]:
+            for feature_key in self.feature_based_rules.keys():
+                for after, environment in self.feature_based_rules[feature_key]:
                     if ('[+stress]' in environment and not stress_start <= i < stress_end) or \
                             ('[-stress]' in environment and stress_start <= i < stress_end):
                         continue

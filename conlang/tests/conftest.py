@@ -32,7 +32,7 @@ def pytest_sessionfinish(session, exitstatus):
             print(f'{GREEN}  *{original[0]} -> {mutated[0]} == {target[0]}{RESET}')
 
     if failures:
-        print(f'{RED}{BOLD}\n❌ Failed:{RESET}')
+        print(f'{RED}{BOLD}\n❌Failed:{RESET}')
         for original, mutated, target in failures:
             print(f'{RED}  *{original[0]} -> {mutated[0]} != {target[0]}{RESET}')
 
